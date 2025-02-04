@@ -13,7 +13,15 @@ export default function ThemeButton() {
         );
         document.documentElement.style.setProperty(
             "--text-color",
-            darkMode ? "#e1e1e1" : "#121212"
+            darkMode ? "#e1e1e1" : "#1a1a1a"
+        );
+        document.documentElement.style.setProperty(
+            "--movies-bg",
+            darkMode ? "#1a222c" : "#e3e3ff"
+        );
+        document.documentElement.style.setProperty(
+            "--footer-bg",
+            darkMode ? 'url("https://t4.ftcdn.net/jpg/05/00/76/75/240_F_500767502_AdezwSUsyb04l79RpV6zubKulRnIHpd0.jpg")' : "url('https://img.freepik.com/free-vector/v915_53876-174949.jpg?t=st=1738614544~exp=1738618144~hmac=0742484dc742956972d4c6778d980ebb080fa55a13f08560c665a7204651b908&w=1380')"
         );
     }, [darkMode]);
 
@@ -32,7 +40,7 @@ export default function ThemeButton() {
                 />
                 <label htmlFor="darkmode-toggle" className="theme-label">
                     <GoSun className="sun" />
-                    <BsMoonStars className="moon"/>
+                    <BsMoonStars className="moon" />
                 </label>
                 <div className="background"></div>
             </div>

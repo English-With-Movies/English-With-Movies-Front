@@ -7,7 +7,6 @@ import { useRef } from 'react';
 import { FaBars } from "react-icons/fa6";
 
 export default function UserNavbar() {
-
     let hiddenRef = useRef()
     let barsRef = useRef()
 
@@ -19,7 +18,7 @@ export default function UserNavbar() {
     }
 
     return (
-        <div className="user-navbar bg-[var(--bg-color)] py-3">
+        <div className="user-navbar bg-[var(--bg-color)] py-3 border-b-2">
             <Container>
                 <div className="navbar-wrapper flex items-center justify-between">
                     <div className="links flex items-center relative">
@@ -67,8 +66,8 @@ export default function UserNavbar() {
                         </NavLink>
                         <div className='text-3xl mx-2 text-[var(--text-color)] block sm:hidden'>
                             <span onClick={() => handleBars()} className='cursor-pointer'><FaBars /></span>
-                            <div ref={barsRef} 
-                            className='flex flex-col absolute top-[110%] left-2 w-full rounded-4 p-2 
+                            <div ref={barsRef}
+                                className='flex flex-col absolute top-[110%] left-2 w-full rounded-4 p-2 
                             shadow-[0_8px_24px_rgba(149,157,165,0.1)] bg-[var(--bg-color)] z-10 
                             transition-all ease-in duration-200 handleBars'>
                                 <NavLink

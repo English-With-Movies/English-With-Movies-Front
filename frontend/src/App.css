@@ -7,19 +7,39 @@
   margin: 0;
   box-sizing: border-box;
   background-color: transparent;
+  list-style-type: none;
+  text-decoration: none;
   user-select: none;
 }
+
+.film-hover {
+  .hover-about {
+    transform: scale(0);
+    transition: all .5s ease;
+  }
+  &:hover {
+    img {
+      filter: blur(4px);
+    }
+    .hover-about {
+      text-shadow: 1px 1px 2px var(--bg-color), 0 0 1em blue, 0 0 0.2em blue;
+      transform: scale(1) rotate(360deg);
+      height: 100%;
+    }
+  }
+}
+
 
 :root {
   --bg-color: #fefff4;
   --text-color: #121212;
+  --movies-bg: #1a222c --footer-bg: url('https://img.freepik.com/free-vector/v915_53876-174949.jpg?t=st=1738614544~exp=1738618144~hmac=0742484dc742956972d4c6778d980ebb080fa55a13f08560c665a7204651b908&w=1380')
 }
 
 body {
   background-color: var(--bg-color);
   /* color: var(--text-color); */
 }
-
 
 /* Theme toggle */
 .theme-button {
@@ -102,11 +122,21 @@ body {
   }
 }
 
+.movies {
+  background-color: #3a9cad;
+}
+
 /* navbar (640px) */
 .handleBars {
   opacity: 0;
   visibility: hidden;
 }
+
+/* footer bg image */
+/* .footer-bg {
+  background-position: center;
+  background-image: var(--footer-bg)
+} */
 
 /* swipper */
 .swiper {
@@ -114,19 +144,25 @@ body {
   height: 70vh;
 }
 .swiper-slide {
-  text-align: center;
-  font-size: 18px;
-  background: #807777;
-
-  /* Center slide text vertically */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-position: center;
+  background-size: cover;
 }
 .swiper-slide img {
   display: block;
   width: 100%;
-  height: 100%;
   object-fit: cover;
-  /* opacity: .5; */
+}
+
+/* series and movies page about */
+.series-about-wrapper {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid var(--movies-bg);
+    top: -20px;
+    left: 0;
+  }
 }
