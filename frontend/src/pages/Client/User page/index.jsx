@@ -1,6 +1,10 @@
 import Container from 'react-bootstrap/Container';
+import Cup from '../../../assets/trophy.png'
+import Calcifer from '../../../assets/calcifer-streak1.png'
+import { useNavigate } from 'react-router';
 
 export default function UserProfile() {
+    let navigate = useNavigate()
 
     return (
         <div className='user-profile py-5 bg-[var(--bg-color)] text-[var(--text-color)]'>
@@ -8,9 +12,13 @@ export default function UserProfile() {
                 <div className='grid grid-cols-[1fr_2fr_2fr] gap-[50px]'>
                     <div>
                         <div className=''>
-                            <img className='w-full' src="https://wallpapers.com/images/featured/cool-profile-picture-87h46gcobjl5e4xu.jpg" alt="" />
+                            <img className='w-full ' src="https://wallpapers.com/images/featured/cool-profile-picture-87h46gcobjl5e4xu.jpg" alt="" />
                         </div>
-                        <div>Namenamename Fullnamefullnamedullname</div>
+                        <h4
+                            onClick={() => navigate('/premium')}
+                            className='p-2 rounded-3 cursor-pointer my-1 bg-[var(--movies-bg)]'>PREMIUM OL!</h4>
+                        <h5>Sülüman</h5>
+                        <h5>Sebastian Szymanski</h5>
                         <div>
                             about about about about about about about about about about about about about about about about about about about about about
                         </div>
@@ -22,22 +30,25 @@ export default function UserProfile() {
                         </div>
                     </div>
                     <div>
-                        <div className='flex'>
-                            <div className='w-[50%]'>
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Azerbaijan_Premier_League_trophy_2011-2012.jpg/180px-Azerbaijan_Premier_League_trophy_2011-2012.jpg" alt="" />
+                        <div className='grid grid-cols-2 gap-3 mb-4'>
+                            <div className='cursor-pointer p-3 rounded-4 
+                            transition-all duration-200 ease-in flex items-center justify-center
+                            hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)]'
+                            onClick={() => navigate('points-ranking')}>
+                                <img src={Cup} alt="" />
                             </div>
-                            <div className='w-[50%]'>
-                                <img src="https://png.pngtree.com/png-clipart/20220921/original/pngtree-fire-logo-png-image_8625285.png" alt="" />
-                                <h4>STREAK 500GUN</h4>
+                            <div className='flex flex-col cursor-pointer rounded-4 items-center justify-center px-1
+                            transition-all duration-200 ease-in
+                            hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)]'
+                            onClick={() => navigate('streak-ranking')}>
+                                <img src={Calcifer} className="w-[50%]" />
+                                <h4 className='text-center'>STREAK 500 GÜN</h4> 
+                                <p className='text-center'>Hər gün Quiz'dən ən azı 1000 xal topla və serini davam etdir!</p> 
                             </div>
                         </div>
-                        <div className='p-3 bg-orange-300 my-1'>
-                            <h4>Bildiyiniz sozler</h4>
-                        </div>
-                        <div className='flex justify-between items-center'>
-                            <h4 className='p-3 bg-emerald-500'>Burda qalmisiniz</h4>
-                            <h4 className='p-3 bg-emerald-500'>PREMIUM OL!</h4>
-                        </div>
+                        <h4
+                            className='p-2 rounded-3 cursor-pointer my-1 bg-[var(--movies-bg)]'>Bildiyiniz sozler</h4>
+                        <h4 className='p-2 rounded-3 cursor-pointer my-1 bg-[var(--movies-bg)]'>Burda qalmisiniz</h4>
                     </div>
                 </div>
 

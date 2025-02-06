@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import Container from 'react-bootstrap/Container';
@@ -15,6 +15,20 @@ let validationSchema = yup.object().shape({
 export default function AboutUser({ setPage }) {
     let navigate = useNavigate()
     let { emailPassword } = useContext(registerContext)
+
+    useEffect(() => {
+        const handleBeforeUnload = (event) => {
+            const message = "Səhifəni yeniləyirsiniz, dəyişikliklər itə bilər!";
+            event.returnValue = message;
+            return message;
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, []);
 
     return (
         <>
@@ -88,19 +102,11 @@ export default function AboutUser({ setPage }) {
                                     </div>
 
 
-                                    <div className='flex mt-4'>
-                                        <Field type="checkbox" name="checkbox"
-                                            className="mr-2 p-2 border-2 border-[#06b6d4] rounded" />
-                                        <label htmlFor="checkbox" className=''>Login etmeden birbasa home page'e getmek isteyirsiz mi? </label>
+                                    <div className='flex mt-4 text-lg'>
+                                        <Field type="checkbox" name="checkbox" id='checkbox'
+                                            className="mr-2 p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
+                                        <label htmlFor="checkbox" className='cursor-pointer'>Birbaşa Login etmək isteyirsiz mi? </label>
                                     </div>
-
-                                    {/* <label htmlFor="email" className='mt-4 text-xl'>Password: </label>
-                                    <Field type="password" name="password"
-                                        placeholder='Enter your password'
-                                        className="focus:outline-none 
-                                        focus:shadow-[0_0px_200px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
-                                    <ErrorMessage name="password" component="div" /> */}
-
 
                                     <div className='flex items-center justify-center'>
                                         <button type="submit" disabled={isSubmitting}

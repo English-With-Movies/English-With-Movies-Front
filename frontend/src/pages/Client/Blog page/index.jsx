@@ -1,8 +1,8 @@
+import Container from "react-bootstrap/esm/Container";
 
 export default function BlogPage() {
+
     return (
-        <>
-        Blog page olacaq burda
-        </>
+        <>Bloq pages</>
     )
 }

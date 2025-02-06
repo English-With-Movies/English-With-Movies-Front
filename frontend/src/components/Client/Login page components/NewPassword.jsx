@@ -1,13 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from 'react-router';
-import { registerContext } from '../../../context/RegisterContext';
 
-//  name surname username email password profilephoto 
 let validationSchema = yup.object().shape({
-    email: yup.string().email().required("Please, enter your email."),
     password: yup.string().required("Please, enter your password.").matches(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])/,
         "One Uppercase, One Lowercase, One Number and One Special Case Character"
@@ -15,51 +12,42 @@ let validationSchema = yup.object().shape({
     confirmPassword: yup.string().required("Please, enter your password again.")
 });
 
-export default function EmailAndPassword({ setPage }) {
+export default function NewPassword({ setPage }) {
     let navigate = useNavigate()
-    let { emailPassword, setEmailPassword } = useContext(registerContext)
-    // console.log(emailPassword);
 
     return (
         <>
-            <div className='bg-[var(--bg-color)] text-[var(--text-color)] '>
+            <div className='bg-[var(--bg-color)] text-[var(--text-color)]'>
                 <Container>
                     <div className='py-5 max-w-[500px] my-0 mx-auto'>
                         {/* title */}
-                        <h1 className='text-center text-[#06b6d4] font-["Dancing_Script"]'>Register</h1>
-                        {/* form */}
+                        <h1 className='text-center text-[#06b6d4] font-["Dancing_Script"]'>Login</h1>
+                        {/* formik */}
                         <Formik
-                            initialValues={{ email: '', password: '', confirmPassword: '' }}
+                            initialValues={{ password: '', confirmPassword: '' }}
                             validationSchema={validationSchema}
-                            onSubmit={async (values) => {
+                            onSubmit={async (values, {setSubmitting}) => {
                                 if (values.password == values.confirmPassword) {
-                                    setEmailPassword(values);
-                                    setPage("about-user")
+                                    console.log("passwordunuz deyisdirildi");
                                 } else {
-                                    alert("Zəhmət olmasa passwordu düzgün daxil edin")
+                                    alert("Şifrənizi düzgün daxil edin")
+                                    setSubmitting(false)
                                 }
                             }}
                         >
                             {({ isSubmitting }) => (
-                                <Form >
-                                    <label htmlFor="email" className='mt-4 text-xl'>E-mail: </label>
-                                    <Field type="email" name="email"
-                                        placeholder='Enter your email'
+                                <Form>
+                                    <label htmlFor="password" className='mt-4 text-xl'>New Password: </label>
+                                    <Field type="password" name="password" id='password'
+                                        placeholder='Enter your new password'
                                         className="focus:outline-none 
                                         focus:shadow-[0_0px_200px_0px_#06b6d4] 
                                         w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
-                                    <ErrorMessage name="email" component="div" />
-
-                                    <label htmlFor="password" className='mt-4 text-xl'>Password: </label>
-                                    <Field type="password" name="password"
-                                        placeholder='Enter your password'
-                                        className="focus:outline-none 
-                                        focus:shadow-[0_0px_200px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
                                     <ErrorMessage name="password" component="div" />
 
-                                    <label htmlFor="confirmPassword" className='mt-4 text-xl'>Confirm Password: </label>
+                                    <label htmlFor="confirmPassword" className='mt-4 text-xl'>New Password Again: </label>
                                     <Field type="password" name="confirmPassword"
-                                        placeholder='Enter your password again'
+                                        placeholder='Enter your new password again'
                                         className="focus:outline-none 
                                         focus:shadow-[0_0px_200px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
                                     <ErrorMessage name="confirmPassword" component="div" />
@@ -70,7 +58,7 @@ export default function EmailAndPassword({ setPage }) {
                                     text-[var(--text-color)] p-2 w-full mt-4
                                     hover:text-white hover:bg-[#06b6d4] rounded-3xl   
                                     transition-all ease-in duration-200">
-                                            Next
+                                            Submit
                                         </button>
                                     </div>
                                 </Form>
@@ -82,11 +70,15 @@ export default function EmailAndPassword({ setPage }) {
                             OR
                             <div className='h-[1px] w-full bg-[var(--text-color)]'></div>
                         </div>
-                        {/* login */}
+                        {/* forget password */}
                         <div className='text-center text-lg'>
-                            Have an account?
-                            <span onClick={() => navigate("/login")}
-                                className='cursor-pointer text-[#06b6d4]'> Log in!</span>
+                            <span className='cursor-pointer hover:text-[#06b6d4] transition-all ease-in duration-200' onClick={() => setPage("forgot-password")}>Forgot Password?</span>
+                        </div>
+                        {/* sign up */}
+                        <div className='text-center text-lg'>
+                            Don't have an account?
+                            <span onClick={() => navigate("/register")}
+                                className='cursor-pointer text-[#06b6d4]'> Sign up!</span>
                         </div>
                     </div>
                 </Container>

@@ -3,15 +3,22 @@ import Container from 'react-bootstrap/Container';
 import { TiArrowUnsorted } from "react-icons/ti";
 import { MdOutlineArrowDownward, MdOutlineArrowUpward } from "react-icons/md";
 import { FaBarsStaggered } from "react-icons/fa6";
+import { FaRegHeart } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+
 
 export default function SeriesPage() {
     let sortRef = useRef()
 
+    const handleFavorites = () => {
+        // let findFavorites = favorites.find((fav) => fav.id == item.id)
+    }
     return (
         <div className="series-page py-5 bg-[var(--bg-color)] text-white">
             <Container>
+                {/* about */}
                 <div className="text-[var(--text-color)]">
-                    <h1 className=''>İngiliscə Seriallarda İstifadə Olunan Sözlər və Mənaları</h1>
+                    <h1>İngiliscə Seriallarda İstifadə Olunan Sözlər və Mənaları</h1>
                     <div className='bg-[var(--movies-bg)] p-3 series-about-wrapper mt-4'>
                         <p className='text-lg'>
                             Dizi izleyerek ingilizce öğrenmek istiyorsun ama nereden başlaman gerektiğini bilmiyor musun ? Senin için en popüler dizilerin tüm bölümlerini tarayıp kullanılan tüm kelimeleri ve anlamlarını bulduk. Dizileri zorluk düzeylerine göre Çok Kolay - Kolay - Orta - Zor şeklinde 4 seviyeye böldük. Tek yapman gereken kelimelerini öğrenmek istediğin diziyi seçmek. Bu noktada ingilizce öğrenmek için Çok Kolay dizilerden başlamanı öneririz. Kelime bilgin arttıkça orta ve zor seviyesindeki dizilere geçebilirsin. Hadi başlayalım o zaman! Dizi, sezon ve bölüm seç. Seçtiğin bölümde kullanılan tüm kelimeler ve anlamları karşına gelecek. Dilersen zorluk ayarlama barı ile sadece zor kelimelere de çalışabilirsin.
@@ -49,10 +56,9 @@ export default function SeriesPage() {
                             </div>
                         </div>
                     </div>
-
                 </div>
 
-                <div className='grid grid-cols-[1fr_2fr] py-5'>
+                <div className='flex gap-2 flex-col md:grid md:grid-cols-[1fr_2fr] py-5'>
                     <div>
                         <div className='flex gap-2 items-center text-2xl text-[var(--text-color)]'><FaBarsStaggered /><h4> Janrına görə seriallar</h4></div>
                         <div className='flex flex-wrap'>
@@ -79,46 +85,24 @@ export default function SeriesPage() {
                             px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxulu</div>
                         </div>
                     </div>
-                    <div className='grid grid-cols-4 gap-4 '>
+                    <div className='grid grid-cols-2 min-[450px]:grid-cols-3 lg:grid-cols-4 gap-4 '>
                         <div className='relative film-hover'>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
+                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" className='w-full h-full' />
                             <div className='absolute top-0 w-full h-full '>
                                 <div className='w-full flex items-center justify-center hover-about'>
-                                    <h4 className='text-center'>12 dene esebi adam</h4>
-                                    <div className='m-2 absolute top-0 left-0 '>Seviyye</div>
-                                    <div className='m-2 w-full px-2 absolute bottom-0 flex items-center justify-between'>
-                                        <span>IMDB: 9.9</span>
-                                        <span>wrey</span>
+                                    <h4 className='text-center'>12 Angry Man</h4>
+                                    <div className='m-2 absolute top-0 left-0'>KOLAY</div>
+                                    <div className='m-2 w-full absolute bottom-0 flex items-center justify-between'>
+                                        <div>IMDB: 9.9</div>
+                                        <div
+                                            onClick={() => handleFavorites()}
+                                            className='text-red-500 text-2xl cursor-pointer'>
+                                            {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart/> : <FaRegHeart />} */}
+                                            <FaRegHeart/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
-                        </div>
-                        <div>
-                            <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
                         </div>
                     </div>
                 </div>
