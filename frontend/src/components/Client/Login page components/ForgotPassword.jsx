@@ -23,7 +23,7 @@ export default function ForgotPassword({ setPage }) {
                             validationSchema={validationSchema}
                             onSubmit={(values) => {
                                 console.log(values);
-                                // evvel maili yoxluyuruq bele mail yoxdusa alert verir varsa setPage deyisir ve maile reqem gedir
+                                // evvel maili yoxluyuruq bele mail yoxdusa alert verir setSubmitting false olur varsa setPage deyisir ve maile reqem gedir
                                 setPage('confirm-password')
                             }}
                         >

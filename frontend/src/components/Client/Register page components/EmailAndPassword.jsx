@@ -8,10 +8,14 @@ import { registerContext } from '../../../context/RegisterContext';
 //  name surname username email password profilephoto 
 let validationSchema = yup.object().shape({
     email: yup.string().email().required("Please, enter your email."),
-    password: yup.string().required("Please, enter your password.").matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])/,
-        "One Uppercase, One Lowercase, One Number and One Special Case Character"
-    ).min(8, "Password is too short - should be 8 chars minimum."),
+    password: yup.string().required("Please, enter your password.")
+        .trim()
+        .matches(/^\S*$/, "Boşluqlar olmamalıdır")
+        .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])/,
+            "One Uppercase, One Lowercase, One Number and One Special Case Character"
+        )
+        .min(8, "Password is too short - should be 8 chars minimum."),
     confirmPassword: yup.string().required("Please, enter your password again.")
 });
 

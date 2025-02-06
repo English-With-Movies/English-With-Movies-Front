@@ -14,6 +14,9 @@ export default function LoginFirstPart({ setPage }) {
     let navigate = useNavigate()
     let passwordRef = useRef()
 
+    let emailTest = 'serqi@gmail.com'
+    let passwordTest = 'serqi'
+
     const typeChange = () => {
         if (passwordRef.current.type !== "text") {
             passwordRef.current.type = "text"
@@ -33,9 +36,14 @@ export default function LoginFirstPart({ setPage }) {
                         <Formik
                             initialValues={{ email: '', password: '' }}
                             validationSchema={validationSchema}
-                            onSubmit={(values) => {
-                                console.log(values);
-
+                            onSubmit={(values, {setSubmitting}) => {
+                                // console.log(values);
+                                if (emailTest == values.email && passwordTest == values.password) {
+                                    console.log("malades");
+                                } else {
+                                    alert("İstifadəçi məlumatları səhvdir.")
+                                    setSubmitting(false)
+                                }
                             }}
                         >
                             {({ isSubmitting }) => (
