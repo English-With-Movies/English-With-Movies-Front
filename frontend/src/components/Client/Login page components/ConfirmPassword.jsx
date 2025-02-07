@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Container from 'react-bootstrap/Container';
+import { Helmet } from 'react-helmet';
 
 export default function ConfirmPassword({ setPage }) {
     let variabledidene = "abc123"
@@ -8,6 +9,9 @@ export default function ConfirmPassword({ setPage }) {
 
     return (
         <>
+            <Helmet>
+                <title>Forgot Password</title>
+            </Helmet>
             <div className='bg-[var(--bg-color)] text-[var(--text-color)]'>
                 <Container>
                     <div className='py-5 max-w-[500px] my-0 mx-auto'>
@@ -17,7 +21,7 @@ export default function ConfirmPassword({ setPage }) {
                         {/* formik */}
                         <Formik
                             initialValues={{ code: "" }}
-                            onSubmit={async (values, {setSubmitting}) => {
+                            onSubmit={async (values, { setSubmitting }) => {
                                 if (values.code == variabledidene) {
                                     // kod bura yazilacaq
                                     console.log(values);

@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from 'react-router';
 import { FaRegEye } from 'react-icons/fa';
+import { Helmet } from 'react-helmet';
 
 let validationSchema = yup.object().shape({
     password: yup.string().required("Please, enter your password.").matches(
@@ -36,6 +37,9 @@ export default function NewPassword({ setPage }) {
 
     return (
         <>
+            <Helmet>
+                <title>New Password</title>
+            </Helmet>
             <div className='bg-[var(--bg-color)] text-[var(--text-color)]'>
                 <Container>
                     <div className='py-5 max-w-[500px] my-0 mx-auto'>
@@ -91,22 +95,6 @@ export default function NewPassword({ setPage }) {
                                 </Form>
                             )}
                         </Formik>
-                        {/* or text */}
-                        <div className='flex items-center justify-between gap-2 my-4'>
-                            <div className='h-[1px] w-full bg-[var(--text-color)]'></div>
-                            OR
-                            <div className='h-[1px] w-full bg-[var(--text-color)]'></div>
-                        </div>
-                        {/* forget password */}
-                        <div className='text-center text-lg'>
-                            <span className='cursor-pointer hover:text-[#06b6d4] transition-all ease-in duration-200' onClick={() => setPage("forgot-password")}>Forgot Password?</span>
-                        </div>
-                        {/* sign up */}
-                        <div className='text-center text-lg'>
-                            Don't have an account?
-                            <span onClick={() => navigate("/register")}
-                                className='cursor-pointer text-[#06b6d4]'> Sign up!</span>
-                        </div>
                     </div>
                 </Container>
             </div>

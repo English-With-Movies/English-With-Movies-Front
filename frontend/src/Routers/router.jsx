@@ -15,7 +15,6 @@ import StreakRanking from "../pages/Client/Streak Ranking";
 import UserProfile from "../pages/Client/User page";
 import NotFound from "../pages/NotFound";
 
-
 const ROUTES = [
     {
         path: "/",

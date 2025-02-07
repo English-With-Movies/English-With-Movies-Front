@@ -1,4 +1,5 @@
 import Container from "react-bootstrap/esm/Container";
+import { Helmet } from "react-helmet";
 import { FaMedal } from "react-icons/fa6";
 
 export default function StreakRanking() {
@@ -18,6 +19,9 @@ export default function StreakRanking() {
     let sortedUserPoints = userData.toSorted((a, b) => b.points - a.points)
     return (
         <>
+        <Helmet>
+            <title>Streak Sıralaması</title>
+        </Helmet>
             <div className="bg-[var(--bg-color)] text-[var(--text-color)] py-5">
                 <Container>
                     <div className="max-w-[1000px] mx-auto my-0">

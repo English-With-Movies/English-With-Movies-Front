@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import Container from 'react-bootstrap/Container';
@@ -9,8 +9,13 @@ import { useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 
 import Calcifer from '../../../assets/calcifer-streak1.png'
+import Calcifer1 from '../../../assets/calcifer1.png'
+import Calcifer2 from '../../../assets/calcifer2.png'
+import Calcifer3 from '../../../assets/calcifer3.png'
+import Calcifer4 from '../../../assets/calcifer4.png'
+import { FaPlus } from "react-icons/fa";
+import { FaUserNinja } from "react-icons/fa";
 
-//  name surname username email password profilephoto 
 let validationSchema = yup.object().shape({
     firstName: yup.string()
         .required("Please, enter your first name.")
@@ -33,12 +38,17 @@ export default function AboutUser({ setPage }) {
     let navigate = useNavigate()
     let { emailPassword } = useContext(registerContext)
 
+    const [selectedAvatar, setSelectedAvatar] = useState(Calcifer);
+
+    const otherAvatars = [Calcifer1, Calcifer2, Calcifer3, Calcifer4]
+
     // modal
     const [show, setShow] = useState(false);
     const [showAvatar, setShowAvatar] = useState(false);
-    const [modalShow, setModalShow] = React.useState(false);
-
-    // səhifə yenilənəndə məlumatların silinəcəyi ilə bağlı bildiriş verir
+    const fileInputRef = useRef(null);
+    let defaultAvatar = <FaUserNinja />
+    const [avatar, setAvatar] = useState(null);
+    // səhifə yenilənəndə məlumatların silinəcəyi ilə bağlı xəbər verir
     useEffect(() => {
         const handleBeforeUnload = (event) => {
             const message = "Səhifəni yeniləyirsiniz, dəyişikliklər itə bilər!";
@@ -52,6 +62,31 @@ export default function AboutUser({ setPage }) {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
     }, []);
+
+
+
+
+    const handleButtonClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        console.log(file);
+        if (file) {
+            if (!file.type.startsWith("image/")) {
+                alert("Zəhmət olmasa şəkil seçin");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                console.log(event.target.result);
+                setSelectedAvatar(event.target.result);
+            };
+            reader.readAsDataURL(file);
+            setShowAvatar(false)
+        }
+    };
 
     return (
         <>
@@ -110,10 +145,11 @@ export default function AboutUser({ setPage }) {
                                         w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
                                             <ErrorMessage name="userName" component="div" />
                                         </div>
-                                        <div>
-                                            <label htmlFor="avatar" className='mt-4 text-xl'>Avatar: </label>
-                                            <div onClick={() => setShowAvatar(true)}
-                                                className="focus:outline-none focus:shadow-[0_0px_300px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1 cursor-pointer">Choose Avatar
+                                        <div className='flex items-center justify-center mt-4 gap-2'>
+                                            <label htmlFor="avatar" className='text-xl'>Avatar: </label>
+                                            <div onClick={() => setShowAvatar(true)} title='select avatar'
+                                                className="focus:outline-none hover:shadow-[0_0px_300px_0px_#06b6d4] w-full p-2 rounded cursor-pointer">
+                                                {selectedAvatar ? <img src={selectedAvatar} alt="Selected Avatar" className="h-16 w-16 rounded-full" /> : defaultAvatar}
                                             </div>
                                         </div>
                                     </div>
@@ -185,63 +221,46 @@ export default function AboutUser({ setPage }) {
                         </Modal.Header>
                         <Modal.Body className='bg-[var(--movies-bg)] text-[var(--text-color)] rounded'>
                             <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 items-center justify-between'>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"} />
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"} />
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"} />
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"}/>
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"}/>
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"} />
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"} />
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"} />
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"}/>
-                                </div>
-                                <div>
-                                    <img src={Calcifer} alt="" width={"100px"}/>
-                                </div>
+                                <>
+                                    <div className="flex items-center justify-center">
+                                        <div
+                                            onClick={handleButtonClick}
+                                            className="w-[100px] h-[100px] rounded-[50%] hover:opacity-60
+                                        flex items-center justify-center text-gray-300 text-3xl text-center
+                                        transition-all duration-200 ease-in cursor-pointer"
+                                            style={{
+                                                backgroundImage: `url(${avatar})`,
+                                                backgroundSize: "cover",
+                                                backgroundPosition: "center",
+                                            }}
+                                        >
+                                            {/* Şəkil yoxdursa ikon görünsün */}
+                                            {(<FaPlus className="cursor-pointer" />)}
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                ref={fileInputRef}
+                                                style={{ display: "none" }}
+                                                onChange={handleFileChange}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {otherAvatars.map((avatar, index) => (
+                                        <img
+                                            key={index}
+                                            src={avatar}
+                                            alt={`Avatar ${index + 1}`}
+                                            className={`w-20 h-20 rounded-full cursor-pointer border-2 ${selectedAvatar === avatar ? "border-blue-500" : "border-transparent"
+                                                }`}
+                                            onClick={() => { setSelectedAvatar(avatar); setShowAvatar(false); }}
+                                        />
+                                    ))}
+                                </>
                             </div>
                         </Modal.Body>
                     </Modal>
 
-                    {/* <Modal
-                        {...props}
-                        size="lg"
-                        aria-labelledby="contained-modal-title-vcenter"
-                        centered
-                    >
-                        <Modal.Header closeButton>
-                            <Modal.Title id="contained-modal-title-vcenter">
-                                Modal heading
-                            </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <h4>Centered Modal</h4>
-                            <p>
-                                Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-                                dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-                                consectetur ac, vestibulum at eros.
-                            </p>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button onClick={props.onHide}>Close</Button>
-                        </Modal.Footer>
-                    </Modal> */}
 
                     {/* Modal terms */}
                     <Modal

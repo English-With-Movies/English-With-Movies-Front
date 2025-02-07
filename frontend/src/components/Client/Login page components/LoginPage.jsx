@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from 'react-router';
 import { FaRegEye } from "react-icons/fa";
+import { Helmet } from 'react-helmet';
 
 let validationSchema = yup.object().shape({
     email: yup.string().email().required(),
@@ -27,6 +28,9 @@ export default function LoginFirstPart({ setPage }) {
 
     return (
         <>
+            <Helmet>
+                <title>Login</title>
+            </Helmet>
             <div className='bg-[var(--bg-color)] text-[var(--text-color)]'>
                 <Container>
                     <div className='py-5 max-w-[500px] my-0 mx-auto'>
@@ -36,7 +40,7 @@ export default function LoginFirstPart({ setPage }) {
                         <Formik
                             initialValues={{ email: '', password: '' }}
                             validationSchema={validationSchema}
-                            onSubmit={(values, {setSubmitting}) => {
+                            onSubmit={(values, { setSubmitting }) => {
                                 // console.log(values);
                                 if (emailTest == values.email && passwordTest == values.password) {
                                     console.log("malades");

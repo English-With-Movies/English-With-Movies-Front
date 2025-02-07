@@ -1,4 +1,5 @@
 import Container from "react-bootstrap/esm/Container";
+import { Helmet } from "react-helmet";
 import { FaMedal } from "react-icons/fa6";
 
 export default function PointsRanking() {
@@ -19,6 +20,9 @@ export default function PointsRanking() {
 
     return (
         <>
+        <Helmet>
+            <title>Xal Sıralaması</title>
+        </Helmet>
             <div className="bg-[var(--bg-color)] text-[var(--text-color)] py-5">
                 <Container>
                     <div className="max-w-[1000px] mx-auto my-0">

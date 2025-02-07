@@ -129,11 +129,7 @@ body {
   }
 
   /* input */
-  #difficulty-check-1,
-  #difficulty-check-2,
-  #difficulty-check-3,
-  #difficulty-check-4,
-  #difficulty-check-5 {
+  .difficulty-check {
     width: 0;
     height: 0;
     visibility: hidden;
