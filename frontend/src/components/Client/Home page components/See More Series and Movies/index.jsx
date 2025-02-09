@@ -58,7 +58,7 @@ export default function SeeMore() {
                 </div>
 
                 {/* line */}
-                <div className='h-[2px] w-full bg-black my-5'></div>
+                <div className='h-[3px] w-full bg-[var(--movies-bg)] my-5'></div>
 
                 {/* series */}
                 <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ">

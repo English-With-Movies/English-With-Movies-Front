@@ -52,8 +52,12 @@ export default function UserProfile() {
                                     <p className='text-center'>Hər gün Quiz'dən ən azı 1000 xal topla və serini davam etdir!</p>
                                 </div>
                             </div>
-                            <h4 className='p-3 rounded-3 cursor-pointer my-1 bg-[var(--movies-bg)]'>Bildiyiniz sözlər</h4>
-                            <h4 className='p-2 rounded-3 cursor-pointer my-1 bg-[var(--movies-bg)]'>Burda qalmisiniz</h4>
+                            <div onClick={() => navigate('known-words')}>
+                                <h4 className='p-3 rounded-3 cursor-pointer my-1 bg-[var(--movies-bg)] transition-all duration-200 ease-in flex items-center justify-center
+                                hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)]'>Bildiyiniz sözlər</h4>
+                                <div></div>
+                            </div>
+                            <h4 className='p-3 rounded-3 cursor-pointer my-1 bg-[var(--movies-bg)]'>Burda qalmisiniz</h4>
                         </div>
                     </div>
 

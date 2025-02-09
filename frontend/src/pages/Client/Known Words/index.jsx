@@ -1,71 +1,34 @@
-import { useRef, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import { Helmet } from "react-helmet";
-import { FaRegHeart } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa";
-import { FaBarsStaggered, FaRegCircleCheck, FaRegEye } from "react-icons/fa6";
+import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { ImBin } from "react-icons/im";
+import { IoRocketSharp } from "react-icons/io5";
 
-export default function SeriesDetail() {
-    // favorites add function
+export default function KnownWords() {
     const [checkboxStates, setCheckboxStates] = useState(
         Array.from({ length: 5 }).fill(false)
     );
-
     let sortWords = useRef()
-    const sortedWordsFunction = () => {
-        sortWords.current.classList.toggle("handleBars")
-    }
 
     const handleCheckboxChange = (index) => {
         const updatedStates = [...checkboxStates];
         updatedStates[index] = !updatedStates[index];
         setCheckboxStates(updatedStates);
     };
-
+    const sortedWordsFunction = () => {
+        sortWords.current.classList.toggle("handleBars")
+    }
     return (
         <>
             <Helmet>
-                <title>`{`series.name`}`</title>
+                <title>Bilinən sözlər</title>
             </Helmet>
 
             <div className=" py-3 bg-[var(--bg-color)] text-white">
                 <Container>
-                    <div className="text-[var(--text-color)]">
-                        {/* banner */}
-                        <div className='bg-[var(--movies-bg)] relative my-0 mx-[auto] max-w-[1320px] height-[500px] w-full'>
-                            <img
-                                src="https://dummyimage.com/1320x500/eb99eb/343982" className="object-cover object-center w-full" />
-                            {/* overlay effect */}
-                            <div className="overlay"></div>
-                        </div>
-                        {/* series about */}
-                        <div className="my-0 mx-[auto] max-w-[1200px] flex gap-10 flex-col items-center min-[450px]:flex-row min-[450px]:items-normal">
-                            <div className="max-w-[150px] sm:max-w-[200px] w-full -mt-7 ml-7 relative z-index-2">
-                                <img src="https://dummyimage.com/300x450/343982/eb99eb" className="w-full" />
-                            </div>
-                            <div className="text-[var(--text-color)] w-full">
-                                <div className="flex items-center">
-                                    <h3 className="mr-3">Interstellar</h3>
-                                    <span className="px-2 bg-lime-600">KOLAY</span>
-                                </div>
-                                <div className="my-1 flex items-center">
-                                    <div className="text-xl font-semibold mr-3">IMDB: 9.9</div>
-                                    <div
-                                        onClick={() => handleFavorites()}
-                                        className='text-red-500 text-2xl cursor-pointer'>
-                                        {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart/> : <FaRegHeart />} */}
-                                        <FaRegHeart />
-                                    </div>
-                                </div>
-
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore consectetur, impedit facilis fuga nisi odio ullam erit impedit molestiae inventore in?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore consectetur, impedit facilis fuga nisi odio ullam dolorum eveniet excepturi asperiores fugiat repellat tempora sit sunt ea similique eaque? Unde dolore vitae recusandae quam nam </p>
-
-                            </div>
-
-                        </div>
-                    </div>
+                    <h1 className="font-['Kanit']">Bilinən sözlər</h1>
                     {/* level choice */}
                     <div className="max-w-[1000px] mx-auto my-5 text-[var(--text-color)] bg-[var(--movies-bg)] rounded-4 py-3 flex flex-col">
                         <h3 className="text-center mb-4 font-[Kanit]">Sözlərin çətinlik səviyyəsini seçin</h3>
@@ -91,6 +54,7 @@ export default function SeriesDetail() {
                         .filter(Boolean)
                         .join(", ") || "Heç biri"}
                     </p> */}
+
                     <div className="flex items-center justify-between my-3">
                         <div className="text-xl">1234 söz</div>
                         <div className="text-5xl font-['Kanit']">Sözlər</div>
@@ -122,14 +86,15 @@ export default function SeriesDetail() {
                                             <td className="p-3">kaçınmak, çekinmek</td>
                                             <td className="p-3">aaaaaaaaaaaaaa</td>
                                             <td className="p-3 text-3xl text-lime-400 hover-title relative">
-                                                {/* js kodu eger bilinenlerdedirse div ve span olmasa hecne */}
-                                                {/* <div className="p-2 bg-lime-400 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısındadır</div>
-                                                <FaRegCircleCheck /> */}
+                                                <div className="p-2 bg-lime-400 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısındadır</div>
+                                                <FaRegCircleCheck />
                                             </td>
-                                            <td className="p-3 text-3xl relative hover-title flex">
-                                                {/* <div className="p-2 bg-red-600 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısından silin</div> */}
-                                                <span onClick={() => underlineWord(value)} className="cursor-pointer p-1"><FaRegEye /></span>
+                                            {/* bilinenler siyahisindadisa (ki onsuz eledi) icon gorunsun */}
+                                            <td className="p-3 text-3xl cursor-pointer transition-all duration-200 ease-in hover:text-red-600 relative hover-title">
+                                                <div className="p-2 bg-red-600 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısından silin</div>
+                                                <ImBin />
                                             </td>
+                                            {/* filterleyim bilinenler siyahisindan silsin */}
                                         </tr>
                                     ))
                                 }
@@ -138,6 +103,11 @@ export default function SeriesDetail() {
                     </div>
 
                 </Container>
+                <div className='z-index-10 border-2 border-solid border-red-500 p-5 fixed right-[12%] bottom-[3%] w-12 h-12 rounded-full items-center justify-center flex flex-col text-white cursor-pointer transition-all duration-250 ease-in hover:bg-blue-500/[.3] fixed-arrow'
+                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+                    <span className='text-3xl mb-1'><IoRocketSharp /></span>
+                    <span className='text-sm '>Quiz</span>
+                </div>
             </div>
         </>
 

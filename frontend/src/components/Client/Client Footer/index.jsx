@@ -2,6 +2,8 @@ import Container from 'react-bootstrap/Container';
 import { NavLink } from "react-router-dom";
 import { FaFacebook, FaXTwitter } from "react-icons/fa6";
 import { FaArrowUp, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { HiArrowLongUp } from "react-icons/hi2";
+import { BsArrowUp } from "react-icons/bs";
 
 export default function UserFooter() {
     return (
@@ -56,9 +58,9 @@ export default function UserFooter() {
                 </div>
             </div>
             {/* fixed arrow */}
-            <div className='z-index-10 bg-blue-400 fixed right-[5%] bottom-[5%] w-12 h-12 rounded-full items-center justify-center flex text-xl text-white cursor-pointer'
+            <div className='z-index-10 border-2 border-solid border-blue-500 p-5 fixed right-[5%] bottom-[3%] w-12 h-12 rounded-full items-center justify-center flex flex-col text-white cursor-pointer transition-all duration-250 ease-in hover:bg-blue-500/[.3] fixed-arrow'
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                <FaArrowUp />
+                <span className='text-3xl text-[var(--text-color)]'><BsArrowUp /></span>
             </div>
         </div>
     )

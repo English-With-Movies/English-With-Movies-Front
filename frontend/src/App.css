@@ -15,7 +15,7 @@
 :root {
   --bg-color: #fefff4;
   --text-color: #121212;
-  --movies-bg: #1a222c --footer-bg: url('https://img.freepik.com/free-vector/v915_53876-174949.jpg?t=st=1738614544~exp=1738618144~hmac=0742484dc742956972d4c6778d980ebb080fa55a13f08560c665a7204651b908&w=1380')
+  --movies-bg: #1a222c ;
 }
 
 body {
@@ -194,6 +194,7 @@ input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
@@ -228,4 +229,35 @@ input[type="number"] {
     top: -20px;
     left: 0;
   }
+}
+
+.hover-title {
+  div {
+    opacity: 0;
+    visibility: hidden;
+    transition: all .3s ease;
+  }
+
+  &:hover {
+    div {
+      opacity: 0.9;
+      visibility: visible;
+    }
+  }
+}
+
+.fixed-arrow {
+  span {
+    transition: all .5s ease;
+  }
+  &:hover {
+    span {
+      transform: rotate(720deg);
+    }
+  }
+}
+
+/* select option bg color */
+.ant-select-dropdown {
+  background-color: #cfebff !important;
 }

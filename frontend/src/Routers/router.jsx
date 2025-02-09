@@ -3,11 +3,13 @@ import AdminLayout from "../pages/Admin/AdminLayout";
 import BlogPage from "../pages/Client/Blog page";
 import ClientLayout from "../pages/Client/ClientLayout";
 import HomePage from "../pages/Client/Home page";
+import KnownWords from "../pages/Client/Known Words";
 import LoginPage from "../pages/Client/Login";
 import MoviesPage from "../pages/Client/Movies";
 import MoviesDetail from "../pages/Client/Movies Detail";
 import PointsRanking from "../pages/Client/Points ranking";
 import PremiumPage from "../pages/Client/Premium Page";
+import QuizPage from "../pages/Client/Quiz page";
 import RegisterPage from "../pages/Client/Register";
 import SeriesDetail from "../pages/Client/Series Detail";
 import SeriesPage from "../pages/Client/Series page";
@@ -53,6 +55,10 @@ const ROUTES = [
                 element: <StreakRanking />
             },
             {
+                path: '/my-profile/known-words',
+                element: <KnownWords />
+            },
+            {
                 path: "/premium",
                 element: <PremiumPage />,
             },
@@ -61,16 +67,20 @@ const ROUTES = [
                 element: <BlogPage />
             },
             {
-                path: '/*',
-                element: <NotFound />
-            },
-            {
                 path: '/login',
                 element: <LoginPage />
             },
             {
                 path: '/register',
                 element: <RegisterPage />
+            },
+            {
+                path: '/quiz',
+                element: <QuizPage />
+            },
+            {
+                path: '/*',
+                element: <NotFound />
             }
         ]
     },

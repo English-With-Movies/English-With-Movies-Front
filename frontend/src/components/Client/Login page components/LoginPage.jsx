@@ -38,6 +38,7 @@ export default function LoginFirstPart({ setPage }) {
                         <h1 className='text-center text-[#06b6d4] font-["Dancing_Script"]'>Login</h1>
                         {/* formik */}
                         <Formik
+                            // remember me
                             initialValues={{ email: '', password: '' }}
                             validationSchema={validationSchema}
                             onSubmit={(values, { setSubmitting }) => {

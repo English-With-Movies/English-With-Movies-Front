@@ -19,16 +19,35 @@ export default function UserNavbar() {
         barsRef.current.classList.toggle("handleBars")
     }
 
+    // useEffect(() => {
+    //     document.addEventListener("click", () => {
+    //         if (!hiddenRef.current.classList.contains("handleBars")) {
+    //             hiddenRef.current.classList.add("handleBars")
+    //         }
+    //         if (!barsRef.current.classList.contains("handleBars")) {
+    //             barsRef.current.classList.add("handleBars")
+    //         }
+    //     });
+    // })
+
     useEffect(() => {
-        document.addEventListener("click", () => {
+        const handleClick = () => {
             if (!hiddenRef.current.classList.contains("handleBars")) {
-                hiddenRef.current.classList.add("handleBars")
+                hiddenRef.current.classList.add("handleBars");
             }
             if (!barsRef.current.classList.contains("handleBars")) {
-                barsRef.current.classList.add("handleBars")
+                barsRef.current.classList.add("handleBars");
             }
-        });
-    })
+        };
+
+        document.addEventListener("click", handleClick);
+
+        // Cleanup function
+        return () => {
+            document.removeEventListener("click", handleClick);
+        };
+    }, []);
+
     return (
         <div className="user-navbar bg-[var(--bg-color)] py-3 border-b-2">
             <Container>
