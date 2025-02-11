@@ -93,7 +93,7 @@ export default function AboutUser({ }) {
                 isLoading ? (
                     <>...loading</>
                 ) : (
-                    <div className='bg-[var(--bg-color)] text-[var(--text-color)] '>
+                    <div className='bg-[var(--bg-color)] text-[var(--text-color)] mt-[103px]'>
                         <Container>
                             <div className='py-5 max-w-[500px] my-0 mx-auto'>
                                 {/* title */}
