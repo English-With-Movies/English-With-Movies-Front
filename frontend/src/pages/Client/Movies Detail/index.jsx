@@ -64,39 +64,37 @@ export default function MoviesDetail() {
                 <title>`{`film.name`}`</title>
             </Helmet>
 
-            <div className="py-3 bg-[var(--bg-color)] text-white">
-                <Container>
-                    <div className="text-[var(--text-color)]">
-                        {/* banner */}
-                        <div className='bg-[var(--movies-bg)] relative my-0 mx-[auto] max-w-[1320px] height-[500px] w-full'>
-                            <img src="https://dummyimage.com/1320x500/eb99eb/343982" className="object-cover object-center w-full" />
-                            {/* overlay effect */}
-                            <div className="overlay"></div>
-                        </div>
-                        {/* movie about */}
-                        <div className="my-0 mx-[auto] max-w-[1200px] flex gap-10 flex-col sm:flex-row">
-                            {/* <div className="max-w-[200px] w-full -mt-7 ml-7 relative z-index-2">
-                                <img src="https://dummyimage.com/300x450/343982/eb99eb" className="w-full" />
-                            </div> */}
-                            <div className="text-[var(--text-color)] w-full">
-                                <div className="flex items-center">
-                                    <h3 className="mr-3">Interstellar</h3>
-                                    <span className="px-2 bg-lime-600">KOLAY</span>
-                                </div>
-                                <div className="my-1 flex items-center">
-                                    <div className="text-xl font-semibold mr-3">IMDB: 9.9</div>
-                                    <div
-                                        onClick={() => handleFavorites()}
-                                        className='text-red-500 text-2xl cursor-pointer'>
-                                        {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart/> : <FaRegHeart />} */}
-                                        <FaRegHeart />
-                                    </div>
-                                </div>
-
-                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore consectetur, impedit facilis fuga nisi odio ullam erit impedit molestiae inventore in?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore consectetur, impedit facilis fuga nisi odio ullam dolorum eveniet excepturi asperiores fugiat repellat tempora sit sunt ea similique eaque? Unde dolore vitae recusandae quam nam </p>
+            <div className="bg-[var(--bg-color)] text-white mt-[103px]">
+                <div className="text-[var(--text-color)]">
+                    {/* banner */}
+                    <div className='bg-[url("https://dummyimage.com/1320x500/eb99eb/343982")] bg-cover bg-no-repeat bg-center relative h-[500px] w-full'>
+                        <div className="overlay"></div>
+                    </div>
+                    {/* movie about */}
+                    <div className="my-3 mx-[auto] max-w-[1200px] flex gap-10 flex-col sm:flex-row">
+                        <div className="text-[var(--text-color)] w-full">
+                            <div className="flex items-center">
+                                <h1 className="mr-3 font-['Kanit']">Interstellar</h1>
+                                <span className="px-2 bg-lime-800 font-['Kanit'] font-semibold">KOLAY</span>
                             </div>
+                            <div>
+                                
+                            </div>
+                            <div className="my-1 flex items-center">
+                                <div className="text-xl font-['Kanit'] mr-3"><span className="bg-yellow-300 text-black font-bold text-lg px-2 ">IMBd</span> 9.9</div>
+                                <div
+                                    onClick={() => handleFavorites()}
+                                    className='text-red-500 text-2xl cursor-pointer'>
+                                    {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart/> : <FaRegHeart />} */}
+                                    <FaRegHeart />
+                                </div>
+                            </div>
+
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore consectetur, impedit facilis fuga nisi odio ullam erit impedit molestiae inventore in?Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempore consectetur, impedit facilis fuga nisi odio ullam dolorum eveniet excepturi asperiores fugiat repellat tempora sit sunt ea similique eaque? Unde dolore vitae recusandae quam nam </p>
                         </div>
                     </div>
+                </div>
+                <Container>
                     {/* level choice */}
                     <div className="max-w-[1000px] mx-auto my-5 text-[var(--text-color)] bg-[var(--movies-bg)] rounded-4 py-3 flex flex-col">
                         <h3 className="text-center mb-4 font-[Kanit]">Sözlərin çətinlik səviyyəsini seçin</h3>
@@ -122,7 +120,7 @@ export default function MoviesDetail() {
                         .filter(Boolean)
                         .join(", ") || "Heç biri"}
                 </p> */}
-                    <div className="flex items-center justify-between my-3">
+                    <div className="flex items-center justify-between mt-3">
                         <div className="text-xl">1234 söz</div>
                         <div className="text-5xl font-['Kanit']">Sözlər</div>
                         <div className="my-3 relative flex justify-end">
@@ -141,7 +139,7 @@ export default function MoviesDetail() {
                     </div>
 
                     {/* table */}
-                    <div className="rounded  max-[750px]:overflow-x-scroll">
+                    <div className="rounded  max-[750px]:overflow-x-scroll py-3">
                         <table className="w-full rounded-5  whitespace-nowrap">
                             <tbody className="rounded-5">
                                 {
@@ -151,8 +149,8 @@ export default function MoviesDetail() {
                                                 <div className="p-2 bg-blue-600 absolute top-[-35%] z-index-2 text-sm text-white rounded-4">Səsləndirin</div>
                                                 <span className="cursor-pointer p-1"><HiSpeakerWave /></span>
                                             </td>
-                                            <td className="p-3" style={{textDecoration: value.isKnown ? "line-through" : "none"}}>{value.engword}</td>
-                                            <td className="p-3" style={{textDecoration: value.isKnown ? "line-through" : "none"}}>{value.azeword}</td>
+                                            <td className="p-3" style={{ textDecoration: value.isKnown ? "line-through" : "none" }}>{value.engword}</td>
+                                            <td className="p-3" style={{ textDecoration: value.isKnown ? "line-through" : "none" }}>{value.azeword}</td>
                                             <td className="p-3 text-3xl text-lime-400 hover-title relative">
                                                 {/* js kodu eger bilinenlerdedirse div ve span olmasa hecne */}
                                                 {/* <div className="p-2 bg-lime-400 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısındadır</div>
@@ -160,7 +158,7 @@ export default function MoviesDetail() {
                                             </td>
                                             {/* bilinenler siyahisindadisa icon gorunsun */}
                                             <td className="p-3 text-3xl relative hover-title flex">
-                                                {/* <div className="p-2 bg-red-600 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısından silin</div> */}
+                                                <div className="p-2 bg-pink-400 absolute top-[-50%] z-index-2 text-sm text-white rounded-4">Bilinənlər siyahısına <br /> əlavə edin</div>
                                                 <span onClick={() => underlineWord(value)} className="cursor-pointer p-1"><FaRegEye /></span>
                                             </td>
                                         </tr>

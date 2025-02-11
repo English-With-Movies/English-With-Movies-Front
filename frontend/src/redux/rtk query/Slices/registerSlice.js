@@ -2,24 +2,20 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const registerApi = createApi({
     reducerPath: 'registerApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://ravanguliyeff-001-site1.ntempurl.com/api/user/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/user/' }),
     endpoints: (builder) => ({
         postRegister: builder.mutation({
             query: (newUser) => ({
                 url: `register`,
                 method: 'POST',
-                body: newUser,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
+                body: newUser
             })
         }),
         postLogin: builder.mutation({
             query: (userLogin) => ({
                 url: `login`,
                 method: 'POST',
-                body: userLogin,
+                body:userLogin,
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'

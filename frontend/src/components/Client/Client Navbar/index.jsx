@@ -19,17 +19,6 @@ export default function UserNavbar() {
         barsRef.current.classList.toggle("handleBars")
     }
 
-    // useEffect(() => {
-    //     document.addEventListener("click", () => {
-    //         if (!hiddenRef.current.classList.contains("handleBars")) {
-    //             hiddenRef.current.classList.add("handleBars")
-    //         }
-    //         if (!barsRef.current.classList.contains("handleBars")) {
-    //             barsRef.current.classList.add("handleBars")
-    //         }
-    //     });
-    // })
-
     useEffect(() => {
         const handleClick = () => {
             if (!hiddenRef.current.classList.contains("handleBars")) {
@@ -39,17 +28,14 @@ export default function UserNavbar() {
                 barsRef.current.classList.add("handleBars");
             }
         };
-
         document.addEventListener("click", handleClick);
-
-        // Cleanup function
         return () => {
             document.removeEventListener("click", handleClick);
         };
     }, []);
 
     return (
-        <div className="user-navbar bg-[var(--bg-color)] py-3 border-b-2">
+        <div className="user-navbar bg-[var(--bg-color)] py-3 border-b-2 fixed w-full top-0 left-0 z-20">
             <Container>
                 <div className="navbar-wrapper flex items-center justify-between">
                     <div className="links flex items-center relative">

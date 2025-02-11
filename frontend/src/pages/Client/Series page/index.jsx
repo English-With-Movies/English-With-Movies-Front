@@ -10,16 +10,21 @@ import { Helmet } from 'react-helmet';
 
 export default function SeriesPage() {
     let sortRef = useRef()
+    let genreRef = useRef()
 
     const handleFavorites = () => {
         // let findFavorites = favorites.find((fav) => fav.id == item.id)
+    }
+
+    const genreVisible = () => {
+        genreRef.current.classList.toggle("genreListVisible")
     }
     return (
         <>
             <Helmet>
                 <title>Seriallar</title>
             </Helmet>
-            <div className="series-page py-5 bg-[var(--bg-color)] text-white">
+            <div className="series-page py-3 bg-[var(--bg-color)] text-white mt-[103px]">
                 <Container>
                     {/* about */}
                     <div className="text-[var(--text-color)]">
@@ -40,7 +45,7 @@ export default function SeriesPage() {
                                     <button onClick={() => sortRef.current.classList.toggle("handleBars")} title='Sort' className='flex items-center justify-center text-xl px-3 py-1 rounded-5 hover:shadow-[0_0px_5px_0px_#fff]'>Sıralama: <TiArrowUnsorted /></button>
                                     <ul
                                         className='absolute top-[100%] rounded-4 bg-white text-black opacity-90 w-full 
-                            transition-all duration-200 ease-in shadow-[0_0px_10px_0px_#fff] handleBars'
+                            transition-all duration-200 ease-in handleBars'
                                         ref={sortRef}>
                                         <li data-value="1"
                                             className='hover:bg-[#91d1dec0] rounded-4 ml-[-32px] p-1 cursor-pointer'>Default</li>
@@ -62,35 +67,64 @@ export default function SeriesPage() {
                             </div>
                         </div>
                     </div>
-
-                    <div className='flex gap-2 flex-col md:grid md:grid-cols-[1fr_2fr] py-5'>
-                        <div>
-                            <div className='flex gap-2 items-center text-2xl text-[var(--text-color)]'><FaBarsStaggered /><h4> Janrına görə seriallar</h4></div>
-                            <div className='flex flex-wrap'>
-                                <div
-                                    className='bg-[var(--movies-bg)] text-[var(--text-color)] 
-                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxulu</div>
-                                <div
-                                    className='bg-[var(--movies-bg)] text-[var(--text-color)] 
-                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxulu</div>
-                                <div
-                                    className='bg-[var(--movies-bg)] text-[var(--text-color)] 
-                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxulu</div>
-                                <div
-                                    className='bg-[var(--movies-bg)] text-[var(--text-color)] 
-                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxulu</div>
-                                <div
-                                    className='bg-[var(--movies-bg)] text-[var(--text-color)] 
-                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxulu</div>
-                                <div
-                                    className='bg-[var(--movies-bg)] text-[var(--text-color)] 
-                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxulu</div>
-                                <div
-                                    className='bg-[var(--movies-bg)] text-[var(--text-color)] 
-                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxulu</div>
-                            </div>
+                    <div className='mt-3'>
+                        <div onClick={() => genreVisible()}
+                            className='flex gap-2 items-center text-2xl text-[var(--text-color)] cursor-pointer my-1 max-w-[260px]'><FaBarsStaggered /> <h4> Janrına görə seriallar</h4></div>
+                        <div ref={genreRef}
+                            className='flex flex-wrap genreListHidden'>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Drama</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Komediya</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Romantik</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Aksiyon</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Macəra</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Elmi-fantastika</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Qorxu</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Triller</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Fantaziya</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Cinayət</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Bioqrafiya</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Sənədli</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Musiqili</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Müharibə</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Ailə</div>
+                            <div
+                                className='bg-[var(--movies-bg)] text-[var(--text-color)] 
+                            px-2 py-1 text-lg font-semibold m-1 rounded-3 cursor-pointer'>Animasiya</div>
                         </div>
-                        <div className='grid grid-cols-2 min-[450px]:grid-cols-3 lg:grid-cols-4 gap-4 '>
+                    </div>
+
+                    <div>
+                        <div className='grid grid-cols-2 min-[450px]:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
                             <div className='relative film-hover'>
                                 <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" className='w-full h-full' />
                                 <div className='absolute top-0 w-full h-full '>
@@ -109,6 +143,25 @@ export default function SeriesPage() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* <div className='series-hover-effect'>
+                                <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" />
+                                <div className='about-serie'>
+                                    <div className='wrap'>
+                                        <h4>12 Angry Man</h4>
+                                        <div className='level'>KOLAY</div>
+                                        <div className='imdb-fav'>
+                                            <div>IMDB: 9.9</div>
+                                            <div
+                                                onClick={() => handleFavorites()}
+                                                className='fav-button'>
+                                                {favorites.find((fav) => fav.id === item.id) ? <FaHeart/> : <FaRegHeart />} 
+                                                <FaRegHeart />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*/}
                         </div>
                     </div>
                 </Container>

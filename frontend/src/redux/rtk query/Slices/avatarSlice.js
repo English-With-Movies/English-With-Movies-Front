@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const avatarApi = createApi({
     reducerPath: 'avatarApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://ravanguliyeff-001-site1.ntempurl.com/api/' }),
+    baseQuery: fetchBaseQuery({ baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/' }),
     endpoints: (builder) => ({
         getAllAvatar: builder.query({
             query: () => `avatar/getall`,

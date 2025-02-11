@@ -30,7 +30,7 @@ export default function SeriesDetail() {
                 <title>`{`series.name`}`</title>
             </Helmet>
 
-            <div className=" py-3 bg-[var(--bg-color)] text-white">
+            <div className=" py-3 bg-[var(--bg-color)] text-white mt-[103px]">
                 <Container>
                     <div className="text-[var(--text-color)]">
                         {/* banner */}

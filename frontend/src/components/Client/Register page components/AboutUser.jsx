@@ -34,7 +34,8 @@ let validationSchema = yup.object().shape({
 export default function AboutUser({ }) {
     let navigate = useNavigate()
     let { emailPassword } = useContext(registerContext)
-    let [postRegister, { data: postData, error: postError, isError: postIsError, isLoading: postIsLoading }] = usePostRegisterMutation()
+    let [postRegister, {data: postData, error: postError, isError: postIsError, isLoading: postIsLoading}] = usePostRegisterMutation()
+
     let [selectedAvatar, setSelectedAvatar] = useState(null);
     // avatar data
     let { data, isLoading, error, isError } = useGetAllAvatarQuery()
@@ -45,7 +46,7 @@ export default function AboutUser({ }) {
     }, [isLoading, data, isError]);
 
     if (isError) {
-        return <div className='my-5'>Error: {error.message}</div>;
+        return <div className='my-5'>Error: {error}</div>;
     }
 
     // permission modal
@@ -54,7 +55,7 @@ export default function AboutUser({ }) {
     const [showAvatar, setShowAvatar] = useState(false);
     // select image in user's images
     const fileInputRef = useRef(null);
-
+    
     const handleButtonClick = () => {
         fileInputRef.current.click();
     };
@@ -71,7 +72,6 @@ export default function AboutUser({ }) {
             alert("Zəhmət olmasa şəkil seçin");
         }
     };
-
     // page refresh warning 
     useEffect(() => {
         const handleBeforeUnload = (event) => {
@@ -100,7 +100,6 @@ export default function AboutUser({ }) {
                                 <h1 className='text-center text-[#06b6d4] font-["Dancing_Script"]'>Register</h1>
                                 {/* form */}
                                 <Formik
-                                    // level, bildiris mailleri qebul etme
                                     initialValues={
                                         {
                                             firstName: '',
@@ -116,31 +115,32 @@ export default function AboutUser({ }) {
                                     }
                                     validationSchema={validationSchema}
                                     onSubmit={async (values, { setSubmitting }) => {
-                                        let registerObj = {
-                                            UserName: values.userName,
-                                            FirstName: values.firstName,
-                                            LastName: values.lastName,
-                                            Email: emailPassword.email,
-                                            Password: emailPassword.password,
-                                            About: values.aboutUser,
-                                            LevelId: values.levelId,
-                                            LoginAfterRegister: values.loginAfterRegister,
-                                            AcceptMail: values.acceptMail,
-                                            AvatarId: typeof selectedAvatar !== "object" ? null : values.AvatarId,
-                                            AvatarImage: values.AvatarId ? null : selectedAvatar,
+                                        const formData = new FormData()
+                                        formData.append("UserName", values.userName);
+                                        formData.append("FirstName", values.firstName);
+                                        formData.append("LastName", values.lastName);
+                                        formData.append("Email", emailPassword.email);
+                                        formData.append("Password", emailPassword.password);
+                                        formData.append("About", values.aboutUser);
+                                        formData.append("LevelId", values.levelId);
+                                        formData.append("LoginAfterRegister", false); // values.loginAfterRegister
+                                        formData.append("AcceptMail", values.acceptMail);
+                                        formData.append("AvatarId", typeof selectedAvatar !== "object" ? null : values.AvatarId);
+                                        if (!values.AvatarId && selectedAvatar) {
+                                            formData.append("AvatarImage", selectedAvatar);
                                         }
-                                        console.log(registerObj);
-                                        console.log("Göndərilən obyekt:", JSON.stringify(registerObj, null, 2));
                                         if (values.checkbox) {
-                                            // try {
-                                            //     const response = await postRegister(registerObj).unwrap();
-                                            //     console.log("Registration successful:", response);
-
-                                            //     // Əgər əməliyyat uğurlu olarsa, məsələn, istifadəçini yönləndirmək
-                                            //     // history.push('/dashboard'); // (bu React Router üçün)
-                                            // } catch (error) {
-                                            //     console.log("Error during registration:", error);
-                                            // }
+                                            try {
+                                                const response = await postRegister(formData).unwrap();
+                                                console.log("Registration successful:", response);
+                                            } catch (error) {
+                                                console.error("Error during registration:", error);
+                                            }
+                                            if (values.loginAfterRegister) {
+                                                navigate("/")
+                                            } else {
+                                                navigate("/login")
+                                            }
                                         } else {
                                             alert("Şərtlərimiz ilə razılaşın")
                                             setSubmitting(false)

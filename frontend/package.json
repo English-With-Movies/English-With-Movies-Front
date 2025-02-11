@@ -17,6 +17,7 @@
     "@mui/styled-engine-sc": "^6.4.3",
     "@reduxjs/toolkit": "^2.5.1",
     "antd": "^5.23.4",
+    "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "chroma-js": "^3.1.2",
     "formik": "^2.4.6",

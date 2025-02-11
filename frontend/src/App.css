@@ -15,7 +15,7 @@
 :root {
   --bg-color: #fefff4;
   --text-color: #121212;
-  --movies-bg: #1a222c ;
+  --movies-bg: #1a222c;
 }
 
 body {
@@ -250,6 +250,7 @@ input[type="number"] {
   span {
     transition: all .5s ease;
   }
+
   &:hover {
     span {
       transform: rotate(720deg);
@@ -260,4 +261,118 @@ input[type="number"] {
 /* select option bg color */
 .ant-select-dropdown {
   background-color: #cfebff !important;
+}
+
+/* genre list */
+.genreListHidden {
+  max-height: 0;
+  visibility: hidden;
+  opacity: 0;
+  transition: max-height .5s ease, opacity .5s ease, visibility 0s linear .5s;
+  margin-bottom: 20px;
+}
+
+.genreListVisible {
+  max-height: 1000px;
+  visibility: visible;
+  opacity: 1;
+  transition: max-height 1.5s ease, opacity 1.5s ease, visibility 0s;
+}
+
+
+.series-hover-effect {
+  position: relative;
+
+  &:hover .about-serie {
+    transform: rotateY(0);
+    overflow: visible;
+    width: 100%;
+    height: 100%;
+  }
+
+  .about-serie {
+    transform: rotateY(180deg);
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    .wrap {
+      height: 100%;
+      width: 100%;
+
+      /* z-index: 2; */
+      background-color: #819dc5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      /* position: relative; */
+      h4 {}
+
+      .level {}
+
+      .imdb-fav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+
+        .fav-button {}
+      }
+    }
+  }
+}
+
+
+.CategoryCard {
+  perspective: 999px;
+  width: 200px;
+  height: 300px;
+  border-radius: 15px;
+
+  .card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform .8s;
+
+    .text {
+      position: absolute;
+      color: #fefff4;
+      background-color: rgba(95, 94, 74, 0.8);
+      width: 100%;
+      padding: 10px 0;
+      font-size: 20px;
+      top: 10%;
+    }
+
+    &:hover {
+      transform: rotateY(180deg);
+    }
+
+    .front-img,
+    .back-img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      backface-visibility: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        border-radius: 15px;
+      }
+    }
+
+    .back-img {
+      transform: rotateY(180deg);
+    }
+  }
 }

@@ -1,19 +1,10 @@
-import React, { useRef, useState } from 'react';
-// Import Swiper React components
+import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/effect-fade';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-
-// import './styles.css'  ;
-
-// import required modules
-import { EffectFade, Navigation, Pagination } from 'swiper/modules';
-
-
+import { EffectFade, Navigation, Pagination, Autoplay  } from 'swiper/modules';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Container from 'react-bootstrap/esm/Container';
 
@@ -28,8 +19,12 @@ export default function HomeSwipper() {
         pagination={{
           clickable: true,
         }}
-        modules={[EffectFade, Navigation, Pagination]}
-        className="mySwiper"
+        autoplay={{
+          delay: 2000,
+          disableOnInteraction: true,
+        }}
+        modules={[EffectFade, Navigation, Pagination, Autoplay]}
+        className="mySwiper z-0 mt-[103px]"
       >
         <SwiperSlide>
           <div className='h-full w-full bg-[var(--movies-bg)] py-3 flex items-center justify-center'>

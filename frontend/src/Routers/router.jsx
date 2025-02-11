@@ -1,4 +1,5 @@
 import AdminDashboard from "../pages/Admin/Admin Dashboard";
+import AdminNotFound from "../pages/Admin/Admin NotFound";
 import AdminLayout from "../pages/Admin/AdminLayout";
 import BlogPage from "../pages/Client/Blog page";
 import ClientLayout from "../pages/Client/ClientLayout";
@@ -91,8 +92,7 @@ const ROUTES = [
             {
                 path: "",
                 element: <AdminDashboard />,
-            },
-
+            }
         ]
 
     },

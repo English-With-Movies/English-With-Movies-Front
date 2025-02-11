@@ -26,7 +26,7 @@ export default function KnownWords() {
                 <title>Bilinən sözlər</title>
             </Helmet>
 
-            <div className=" py-3 bg-[var(--bg-color)] text-white">
+            <div className="py-3 bg-[var(--bg-color)] text-white">
                 <Container>
                     <h1 className="font-['Kanit']">Bilinən sözlər</h1>
                     {/* level choice */}
