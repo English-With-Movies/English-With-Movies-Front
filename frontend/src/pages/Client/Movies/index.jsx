@@ -142,17 +142,33 @@ export default function MoviesPage() {
                                 </div>
                             </div>*/}
 
-
-
-                            <div className="CategoryCard">
+                            <div className="card-hover w-[200px] h-[300px] rounded-[15px]">
                                 <div className="card">
                                     <div className="front-img">
-                                        <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" alt="" />
+                                        <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" />
                                     </div>
-                                    <div className="back-img">
+                                    <div className="back-card">
+                                        <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" />
                                         <div className="text">
                                             <span className='flex items-center justify-center mx-auto my-0 text-center font-semibold'> Night of the Day of the Dawn </span>
                                         </div>
+                                        {/* <div className='flex items-center'>
+                                            <span className='px-2 bg-yellow-300 text-black text-sm font-bold'>IMDb</span>
+                                            <span className='text-white font-bold'>1.0</span>
+                                        </div> */}
+                                        <div className='flex items-center justify-between w-full p-2 absolute bottom-0 left-0 '>
+                                            <div className='bg-lime-500 px-2 text-white rounded'>Səviyyə</div>
+                                            <div
+                                                onClick={() => handleFavorites()}
+                                                className='text-red-500 text-2xl cursor-pointer'>
+                                                {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart /> : <FaRegHeart />} */}
+                                                <FaRegHeart />
+                                            </div>
+                                        </div>
+                                        {/* <div className='flex items-center'>
+                                            <span className='px-2 bg-yellow-300 text-black text-sm font-bold'>IMDb</span>
+                                            <span className='text-white font-bold'>1.0</span>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>

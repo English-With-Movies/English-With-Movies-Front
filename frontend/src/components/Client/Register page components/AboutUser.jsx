@@ -10,6 +10,7 @@ import { FaPlus } from "react-icons/fa";
 import SelectLevel from './SelectLevel';
 import { useGetAllAvatarQuery } from '../../../redux/rtk query/Slices/avatarSlice';
 import { usePostRegisterMutation } from '../../../redux/rtk query/Slices/registerSlice';
+import LoaderIcon from '../../Loaders/Loader';
 
 let validationSchema = yup.object().shape({
     firstName: yup.string()
@@ -34,11 +35,18 @@ let validationSchema = yup.object().shape({
 export default function AboutUser({ }) {
     let navigate = useNavigate()
     let { emailPassword } = useContext(registerContext)
-    let [postRegister, {data: postData, error: postError, isError: postIsError, isLoading: postIsLoading}] = usePostRegisterMutation()
+    let [postRegister, { data: postData, error: postError, isError: postIsError, isLoading: postIsLoading }] = usePostRegisterMutation()
 
     let [selectedAvatar, setSelectedAvatar] = useState(null);
+    let [binnaryAvatar, setBinnaryAvatar] = useState(null);
     // avatar data
     let { data, isLoading, error, isError } = useGetAllAvatarQuery()
+    console.log(data);
+
+    let [registerError, setRegisterError] = useState("")
+
+    // console.log(data);
+
     useEffect(() => {
         if (!isLoading && !isError && data?.length > 0) {
             setSelectedAvatar(data[0]);
@@ -55,13 +63,14 @@ export default function AboutUser({ }) {
     const [showAvatar, setShowAvatar] = useState(false);
     // select image in user's images
     const fileInputRef = useRef(null);
-    
+
     const handleButtonClick = () => {
         fileInputRef.current.click();
     };
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file && file.type.startsWith("image/")) {
+            setBinnaryAvatar(file)
             const reader = new FileReader();
             reader.onload = (e) => {
                 setSelectedAvatar(e.target.result);
@@ -91,7 +100,7 @@ export default function AboutUser({ }) {
         <>
             {
                 isLoading ? (
-                    <>...loading</>
+                    <LoaderIcon />
                 ) : (
                     <div className='bg-[var(--bg-color)] text-[var(--text-color)] mt-[103px]'>
                         <Container>
@@ -115,7 +124,7 @@ export default function AboutUser({ }) {
                                     }
                                     validationSchema={validationSchema}
                                     onSubmit={async (values, { setSubmitting }) => {
-                                        const formData = new FormData()
+                                        let formData = new FormData()
                                         formData.append("UserName", values.userName);
                                         formData.append("FirstName", values.firstName);
                                         formData.append("LastName", values.lastName);
@@ -123,21 +132,31 @@ export default function AboutUser({ }) {
                                         formData.append("Password", emailPassword.password);
                                         formData.append("About", values.aboutUser);
                                         formData.append("LevelId", values.levelId);
-                                        formData.append("LoginAfterRegister", false); // values.loginAfterRegister
+                                        formData.append("LoginAfterRegister", values.loginAfterRegister);
                                         formData.append("AcceptMail", values.acceptMail);
-                                        formData.append("AvatarId", typeof selectedAvatar !== "object" ? null : values.AvatarId);
-                                        if (!values.AvatarId && selectedAvatar) {
-                                            formData.append("AvatarImage", selectedAvatar);
+                                        if (binnaryAvatar === null) {
+                                            formData.append("AvatarId", values.AvatarId);
+                                        } else {
+                                            formData.append("AvatarImage", binnaryAvatar);
                                         }
                                         if (values.checkbox) {
+                                            console.log(...formData);
+                                            console.log(binnaryAvatar);
+                                            console.log(selectedAvatar);
+                                            console.log(values.AvatarId);
                                             try {
-                                                const response = await postRegister(formData).unwrap();
-                                                console.log("Registration successful:", response);
+                                                const response = await postRegister(formData);
+                                                if (response.data) {
+                                                    console.log("what");
+                                                }
+                                                if (response.error) {
+                                                    setRegisterError("❌ " + response.error.data)
+                                                }
                                             } catch (error) {
-                                                console.error("Error during registration:", error);
+                                                console.error("Error during registration:", error?.response?.status);
                                             }
                                             if (values.loginAfterRegister) {
-                                                navigate("/")
+                                                // token yaratmalidi
                                             } else {
                                                 navigate("/login")
                                             }
@@ -150,7 +169,6 @@ export default function AboutUser({ }) {
                                     {({ isSubmitting, setFieldValue }) => (
                                         <>
                                             {
-                                                // hər dəfə avatar dəyişəndə dəyişikliyi yadda saxlasın deyə
                                                 useEffect(() => {
                                                     setFieldValue("AvatarId", selectedAvatar?.id);
                                                 }, [selectedAvatar])
@@ -234,7 +252,7 @@ export default function AboutUser({ }) {
                                                             className='text-blue-400'>Şərtlərimizi</span> qəbul edirsiz mi?
                                                     </label>
                                                 </div>
-
+                                                <div>{registerError}</div>
                                                 <div className='flex items-center justify-center'>
                                                     <button type="submit" disabled={isSubmitting}
                                                         className="max-w-[200px] text-xl font-semibold
@@ -245,7 +263,7 @@ export default function AboutUser({ }) {
                                                     </button>
                                                 </div>
                                             </Form>
-                                            {postIsError && <div>Error: {postError?.message}</div>}
+                                            {/* {postIsError && <div>Error: {postError?.message}</div>} */}
                                             {postData && <div>Registration Successful!</div>}
                                         </>
 
@@ -286,8 +304,8 @@ export default function AboutUser({ }) {
                                                 <div
                                                     onClick={handleButtonClick}
                                                     className="w-[100px] h-[100px] rounded-[50%] hover:opacity-60
-                                        flex items-center justify-center text-gray-300 text-3xl text-center
-                                        transition-all duration-200 ease-in cursor-pointer"
+                                                    flex items-center justify-center text-gray-300 text-3xl text-center
+                                                    transition-all duration-200 ease-in cursor-pointer"
                                                     style={{
                                                         backgroundSize: "cover",
                                                         backgroundPosition: "center",
@@ -305,21 +323,21 @@ export default function AboutUser({ }) {
                                             </div>
 
                                             {data.map((avatar, index) => (
-                                                <img
-                                                    key={index}
-                                                    src={`https://englishwithmovies.blob.core.windows.net/avatar/` + avatar.imgName}
-                                                    alt={`Avatar ${index + 1}`}
-                                                    className={`w-20 h-20 rounded-full cursor-pointer border-3 ${selectedAvatar?.imgName === avatar.imgName ? "border-blue-500" : "border-transparent"
-                                                        }`}
-                                                    onClick={() => { setSelectedAvatar(avatar); setShowAvatar(false); }}
-                                                />
+                                                !avatar.isCustom ? (
+                                                    <img
+                                                        key={index}
+                                                        src={`https://englishwithmovies.blob.core.windows.net/avatar/` + avatar.imgName}
+                                                        alt={`Avatar ${index + 1}`}
+                                                        className={`w-20 h-20 rounded-full cursor-pointer border-3 ${selectedAvatar?.imgName === avatar.imgName ? "border-blue-500" : "border-transparent"
+                                                            }`}
+                                                        onClick={() => { setSelectedAvatar(avatar); setShowAvatar(false); }}
+                                                    />
+                                                ) : (<></>)
                                             ))}
                                         </>
                                     </div>
                                 </Modal.Body>
                             </Modal>
-
-
                             {/* Modal terms */}
                             <Modal
                                 show={show}

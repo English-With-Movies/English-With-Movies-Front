@@ -15,11 +15,7 @@ export const registerApi = createApi({
             query: (userLogin) => ({
                 url: `login`,
                 method: 'POST',
-                body:userLogin,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
+                body:userLogin
             })
         })
     }),

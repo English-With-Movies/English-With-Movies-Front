@@ -4,13 +4,16 @@ import ThemeProvider from './context/ThemeContext.jsx'
 import RegisterProvider from './context/RegisterContext.jsx'
 import { Provider } from 'react-redux'
 import { store } from './redux/rtk query/store.js'
+import UserInfo from './context/UserInfo.jsx'
 
 createRoot(document.getElementById('root')).render(
-    <RegisterProvider>
-        <ThemeProvider>
-            <Provider store={store}>
-                <App />
-            </Provider>
-        </ThemeProvider>
-    </RegisterProvider>
+    <UserInfo>
+        <RegisterProvider>
+            <ThemeProvider>
+                <Provider store={store}>
+                    <App />
+                </Provider>
+            </ThemeProvider>
+        </RegisterProvider>
+    </UserInfo>
 )

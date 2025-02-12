@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from 'react-router';
 import { FaRegEye } from "react-icons/fa";
 import { Helmet } from 'react-helmet';
+import { usePostLoginMutation } from '../../../redux/rtk query/Slices/registerSlice';
 
 let validationSchema = yup.object().shape({
     email: yup.string().email().required(),
@@ -14,9 +15,8 @@ let validationSchema = yup.object().shape({
 export default function LoginFirstPart({ setPage }) {
     let navigate = useNavigate()
     let passwordRef = useRef()
-
-    let emailTest = 'serqi@gmail.com'
-    let passwordTest = 'serqi'
+    let [loginError, setLoginError] = useState("")
+    let [postLogin] = usePostLoginMutation()
 
     const typeChange = () => {
         if (passwordRef.current.type !== "text") {
@@ -31,7 +31,7 @@ export default function LoginFirstPart({ setPage }) {
             <Helmet>
                 <title>Login</title>
             </Helmet>
-            <div className='bg-[var(--bg-color)] text-[var(--text-color)]'>
+            <div className='bg-[var(--bg-color)] text-[var(--text-color)] pt-[103px]'>
                 <Container>
                     <div className='py-5 max-w-[500px] my-0 mx-auto'>
                         {/* title */}
@@ -41,20 +41,32 @@ export default function LoginFirstPart({ setPage }) {
                             // remember me
                             initialValues={{ email: '', password: '' }}
                             validationSchema={validationSchema}
-                            onSubmit={(values, { setSubmitting }) => {
+                            onSubmit={async (values, { setSubmitting }) => {
                                 // console.log(values);
-                                if (emailTest == values.email && passwordTest == values.password) {
-                                    console.log("malades");
-                                } else {
-                                    alert("İstifadəçi məlumatları səhvdir.")
-                                    setSubmitting(false)
+                                let formData = new FormData()
+                                formData.append("EmailOrUserName", values.email);
+                                formData.append("Password", values.password);
+                                formData.append("RememberMe", false);
+                                try {
+                                    const response = await postLogin(formData);
+                                    // console.log("Raw response:", response);
+                                    if (response.data) {
+                                        localStorage.setItem("token", response.data.token);
+                                        localStorage.setItem("expiration", response.data.expiration);
+                                        window.location.href = "/"
+                                    }
+                                    if (response.error) {
+                                        setLoginError("❌ " + response.error.data)
+                                    }
+                                } catch (error) {
+                                    console.error("Login xətası:", error);
                                 }
                             }}
                         >
                             {({ isSubmitting }) => (
                                 <Form>
                                     <label htmlFor="email" className='mt-4 text-xl'>E-mail: </label>
-                                    <Field type="email" name="email"
+                                    <Field type="text" name="email"
                                         placeholder='Enter your email or username'
                                         className="focus:outline-none 
                                         focus:shadow-[0_0px_200px_0px_#06b6d4] 
@@ -72,7 +84,7 @@ export default function LoginFirstPart({ setPage }) {
                                             className='absolute right-[20px] top-[37%] text-xl cursor-pointer'><FaRegEye /></span>
                                     </div>
                                     <ErrorMessage name="password" component="div" />
-
+                                    <div className='text-red-500 font-semibold mt-1'>{loginError}</div>
                                     <div className='flex items-center justify-center'>
                                         <button type="submit" disabled={isSubmitting}
                                             className="max-w-[200px] text-xl font-semibold

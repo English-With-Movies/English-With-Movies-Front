@@ -1,15 +1,16 @@
 import Container from 'react-bootstrap/Container';
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircleUser } from "react-icons/fa6";
 import ThemeButton from '../Theme Button';
 import FilmLogo from "../../../assets/logo.png"
-import { useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { FaBars } from "react-icons/fa6";
+import { userInfoContext } from '../../../context/UserInfo';
 
 export default function UserNavbar() {
     let hiddenRef = useRef()
     let barsRef = useRef()
-
+    let navigate = useNavigate()
     const handleDisplay = (e) => {
         e.stopPropagation()
         hiddenRef.current.classList.toggle("handleBars")
@@ -17,6 +18,15 @@ export default function UserNavbar() {
     const handleBars = (e) => {
         e.stopPropagation()
         barsRef.current.classList.toggle("handleBars")
+    }
+    let { userInfo, setUserInfo } = useContext(userInfoContext)
+    console.log(userInfo);
+    
+    const logOut = () => {
+        localStorage.removeItem("token")
+        localStorage.removeItem("expiration")
+        setUserInfo({})
+        navigate("/")
     }
 
     useEffect(() => {
@@ -135,33 +145,53 @@ export default function UserNavbar() {
                                 onClick={(e) => handleDisplay(e)}
                                 className='user-logo text-cyan-500 text-3xl cursor-pointer'><FaCircleUser /></div>
                             <div ref={hiddenRef} className='py-2 absolute top-[120%] shadow-[0_8px_24px_rgba(149,157,165,0.1)] bg-[var(--bg-color)] z-10 w-[150px] rounded-4 transition-all ease-in duration-200 handleBars'>
-                                <NavLink
-                                    to="/login"
-                                    className="no-underline font-['PT_Serif']"
-                                    style={({ isActive }) => {
-                                        return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
-                                    }}
-                                >
-                                    <span className='text-lg px-3'>Login </span>
-                                </NavLink>
-                                <div className='h-[2px] w-full bg-black'></div>
-                                <NavLink
-                                    to="/register"
-                                    className="no-underline font-['PT_Serif']"
-                                    style={({ isActive }) => {
-                                        return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
-                                    }}
-                                >
-                                    <span className='text-lg px-3'>Register </span>
-                                </NavLink>
+                                {
+                                    Object.keys(userInfo).length ? (
+                                        <>
+                                            <NavLink
+                                                to="/my-profile"
+                                                className="no-underline font-['PT_Serif']"
+                                                style={({ isActive }) => {
+                                                    return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
+                                                }}
+                                            >
+                                                <span className='text-lg px-3'>Profilim </span>
+                                            </NavLink>
+                                            <div className='h-[2px] w-full bg-black'></div>
+                                            <span onClick={() => logOut()} className='cursor-pointer text-lg px-3 text-[var(--text-color)] font-["PT_Serif"]'>Çıxış et </span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <NavLink
+                                                to="/login"
+                                                className="no-underline font-['PT_Serif']"
+                                                style={({ isActive }) => {
+                                                    return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
+                                                }}
+                                            >
+                                                <span className='text-lg px-3'>Login </span>
+                                            </NavLink>
+                                            <div className='h-[2px] w-full bg-black'></div>
+                                            <NavLink
+                                                to="/register"
+                                                className="no-underline font-['PT_Serif']"
+                                                style={({ isActive }) => {
+                                                    return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
+                                                }}
+                                            >
+                                                <span className='text-lg px-3'>Register </span>
+                                            </NavLink>
+                                        </>
+                                    )
+                                }
                             </div>
                         </div>
                         <div className="theme-button">
                             <ThemeButton />
                         </div>
                     </div>
-                </div>
-            </Container>
-        </div>
+                </div >
+            </Container >
+        </div >
     )
 }

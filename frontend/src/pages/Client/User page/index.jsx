@@ -3,16 +3,20 @@ import Cup from '../../../assets/trophy.png'
 import Calcifer from '../../../assets/calcifer-streak1.png'
 import { useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet';
+import { userInfoContext } from '../../../context/UserInfo';
+import { useContext } from 'react';
 
 export default function UserProfile() {
     let navigate = useNavigate()
+    let { userInfo } = useContext(userInfoContext)
+    console.log(userInfo);
 
     return (
         <>
             <Helmet>
                 <title>Profilim</title>
             </Helmet>
-            <div className='user-profile py-5 bg-[var(--bg-color)] text-[var(--text-color)]'>
+            <div className='user-profile bg-[var(--bg-color)] text-[var(--text-color)] pt-[130px] pb-[30px]'>
                 <Container>
                     <div className='grid grid-cols-[1fr_2fr_2fr] gap-[50px]'>
                         <div>
@@ -23,8 +27,10 @@ export default function UserProfile() {
                                 onClick={() => navigate('/premium')}
                                 className='cursor-pointer p-3 rounded-4 transition-all duration-200 ease-in flex items-center justify-center
                             hover:shadow-[0_0px_20px_0px_yellow] cursor-pointer my-2 bg-[var(--movies-bg)]'>PREMİUM OL!</h4>
-                            <h5>Sülüman</h5>
+                            <h5>{userInfo.userName}</h5>
+                            {/* <h5>{userInfo.firstName} {userInfo.lastName}</h5> */}
                             <h5>Sebastian Szymanski</h5>
+                            {/* <div>{userInfo.aboutUser}</div> */}
                             <div>
                                 about about about about about about about about about about about about about about about about about about about about about
                             </div>

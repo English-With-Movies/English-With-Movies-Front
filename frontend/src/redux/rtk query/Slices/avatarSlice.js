@@ -14,7 +14,7 @@ export const avatarApi = createApi({
             query: (id) => ({
                 url: `avatar/delete/${id}`,
                 method: 'DELETE'
-            }),
+            })
         }),
         postAvatar: builder.mutation({
             query: (newAvatar) => ({
