@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from 'react-router';
 import { registerContext } from '../../../context/RegisterContext';
+import { FaRegEye } from 'react-icons/fa';
 
 //  name surname username email password profilephoto 
 let validationSchema = yup.object().shape({
@@ -23,6 +24,24 @@ export default function EmailAndPassword({ setPage }) {
     let navigate = useNavigate()
     let { emailPassword, setEmailPassword } = useContext(registerContext)
     // console.log(emailPassword);
+    let passwordRef = useRef()
+    let confirmRef = useRef()
+
+    const typeChange = () => {
+        if (passwordRef.current.type !== "text") {
+            passwordRef.current.type = "text"
+        } else {
+            passwordRef.current.type = "password"
+        }
+    }
+
+    const typeChangeConfirm = () => {
+        if (confirmRef.current.type !== "text") {
+            confirmRef.current.type = "text"
+        } else {
+            confirmRef.current.type = "password"
+        }
+    }
 
     return (
         <>
@@ -55,17 +74,27 @@ export default function EmailAndPassword({ setPage }) {
                                     <ErrorMessage name="email" component="div" />
 
                                     <label htmlFor="password" className='mt-4 text-xl'>Password: </label>
-                                    <Field type="password" name="password"
-                                        placeholder='Enter your password'
-                                        className="focus:outline-none 
-                                        focus:shadow-[0_0px_200px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
+                                    <div className="relative flex">
+                                        <Field type="password" name="password"
+                                            placeholder='Enter your password'
+                                            className="focus:outline-none 
+                                            focus:shadow-[0_0px_200px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1" innerRef={passwordRef} />
+                                        <span
+                                            onClick={() => typeChange()}
+                                            className='absolute right-[20px] top-[37%] text-xl cursor-pointer'><FaRegEye /></span>
+                                    </div>
                                     <ErrorMessage name="password" component="div" />
 
                                     <label htmlFor="confirmPassword" className='mt-4 text-xl'>Confirm Password: </label>
-                                    <Field type="password" name="confirmPassword"
-                                        placeholder='Enter your password again'
-                                        className="focus:outline-none 
-                                        focus:shadow-[0_0px_200px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
+                                    <div className="relative flex">
+                                        <Field type="password" name="confirmPassword"
+                                            placeholder='Enter your password again'
+                                            className="focus:outline-none 
+                                            focus:shadow-[0_0px_200px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1" innerRef={confirmRef} />
+                                        <span
+                                            onClick={() => typeChangeConfirm()}
+                                            className='absolute right-[20px] top-[37%] text-xl cursor-pointer'><FaRegEye /></span>
+                                    </div>
                                     <ErrorMessage name="confirmPassword" component="div" />
 
                                     <div className='flex items-center justify-center'>

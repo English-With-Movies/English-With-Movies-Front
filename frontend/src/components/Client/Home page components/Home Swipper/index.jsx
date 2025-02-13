@@ -27,7 +27,7 @@ export default function HomeSwipper() {
         className="mySwiper z-0 mt-[103px]"
       >
         <SwiperSlide>
-          <div className='h-full w-full bg-[var(--movies-bg)] py-3 flex items-center justify-center'>
+          <div className='h-full w-full py-3 flex items-center justify-center bg-[var(--movies-bg)]'>
             <Container>
               <div>
                 <h1 className='font-["Kanit"] text-center text-[var(--text-color)]'>Filmlərə baxmaq üçün ingiliscə öyrənmək istəyirsiz mi?</h1>

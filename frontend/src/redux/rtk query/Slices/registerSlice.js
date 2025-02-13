@@ -15,7 +15,7 @@ export const registerApi = createApi({
             query: (userLogin) => ({
                 url: `login`,
                 method: 'POST',
-                body:userLogin
+                body: userLogin
             })
         })
     }),

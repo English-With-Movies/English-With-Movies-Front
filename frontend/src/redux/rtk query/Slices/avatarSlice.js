@@ -20,25 +20,17 @@ export const avatarApi = createApi({
             query: (newAvatar) => ({
                 url: `avatar/create`,
                 method: 'POST',
-                body: newAvatar,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
+                body: newAvatar
             }),
         }),
-        updatePost: builder.mutation({
-            query(data) {
-                const { id, ...body } = data
-                return {
-                    url: `categories/${id}`,
-                    method: 'PUT',
-                    body,
-                }
-            },
-            invalidatesTags: (result, error, { id }) => [{ type: 'Posts', id }],
+        updatePostAvatar: builder.mutation({
+            query: (updateAvatar) => ({
+                url: `avatar/update`,
+                method: 'POST',
+                body: updateAvatar
+            }),
         }),
     }),
 })
 
-export const { useGetAllAvatarQuery, useGetByIdAvatarQuery, useDeleteAvatarMutation, usePostAvatarMutation, useUpdatePostMutation } = avatarApi
+export const { useGetAllAvatarQuery, useGetByIdAvatarQuery, useDeleteAvatarMutation, usePostAvatarMutation, useUpdatePostAvatarMutation } = avatarApi

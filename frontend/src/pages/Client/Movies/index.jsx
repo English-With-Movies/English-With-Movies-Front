@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import { TiArrowUnsorted } from "react-icons/ti";
 import { MdOutlineArrowDownward, MdOutlineArrowUpward } from "react-icons/md";
@@ -6,10 +6,18 @@ import { FaBarsStaggered } from "react-icons/fa6";
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import { Helmet } from 'react-helmet';
+import { useGetAllMoviesQuery } from '../../../redux/rtk query/Slices/moviesSlice';
+import premiumIcon from "../../../assets/premium-icon.png"
+import { useGetAllLevelQuery } from '../../../redux/rtk query/Slices/levelSlice';
+
 
 export default function MoviesPage() {
     let sortRef = useRef()
     let genreRef = useRef()
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [])
 
     const handleFavorites = () => {
         // let findFavorites = favorites.find((fav) => fav.id == item.id)
@@ -17,6 +25,19 @@ export default function MoviesPage() {
     const genreVisible = () => {
         genreRef.current.classList.toggle("genreListVisible")
     }
+
+    let { data: allData, isLoading, isError, error } = useGetAllMoviesQuery()
+    console.log(allData);
+    let { data: levelData, isLoading: levelIsLoading } = useGetAllLevelQuery()
+    let [movieLevel, setMovieLevel] = useState()
+    useEffect(() => {
+        if (!isLoading && !levelIsLoading) {
+            setMovieLevel(levelData.find((level) => level.id == allData.levelId))
+        }
+    }, [isLoading, levelIsLoading])
+    console.log(movieLevel);
+
+
     return (
         <>
             <Helmet>
@@ -122,56 +143,54 @@ export default function MoviesPage() {
                     </div>
 
                     <div>
-                        <div className='grid grid-cols-2 min-[450px]:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4'>
-                            {/*  <div className='relative film-hover'>
-                                <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" className='w-full h-full' />
-                                <div className='absolute top-0 w-full h-full '>
-                                    <div className='w-full flex items-center justify-center hover-about'>
-                                        <h4 className='text-center'>12 Angry Man</h4>
-                                        <div className='m-2 absolute top-0 left-0'>KOLAY</div>
-                                        <div className='m-2 w-full absolute bottom-0 flex items-center justify-between'>
-                                            <div>IMDB: 9.9</div>
-                                            <div
-                                                onClick={() => handleFavorites()}
-                                                className='text-red-500 text-2xl cursor-pointer'>
-                                                {favorites.find((fav) => fav.id === item.id) ? <FaHeart/> : <FaRegHeart />} 
-                                                <FaRegHeart />
+                        <div className='grid xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 items-center justify-center'>
+                            {
+                                allData?.map((film, index) => (
+                                    film.isFilm ? (
+                                        <div key={film.id} onClick={() => navigate(`/movies/${film.id}`)}
+                                            className={`card-hover max-w-[200px] h-[300px] rounded-[15px] max-[450px]:h-[230px]
+                                                ${index == 1 ? 'hidden md:block' : ''}
+                                                ${index == 3 ? 'block lg:hidden xl:block' : ''}  
+                                                ${index == 4 ? 'hidden md:block lg:hidden' : ''}`}  >
+                                            <div className="card">
+                                                <div className="front-img">
+                                                    <div className='h-full w-full relative'>
+                                                        <img src={"https://englishwithmovies.blob.core.windows.net/movieposter/" + film.posterImgName} />
+                                                        <div className='absolute top-0 right-0 text-2xl w-[40px] h-[40px]'>{film.isPremiumFilm ? (
+                                                            <img className='w-full h-full' src={premiumIcon} alt="" />
+                                                        ) : ("")}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="back-card">
+                                                    <img src={"https://englishwithmovies.blob.core.windows.net/movieposter/" + film.posterImgName} />
+                                                    <div className="text">
+                                                        <span className='flex items-center justify-center mx-auto my-0 text-center font-semibold'>{film.name}</span>
+                                                    </div>
+                                                    <div className=' w-full p-2 absolute bottom-0 left-0 '>
+                                                        <div className='mb-1 px-2 bg-yellow-400 inline-block rounded'>
+                                                            <span className=' text-black text-sm font-bold font-["Kanit"]'>IMDb:</span>
+                                                            <span className='ml-1 text-white font-bold'>{film.imdb}</span>
+                                                        </div>
+                                                        <div className='flex items-center justify-between'>
+                                                            <span
+                                                                className={`px-2 font-['Kanit'] font-semibold text-white rounded
+                                                                ${film?.levelId == 1 ? "bg-lime-600" : film?.levelId == 2 ? "bg-blue-600" : film?.levelId == 3 ? "bg-orange-600" : film?.levelId == 4 ? "bg-purple-600" : film?.levelId == 5 ? "bg-red-600" : "bg-gray-600"}`}>
+                                                                {levelData?.find((data) => data.id == film.levelId).name}
+                                                            </span>
+                                                            <div
+                                                                onClick={() => handleFavorites()}
+                                                                className='text-red-500 text-2xl cursor-pointer'>
+                                                                {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart /> : <FaRegHeart />} */}
+                                                                <FaRegHeart />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>*/}
-
-                            <div className="card-hover w-[200px] h-[300px] rounded-[15px]">
-                                <div className="card">
-                                    <div className="front-img">
-                                        <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" />
-                                    </div>
-                                    <div className="back-card">
-                                        <img src="https://diziyleogren.com/img/12-angry-men.b952a9ef.jpg" />
-                                        <div className="text">
-                                            <span className='flex items-center justify-center mx-auto my-0 text-center font-semibold'> Night of the Day of the Dawn </span>
-                                        </div>
-                                        {/* <div className='flex items-center'>
-                                            <span className='px-2 bg-yellow-300 text-black text-sm font-bold'>IMDb</span>
-                                            <span className='text-white font-bold'>1.0</span>
-                                        </div> */}
-                                        <div className='flex items-center justify-between w-full p-2 absolute bottom-0 left-0 '>
-                                            <div className='bg-lime-500 px-2 text-white rounded'>Səviyyə</div>
-                                            <div
-                                                onClick={() => handleFavorites()}
-                                                className='text-red-500 text-2xl cursor-pointer'>
-                                                {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart /> : <FaRegHeart />} */}
-                                                <FaRegHeart />
-                                            </div>
-                                        </div>
-                                        {/* <div className='flex items-center'>
-                                            <span className='px-2 bg-yellow-300 text-black text-sm font-bold'>IMDb</span>
-                                            <span className='text-white font-bold'>1.0</span>
-                                        </div> */}
-                                    </div>
-                                </div>
-                            </div>
+                                    ) : null
+                                ))
+                            }
                         </div>
                     </div>
                 </Container>

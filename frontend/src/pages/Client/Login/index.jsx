@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LoginFirstPart from '../../../components/Client/Login page components/LoginPage';
 import ForgotPassword from '../../../components/Client/Login page components/ForgotPassword';
 import ConfirmPassword from '../../../components/Client/Login page components/ConfirmPassword';
@@ -6,7 +6,9 @@ import NewPassword from '../../../components/Client/Login page components/NewPas
 
 export default function LoginPage() {
     let [page, setPage] = useState("login-page")
-
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [])
 
     return (
         <>

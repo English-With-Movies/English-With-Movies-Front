@@ -36,7 +36,5 @@ export default function UserInfo({ children }) {
         }
     }, [userToken, userExpiration]);
 
-    console.log(userInfo);
-
     return <userInfoContext.Provider value={{ userInfo, setUserInfo }}>{children}</userInfoContext.Provider>
 }

@@ -141,24 +141,36 @@ export default function AboutUser({ }) {
                                         }
                                         if (values.checkbox) {
                                             console.log(...formData);
-                                            console.log(binnaryAvatar);
-                                            console.log(selectedAvatar);
-                                            console.log(values.AvatarId);
                                             try {
                                                 const response = await postRegister(formData);
+                                                console.log(response);
                                                 if (response.data) {
-                                                    console.log("what");
+                                                    if (values.loginAfterRegister) {
+                                                        // token yaratmalidi
+                                                    } else {
+                                                        navigate("/login")
+                                                    }
                                                 }
                                                 if (response.error) {
                                                     setRegisterError("❌ " + response.error.data)
                                                 }
                                             } catch (error) {
-                                                console.error("Error during registration:", error?.response?.status);
-                                            }
-                                            if (values.loginAfterRegister) {
-                                                // token yaratmalidi
-                                            } else {
-                                                navigate("/login")
+                                                if (error.response) {
+                                                    const { status, data, statusText } = error.response;
+                                                    console.error("Error Status Code:", status);  
+                                                    console.error("Error Message:", data);         
+                                                    console.error("Error Status Text:", statusText); 
+
+                                                    if (status === 400) {
+                                                        setRegisterError("❌ Bad request, check your input.");
+                                                    } else if (status === 404) {
+                                                        setRegisterError("❌ Endpoint not found.");
+                                                    } else if (status === 500) {
+                                                        setRegisterError("❌ Server error, please try again later.");
+                                                    }
+                                                } else {
+                                                    console.error("Unknown error:", error);
+                                                }
                                             }
                                         } else {
                                             alert("Şərtlərimiz ilə razılaşın")
@@ -231,25 +243,28 @@ export default function AboutUser({ }) {
                                                         w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
                                                 </div>
 
-                                                <div className='flex mt-4 text-lg'>
-                                                    <Field type="checkbox" name="loginAfterRegister" id='loginAfterRegister'
-                                                        className="mr-2 p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
-                                                    <label htmlFor="loginAfterRegister" className='cursor-pointer'>Birbaşa Login etmək istəyirsiz mi? </label>
+                                                <div className='flex items-center mt-4 text-lg checkbox-wrapper-19'>
+                                                    <Field type="checkbox" name="loginAfterRegister" id='cbtest-19'
+                                                        className="p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
+                                                    <label htmlFor="cbtest-19" className='check-box'></label>
+                                                    <label htmlFor="cbtest-19" className='cursor-pointer font-["PT_Serif"] ml-2'> Birbaşa Login etmək istəyirsiz mi? </label>
                                                 </div>
 
-                                                <div className='flex mt-1 text-lg'>
-                                                    <Field type="checkbox" name="acceptMail" id='acceptMail'
-                                                        className="mr-2 p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
-                                                    <label htmlFor="acceptMail" className='cursor-pointer'>Bildiriş maillərini qəbul edirsiniz mi? </label>
+                                                <div className='flex items-center checkbox-wrapper-19 mt-1 text-lg'>
+                                                    <Field type="checkbox" name="acceptMail" id='cbtest-19-1'
+                                                        className="p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
+                                                    <label htmlFor="cbtest-19-1" className='check-box'></label>
+                                                    <label htmlFor="cbtest-19-1" className='cursor-pointer ml-2'> Bildiriş maillərini qəbul edirsiniz mi? </label>
                                                 </div>
 
-                                                <div className='flex mt-1 text-lg'>
-                                                    <Field type="checkbox" name="checkbox" id='checkbox'
-                                                        className="mr-2 p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
-                                                    <label htmlFor="checkbox" className='cursor-pointer'>
+                                                <div className='flex items-center checkbox-wrapper-19 mt-1 text-lg'>
+                                                    <Field type="checkbox" name="checkbox" id='cbtest-19-2'
+                                                        className="p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
+                                                    <label htmlFor="cbtest-19-2" className='check-box'></label>
+                                                    <label htmlFor="cbtest-19-2" className='cursor-pointer ml-2'>
                                                         <span
                                                             onClick={() => setShow(true)}
-                                                            className='text-blue-400'>Şərtlərimizi</span> qəbul edirsiz mi?
+                                                            className='text-blue-400'> Şərtlərimizi</span> qəbul edirsiz mi?
                                                     </label>
                                                 </div>
                                                 <div>{registerError}</div>
@@ -263,10 +278,8 @@ export default function AboutUser({ }) {
                                                     </button>
                                                 </div>
                                             </Form>
-                                            {/* {postIsError && <div>Error: {postError?.message}</div>} */}
                                             {postData && <div>Registration Successful!</div>}
                                         </>
-
                                     )}
                                 </Formik>
                                 {/* or text */}
@@ -359,8 +372,8 @@ export default function AboutUser({ }) {
                                     <p>8 - sekizinci ve son kural, eğer bu dövüş kulübü’nde ilk gecenizse, dövüşmek zorundasınız.</p>
                                 </Modal.Body>
                             </Modal>
-                        </Container>
-                    </div>
+                        </Container >
+                    </div >
                 )
             }
 

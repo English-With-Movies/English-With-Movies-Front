@@ -11,14 +11,17 @@ export const levelApi = createApi({
             query: (newLevel) => ({
                 url: `level/create`,
                 method: 'POST',
-                body: newLevel,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
+                body: newLevel
             }),
-        })
+        }),
+        updatePostLevel: builder.mutation({
+            query: (updateLevel) => ({
+                url: `level/update`,
+                method: 'POST',
+                body: updateLevel
+            })
+        }),
     }),
 })
 
-export const { useGetAllLevelQuery, usePostLevelMutation } = levelApi
+export const { useGetAllLevelQuery, usePostLevelMutation, useUpdatePostLevelMutation } = levelApi

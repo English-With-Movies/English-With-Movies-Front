@@ -17,12 +17,7 @@ export default function ThemeButton() {
         );
         document.documentElement.style.setProperty(
             "--movies-bg",
-            darkMode ? "#1a222c" : '#e6f0fa'
-            // "#e3e3ff"'#cfddff'
-        );
-        document.documentElement.style.setProperty(
-            "--footer-bg",
-            darkMode ? 'url("https://t4.ftcdn.net/jpg/05/00/76/75/240_F_500767502_AdezwSUsyb04l79RpV6zubKulRnIHpd0.jpg")' : "url('https://img.freepik.com/free-vector/v915_53876-174949.jpg?t=st=1738614544~exp=1738618144~hmac=0742484dc742956972d4c6778d980ebb080fa55a13f08560c665a7204651b908&w=1380')"
+            darkMode ? "#1e2d3e" : '#e6f0fa'
         );
     }, [darkMode]);
 

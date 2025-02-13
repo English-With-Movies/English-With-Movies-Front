@@ -25,7 +25,6 @@
         width: 56px;
         height: 70px;
         background-color: #3D314A;
-        /* z-index: -1; */
 
         &:before,
         &:after {

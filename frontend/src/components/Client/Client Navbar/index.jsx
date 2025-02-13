@@ -20,7 +20,6 @@ export default function UserNavbar() {
         barsRef.current.classList.toggle("handleBars")
     }
     let { userInfo, setUserInfo } = useContext(userInfoContext)
-    console.log(userInfo);
     
     const logOut = () => {
         localStorage.removeItem("token")

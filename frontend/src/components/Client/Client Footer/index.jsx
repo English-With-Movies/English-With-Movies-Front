@@ -4,8 +4,30 @@ import { FaFacebook, FaXTwitter } from "react-icons/fa6";
 import { FaArrowUp, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { HiArrowLongUp } from "react-icons/hi2";
 import { BsArrowUp } from "react-icons/bs";
+import { useEffect, useRef } from 'react';
 
 export default function UserFooter() {
+    let upArrowRef = useRef()
+    // window.addEventListener("scroll" , () => {
+    //     if (window.scrollY < 530) {
+    //         upArrowRef.current.classList.add("hidden")
+    //     } else {
+    //         upArrowRef.current.classList.remove("hidden")
+    //     }
+    // })
+    useEffect(() => {
+        const handleScroll = () => {
+            if (!upArrowRef.current) return; // Əgər ref hələ bağlı deyilsə, kodu icra etmə
+            if (window.scrollY < 530) {
+                upArrowRef.current.classList.add("hidden");
+            } else {
+                upArrowRef.current.classList.remove("hidden");
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
     return (
         <div className="py-[70px] px-[30px] bg-no-repeat bg-cover bg-[var(--movies-bg)] text-[var(--text-color)] footer-bg">
             <div className='max-w-[900px] mx-auto my-0'>
@@ -58,7 +80,8 @@ export default function UserFooter() {
                 </div>
             </div>
             {/* fixed arrow */}
-            <div className='z-index-10 border-2 border-solid border-blue-500 p-5 fixed right-[5%] bottom-[3%] w-12 h-12 rounded-full items-center justify-center flex flex-col text-white cursor-pointer transition-all duration-250 ease-in hover:bg-blue-500/[.3] fixed-arrow'
+            <div ref={upArrowRef}
+                className='z-index-10 border-2 border-solid border-blue-500 p-[40px] fixed right-[5%] bottom-[3%] w-12 h-12 rounded-full items-center justify-center flex flex-col text-white cursor-pointer transition-all duration-250 ease-in hover:bg-blue-500/[.3] fixed-arrow hidden'
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <span className='text-3xl text-[var(--text-color)]'><BsArrowUp /></span>
             </div>

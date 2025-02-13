@@ -10,9 +10,7 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 
 export default function QuizPage() {
-    // asagida nece sual qalib gostersin buttonlarin rengi deyissin deaktiv olsun sehv olanda sad smaylik duz olanda happy smaylik ya da icon 
-    // div'lere 2ci defe tiklamak olmasin
-    // cavab secilende next, sentence, totalPoint --> hidden-visible
+    // asagida nece sual qalib gostersin buttonlarin rengi deyissin deaktiv olsun sehv olanda sad smaylik duz olanda happy smaylik ya da icon
 
     let [point, setPoint] = useState(170)
     let [totalPoint, setTotalPoint] = useState(0)
@@ -53,20 +51,18 @@ export default function QuizPage() {
     let [question, setQuestion] = useState(getRandomQuestion())
     let [options, setOptions] = useState([]);
     let [selectedOption, setSelectedOption] = useState(null);
-    const disableDiv = () => {
-        optionRefs.current.forEach((div) => {
-            div.classList.add("pointer-events-none", "opacity-90");
+
+    const disableButtons = (boolean) => {
+        optionRefs.current.forEach((btn) => {
+            if (btn) {
+                btn.disabled = boolean;
+            }
         });
     };
+    // console.log(optionRefs);
+
     // random question
     function getRandomQuestion() {
-        // const unusedQuestions = quizWords.filter(q => !usedQuestions.includes(q.word));
-        // console.log(unusedQuestions);
-        // if (unusedQuestions.length > 0) {
-        //     return unusedQuestions[Math.floor(Math.random() * unusedQuestions.length)];
-        // } else {
-        //     return null;
-        // }
         if (usedQuestions.length > 0) {
             return usedQuestions[Math.floor(Math.random() * usedQuestions.length)];
         } else {
@@ -85,10 +81,9 @@ export default function QuizPage() {
         setOptions(newOptions.sort(() => Math.random() - 0.5));
     }, [question]);
 
-    // disableDiv()
     const checkAnswer = (option) => {
+        disableButtons(true)
         setSelectedOption(option)
-        disableDiv()
         nextButtonRef.current.classList.remove("hidden")
         sentenceRef.current.classList.remove("hidden")
         if (option === question.meaning) {
@@ -99,11 +94,12 @@ export default function QuizPage() {
     }
     console.log(usedQuestions);
 
-    // console.log(totalPoint);
     const changeQuestion = () => {
+        disableButtons(false)
+
         setUsedQuestions((prevQuestions) => prevQuestions.filter((value) => value.word !== question.word))
         console.log(usedQuestions);
-        
+
         setSelectedOption(null)
         const newQuestion = getRandomQuestion();
         if (usedQuestions.length > 0) {
@@ -117,12 +113,6 @@ export default function QuizPage() {
             finishedRef.current.classList.remove("hidden")
         }
     }
-    // chooise answer disabled div
-    // useEffect(() => {
-    //     if (selectedOption) {
-    //         disableDiv();
-    //     }
-    // }, [selectedOption]);
 
     // point function
     useEffect(() => {
@@ -198,11 +188,14 @@ export default function QuizPage() {
                     <div className='flex flex-col gap-2 w-full'>
                         {
                             options.map((option, index) => (
-                                <div onClick={() => checkAnswer(option)} key={index} ref={(el) => (optionRefs.current[index] = el)}
+                                <button onClick={() => {
+                                    checkAnswer(option)
+                                }}
+                                    key={index} ref={(el) => (optionRefs.current[index] = el)}
                                     className={`rounded-5 py-1 text-center font-bold text-2xl font-["PT_Series"] cursor-pointer 
-                                    ${selectedOption ? option === question.meaning ? "bg-lime-500" : "bg-red-500" : "bg-gray-500"}`}>
+                                        ${selectedOption ? option === question.meaning ? "bg-lime-500" : "bg-red-500" : "bg-gray-500"}`}>
                                     {option}
-                                </div>
+                                </button>
                             ))
                         }
                     </div>
@@ -215,42 +208,15 @@ export default function QuizPage() {
                     <h1 className='font-["Kanit"]'>Test bitdi!</h1>
                     <button className='px-3 py-1 bg-blue-500 font-["Kanit"] rounded'>Sonlandır</button>
                     <p className='font-["Kanit"] text-lg'>Testi sonlandırmaq üçün düyməyə basın</p>
-                    <div>
-                        {/* <DotLottieReact
-                            src="https://lottie.host/d132469d-b8e1-4686-9c7e-e7da3a207aef/6Sd8T2EhyO.lottie"
-                            loop
-                            autoplay
-                        /> */}
-                        {/* <Lottie animationData='https://lottie.host/9ba86824-e626-41b1-95be-25180682551d/vt3h2YWuyi.json' loop autoplay style={{ width: 400, height: 400 }} /> */}
-
-                        {/* <DotLottieReact
-                            src="https://lottie.host/9ba86824-e626-41b1-95be-25180682551d/vt3h2YWuyi.json"
-                            loop
-                            autoplay
-                        /> */}
-                        {/* <DotLottieReact
-                            src="https://lottie.host/b9380d6d-965a-4b6f-901c-62a28b7385b6/QZIsy00JCk.lottie"
-                            loop
-                            autoplay
-                        /> */}
-                        {/* <DotLottieReact
-                            src="https://lottie.host/ed9f6416-a670-422c-b445-5168ae26bb65/cq6nhkEF0T.lottie"
-                            loop
-                            autoplay
-                        /> */}
+                    <div className='h-[180px]'>
                         <DotLottieReact
                             src="https://lottie.host/2c083beb-aeee-414f-8f7a-63a833a08609/6fozHSRYsB.lottie"
                             loop
                             autoplay
                         />
-                        {/* <DotLottieReact
-                            src="https://lottie.host/d132469d-b8e1-4686-9c7e-e7da3a207aef/6Sd8T2EhyO.lottie"
-                            loop
-                            autoplay
-                        /> */}
                     </div>
-                    <div>Topladığınız xal: {totalPoint}</div>
-                    <div>Testi sonlandırsaz topladığınız xal sizin ümumi xalınızın üzərinə gələcək</div>
+                    <div className='font-["Kanit"] text-lg'>Topladığınız xal: {totalPoint}</div>
+                    <div className='font-["Kanit"] text-sm'>Testi sonlandırsaz topladığınız xal sizin ümumi xalınızın üzərinə gələcək</div>
                 </div>
             </div>
 

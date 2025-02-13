@@ -39,23 +39,25 @@ export default function LoginFirstPart({ setPage }) {
                         {/* formik */}
                         <Formik
                             // remember me
-                            initialValues={{ email: '', password: '' }}
+                            initialValues={{ email: '', password: '', rememberMe: false }}
                             validationSchema={validationSchema}
                             onSubmit={async (values, { setSubmitting }) => {
-                                // console.log(values);
                                 let formData = new FormData()
                                 formData.append("EmailOrUserName", values.email);
                                 formData.append("Password", values.password);
-                                formData.append("RememberMe", false);
+                                formData.append("RememberMe", values.rememberMe);     
+                                // console.log(...formData);
+                                                           
                                 try {
                                     const response = await postLogin(formData);
-                                    // console.log("Raw response:", response);
                                     if (response.data) {
                                         localStorage.setItem("token", response.data.token);
                                         localStorage.setItem("expiration", response.data.expiration);
                                         window.location.href = "/"
                                     }
                                     if (response.error) {
+                                        console.log(response.error);
+                                        
                                         setLoginError("❌ " + response.error.data)
                                     }
                                 } catch (error) {
@@ -74,7 +76,7 @@ export default function LoginFirstPart({ setPage }) {
                                     <ErrorMessage name="email" component="div" />
 
                                     <label htmlFor="password" className='mt-4 text-xl'>Password: </label>
-                                    <div className='relative flex '>
+                                    <div className='relative flex'>
                                         <Field type="password" name="password"
                                             placeholder='Enter your password'
                                             className="focus:outline-none 
@@ -84,6 +86,12 @@ export default function LoginFirstPart({ setPage }) {
                                             className='absolute right-[20px] top-[37%] text-xl cursor-pointer'><FaRegEye /></span>
                                     </div>
                                     <ErrorMessage name="password" component="div" />
+                                    <div className='flex items-center mt-4 text-lg checkbox-wrapper-19'>
+                                        <Field type="checkbox" name="rememberMe" id='cbtest-19'
+                                            className=" p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
+                                        <label htmlFor="cbtest-19" className='check-box'></label>
+                                        <label htmlFor="cbtest-19" className='cursor-pointer font-["PT_Serif"] ml-2'> Xatırla məni</label>
+                                    </div>
                                     <div className='text-red-500 font-semibold mt-1'>{loginError}</div>
                                     <div className='flex items-center justify-center'>
                                         <button type="submit" disabled={isSubmitting}
