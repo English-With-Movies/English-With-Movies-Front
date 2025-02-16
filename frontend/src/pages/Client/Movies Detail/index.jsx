@@ -2,7 +2,7 @@ import Container from "react-bootstrap/esm/Container";
 import { Helmet } from "react-helmet";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { HiSpeakerWave } from "react-icons/hi2";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { ImBin } from "react-icons/im";
 import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { FaRegEye } from 'react-icons/fa';
@@ -11,32 +11,37 @@ import { useGetByIdMovieQuery } from "../../../redux/rtk query/Slices/moviesSlic
 import LoaderIcon from "../../../components/Loaders/Loader";
 import { useGetAllLevelQuery } from "../../../redux/rtk query/Slices/levelSlice";
 import premiumIcon from "../../../assets/premium-icon.png"
+import { useGetAllGenreQuery } from "../../../redux/rtk query/Slices/genreSlice";
+import { userInfoContext } from "../../../context/UserInfo";
+import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetFavoriteMoviesUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 
 export default function MoviesDetail() {
-    // seviyye levelbyid elemek olar onun id ile getirib seviyye name yazmaq olar 
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [])
     let { id } = useParams()
     let navigate = useNavigate()
+    let { userInfo } = useContext(userInfoContext)
+    let [addToFavoritesUser] = useAddToFavoritesUserMutation()
+    let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
+    let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
+
+    let [movieGenresName, setMovieGenresName] = useState()
+    // detail data
     let { data, isLoading, isError, error } = useGetByIdMovieQuery(id)
-    console.log(data);
+    let { data: allGenre, isLoading: genreLoading } = useGetAllGenreQuery()
 
     let { data: levelData, isLoading: levelIsLoading } = useGetAllLevelQuery()
     let [movieLevel, setMovieLevel] = useState()
     useEffect(() => {
         if (!isLoading && !levelIsLoading) {
-            setMovieLevel(levelData.find((level) => level.id == data.levelId))
+            setMovieLevel(levelData?.find((level) => level.id == data.levelId))
         }
     }, [isLoading, levelIsLoading])
 
-
-
-    // favorites add function
     const [checkboxStates, setCheckboxStates] = useState(
         Array.from({ length: 5 }).fill(false)
     );
-
-    useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [])
 
     const tableArray = [
         {
@@ -66,10 +71,36 @@ export default function MoviesDetail() {
     ]
 
     let sortWords = useRef()
-    // let lineThrough = useRef()
 
     const sortedWordsFunction = () => {
         sortWords.current.classList.toggle("handleBars")
+    }
+
+    const handleSortWords = (value) => {
+        if (value == 'a-z') {
+            let sortAZ = useStatedenGelenSozler.toSorted((a, b) => a.name.localeCompare(b.name))
+            // setuseStatedenGelenSozler(sortAz)
+        } else if (value == 'z-a') {
+            let sortZA = useStatedenGelenSozler.toSorted((a, b) => b.name.localeCompare(a.name))
+            // setuseStatedenGelenSozler(sortZA)
+        }
+    }
+
+    // add to fav
+    const handleFavorites = async (e, data) => {
+        e.stopPropagation();
+        if (userInfo.userId) {
+            let finded = userFavoritesArray?.find((fav) => fav.id === data.id)
+            if (finded) {
+                await deleteFromFavoritesUser({ userId: userInfo.userId, movieId: data.id });
+                userFavRefech()
+            } else {
+                await addToFavoritesUser({ userId: userInfo.userId, movieId: data.id });
+                userFavRefech()
+            }
+        } else {
+            navigate("/login")
+        }
     }
 
     const handleCheckboxChange = (index) => {
@@ -81,6 +112,22 @@ export default function MoviesDetail() {
     const underlineWord = (value) => {
         tableArray.map((element) => element.id == value.id ? { ...value, crossed: !value.isKnown } : value.isKnown)
     }
+
+    function getGenreNamesByMovieGenres(movieGenres, allGenres) {
+        return movieGenres
+            .map(movieGenre => {
+                const genre = allGenres?.find(genre => genre.id === movieGenre.genreId);
+                return genre ? genre.name : null;
+            })
+            .filter(name => name !== null);
+    }
+
+    useEffect(() => {
+        if (!genreLoading && !isLoading) {
+            const genreNames = getGenreNamesByMovieGenres(data.movieGenres, allGenre);
+            setMovieGenresName(genreNames);
+        }
+    }, [genreLoading, isLoading, data, allGenre]);
 
 
     return (
@@ -119,28 +166,23 @@ export default function MoviesDetail() {
                                     </div>
                                     <div>
                                         {
-                                            data.movieGenres.length ? (
-                                                data.movieGenres.map((genre) => {
-                                                    <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded">{genre}</span>
-                                                })
-                                            ) : (
-                                                <>
-                                                    {/* <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded text-white">genre</span>
-                                                    <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded text-white">genre</span>
-                                                    <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded text-white">genre</span>
-                                                    <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded text-white">genre</span> */}
-                                                </>
-                                            )
+                                            movieGenresName?.length ? (
+                                                movieGenresName?.map((genre, index) => (
+                                                    <span key={index} className="mx-1 font-['Kanit'] px-2 bg-gray-600 rounded text-white">
+                                                        {genre}
+                                                    </span>
+                                                ))
+                                            ) : ('')
                                         }
-
                                     </div>
                                     <div className="my-1 flex items-center">
                                         <div className="text-xl font-['Kanit'] mr-3"><span className="bg-yellow-300 text-black font-bold text-lg px-2 ">IMBd</span> {data.imdb}</div>
                                         <div
-                                            onClick={() => handleFavorites()}
-                                            className='text-red-500 text-2xl cursor-pointer'>
-                                            {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart/> : <FaRegHeart />} */}
-                                            <FaRegHeart />
+                                            onClick={(e) => handleFavorites(e, data)}
+                                            className='text-2xl cursor-pointer text-red-500'>
+                                            {
+                                                userFavoritesArray?.find((fav) => fav.id == data.id) ? <FaHeart /> : <FaRegHeart />
+                                            }
                                         </div>
                                     </div>
                                     <p>{data.description} </p>
@@ -175,16 +217,16 @@ export default function MoviesDetail() {
                 </p> */}
                             <div className="flex items-center justify-between mt-3">
                                 <div className="text-xl">1234 söz</div>
-                                <div className="text-5xl font-['Kanit']">Sözlər</div>
+                                <div className="text-4xl font-['Kanit']">Sözlər</div>
                                 <div className="my-3 relative flex justify-end">
                                     <span className="text-3xl cursor-pointer" onClick={() => sortedWordsFunction()}><FaBarsStaggered /></span>
                                     <ul
                                         className='absolute w-[100px] -top-4 rounded bg-white text-black opacity-90 
                                                 transition-all duration-200 ease-in right-10 handleBars'
                                         ref={sortWords}>
-                                        <li data-value="1"
+                                        <li data-value="1" onClick={() => handleSortWords('a-z')}
                                             className='hover:bg-[#91d1dec0] rounded ml-[-32px] p-1 cursor-pointer'>A-Z</li>
-                                        <li data-value="2"
+                                        <li data-value="2" onClick={() => handleSortWords('z-a')}
                                             className='hover:bg-[#91d1dec0] rounded ml-[-32px] p-1 cursor-pointer'>Z-A</li>
 
                                     </ul>
@@ -192,7 +234,7 @@ export default function MoviesDetail() {
                             </div>
 
                             {/* table */}
-                            <div className="rounded  max-[750px]:overflow-x-scroll py-3">
+                            <div className="rounded max-[750px]:overflow-x-scroll py-3">
                                 <table className="w-full rounded-5  whitespace-nowrap">
                                     <tbody className="rounded-5">
                                         {

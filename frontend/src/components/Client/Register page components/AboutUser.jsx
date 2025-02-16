@@ -63,7 +63,6 @@ export default function AboutUser({ }) {
     const [showAvatar, setShowAvatar] = useState(false);
     // select image in user's images
     const fileInputRef = useRef(null);
-
     const handleButtonClick = () => {
         fileInputRef.current.click();
     };
@@ -140,7 +139,6 @@ export default function AboutUser({ }) {
                                             formData.append("AvatarImage", binnaryAvatar);
                                         }
                                         if (values.checkbox) {
-                                            console.log(...formData);
                                             try {
                                                 const response = await postRegister(formData);
                                                 console.log(response);
@@ -192,8 +190,8 @@ export default function AboutUser({ }) {
                                                         <Field type="text" name="firstName"
                                                             placeholder='Enter your first name'
                                                             className="focus:outline-none 
-                                        focus:shadow-[0_0px_300px_0px_#06b6d4] 
-                                        w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
+                                                            focus:shadow-[0_0px_300px_0px_#06b6d4] 
+                                                            w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
                                                         <ErrorMessage name="firstName" component="div" />
                                                     </div>
                                                     <div>
@@ -201,8 +199,8 @@ export default function AboutUser({ }) {
                                                         <Field type="text" name="lastName"
                                                             placeholder='Enter your email'
                                                             className="focus:outline-none 
-                                        focus:shadow-[0_0px_300px_0px_#06b6d4] 
-                                        w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
+                                                            focus:shadow-[0_0px_300px_0px_#06b6d4] 
+                                                            w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
                                                         <ErrorMessage name="lastName" component="div" />
                                                     </div>
                                                 </div>
@@ -212,8 +210,8 @@ export default function AboutUser({ }) {
                                                         <Field type="text" name="userName"
                                                             placeholder='Enter your username'
                                                             className="focus:outline-none 
-                                        focus:shadow-[0_0px_300px_0px_#06b6d4] 
-                                        w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
+                                                            focus:shadow-[0_0px_300px_0px_#06b6d4] 
+                                                            w-full p-2 border-2 border-[#06b6d4] rounded mt-1" />
                                                         <ErrorMessage name="userName" component="div" />
                                                     </div>
                                                     <div className='flex items-center justify-center mt-4 gap-2'>

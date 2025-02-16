@@ -1,5 +1,9 @@
 export default function AdminDashboard() {
     return (
-        <>AdminDashboard pagee</>
+        <>
+            <div>
+                admin dashboard
+            </div>
+        </>
     )
 }

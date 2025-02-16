@@ -19,6 +19,8 @@ export default function UserInfo({ children }) {
         }
         return {};
     });
+    // console.log(userInfo);
+    
 
     const userToken = localStorage.getItem("token");
     const userExpiration = localStorage.getItem("expiration");

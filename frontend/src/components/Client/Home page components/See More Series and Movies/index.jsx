@@ -7,27 +7,41 @@ import { FaRegHeart } from 'react-icons/fa6';
 import premiumIcon from "../../../../assets/premium-icon.png"
 import { useGetAllLevelQuery } from '../../../../redux/rtk query/Slices/levelSlice';
 import { useEffect, useState } from 'react';
+import { useContext } from 'react';
+import { userInfoContext } from '../../../../context/UserInfo';
+import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetByIdUserQuery, useGetFavoriteMoviesUserQuery } from '../../../../redux/rtk query/Slices/userSlice';
+import { FaHeart } from 'react-icons/fa';
 
 export default function SeeMore() {
     let navigate = useNavigate()
+    let { userInfo } = useContext(userInfoContext)
+    let [addToFavoritesUser] = useAddToFavoritesUserMutation()
+    let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
+    let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
 
     const goToPage = (string) => {
         navigate(`/${string}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    let { data, isLoading, isError, error } = useGetForHomePageMoviesQuery()
-    console.log(data);
+    let { data, isLoading, isError, error, refetch } = useGetForHomePageMoviesQuery()
     let { data: levelData, isLoading: levelIsLoading } = useGetAllLevelQuery()
-    let [movieLevel, setMovieLevel] = useState()
-    useEffect(() => {
-        if (!isLoading && !levelIsLoading) {
-            setMovieLevel(levelData.find((level) => level.id == data.levelId))
+
+    const handleFavorites = async (e, movie) => {
+        e.stopPropagation();
+        if (userInfo.userId) {
+            let finded = userFavoritesArray?.find((fav) => fav.id === movie.id)
+            if (finded) {
+                await deleteFromFavoritesUser({ userId: userInfo.userId, movieId: movie.id });
+                userFavRefech()
+            } else {
+                await addToFavoritesUser({ userId: userInfo.userId, movieId: movie.id });
+                userFavRefech()
+            }
+        } else {
+            navigate("/login")
         }
-    }, [isLoading, levelIsLoading])
-    console.log(movieLevel);
-
-
+    }
 
     return (
         <>
@@ -96,10 +110,11 @@ export default function SeeMore() {
                                                                 {levelData?.find((data) => data.id == film.levelId).name}
                                                             </span>
                                                             <div
-                                                                onClick={() => handleFavorites()}
-                                                                className='text-red-500 text-2xl cursor-pointer'>
-                                                                {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart /> : <FaRegHeart />} */}
-                                                                <FaRegHeart />
+                                                                onClick={(e) => handleFavorites(e, film)}
+                                                                className='text-2xl cursor-pointer text-red-500'>
+                                                                {
+                                                                    userFavoritesArray?.find((fav) => fav.id == film.id) ? <FaHeart /> : <FaRegHeart />
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>
@@ -143,17 +158,17 @@ export default function SeeMore() {
                                                             <span className='ml-1 text-white font-bold'>{serie.imdb}</span>
                                                         </div>
                                                         <div className='flex items-center justify-between'>
-                                                            {/* <div className='bg-lime-500 px-2 text-white rounded'>Səviyyə</div> */}
                                                             <span
                                                                 className={`px-2 font-['Kanit'] font-semibold text-white rounded
                                                                 ${serie?.levelId == 1 ? "bg-lime-600" : serie?.levelId == 2 ? "bg-blue-600" : serie?.levelId == 3 ? "bg-orange-600" : serie?.levelId == 4 ? "bg-purple-600" : serie?.levelId == 5 ? "bg-red-600" : "bg-gray-600"}`}>
                                                                 {levelData?.find((data) => data.id == serie.levelId).name}
                                                             </span>
                                                             <div
-                                                                onClick={() => handleFavorites()}
+                                                                onClick={(e) => handleFavorites(e, serie)}
                                                                 className='text-red-500 text-2xl cursor-pointer'>
-                                                                {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart /> : <FaRegHeart />} */}
-                                                                <FaRegHeart />
+                                                                {
+                                                                    userFavoritesArray?.find((fav) => fav.id == serie.id) ? <FaHeart /> : <FaRegHeart />
+                                                                }
                                                             </div>
                                                         </div>
                                                     </div>

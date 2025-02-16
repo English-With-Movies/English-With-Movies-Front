@@ -13,6 +13,9 @@
 }
 
 :root {
+  --admin-page-bg-color: #e4e5e7;
+  --admin-bg-color: #445264;
+  --admin-text-color: #fff;
   --bg-color: #fefff4;
   --text-color: #121212;
   --movies-bg: #1a222c;

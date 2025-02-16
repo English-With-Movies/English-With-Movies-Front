@@ -8,7 +8,6 @@ import { EffectFade, Navigation, Pagination, Autoplay  } from 'swiper/modules';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Container from 'react-bootstrap/esm/Container';
 
-
 export default function HomeSwipper() {
   return (
     <div>

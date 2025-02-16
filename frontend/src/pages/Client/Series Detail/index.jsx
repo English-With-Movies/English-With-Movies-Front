@@ -1,23 +1,35 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import { Helmet } from "react-helmet";
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
 import { FaBarsStaggered, FaRegCircleCheck, FaRegEye } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
-import { ImBin } from "react-icons/im";
 import { useNavigate, useParams } from "react-router";
 import { useGetByIdMovieQuery } from "../../../redux/rtk query/Slices/moviesSlice";
 import { useGetAllLevelQuery } from "../../../redux/rtk query/Slices/levelSlice";
 import LoaderIcon from "../../../components/Loaders/Loader";
 import premiumIcon from "../../../assets/premium-icon.png"
+import { userInfoContext } from "../../../context/UserInfo";
+import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetFavoriteMoviesUserQuery } from "../../../redux/rtk query/Slices/userSlice";
+import { useGetAllGenreQuery } from "../../../redux/rtk query/Slices/genreSlice";
 
 
 export default function SeriesDetail() {
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [])
     let { id } = useParams()
     let navigate = useNavigate()
+    let { userInfo } = useContext(userInfoContext)
+    let [addToFavoritesUser] = useAddToFavoritesUserMutation()
+    let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
+    let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
+
+    let [movieGenresName, setMovieGenresName] = useState()
+    // detail data
     let { data, isLoading, isError, error } = useGetByIdMovieQuery(id)
-    console.log(data);
+    let { data: allGenre, isLoading: genreLoading } = useGetAllGenreQuery()
 
     let { data: levelData, isLoading: levelIsLoading } = useGetAllLevelQuery()
     let [movieLevel, setMovieLevel] = useState()
@@ -27,10 +39,10 @@ export default function SeriesDetail() {
         }
     }, [isLoading, levelIsLoading])
 
-    // favorites add function
     const [checkboxStates, setCheckboxStates] = useState(
         Array.from({ length: 5 }).fill(false)
     );
+
     const tableArray = [
         {
             id: 1,
@@ -57,9 +69,38 @@ export default function SeriesDetail() {
             isKnown: false
         }
     ]
+
     let sortWords = useRef()
+
     const sortedWordsFunction = () => {
         sortWords.current.classList.toggle("handleBars")
+    }
+
+    const handleSortWords = (value) => {
+        if (value == 'a-z') {
+            let sortAZ = useStatedenGelenSozler.toSorted((a, b) => a.name.localeCompare(b.name))
+            // setuseStatedenGelenSozler(sortAz)
+        } else if (value == 'z-a') {
+            let sortZA = useStatedenGelenSozler.toSorted((a, b) => b.name.localeCompare(a.name))
+            // setuseStatedenGelenSozler(sortZA)
+        }
+    }
+
+    // add to fav
+    const handleFavorites = async (e, data) => {
+        e.stopPropagation();
+        if (userInfo.userId) {
+            let finded = userFavoritesArray?.find((fav) => fav.id === data.id)
+            if (finded) {
+                await deleteFromFavoritesUser({ userId: userInfo.userId, movieId: data.id });
+                userFavRefech()
+            } else {
+                await addToFavoritesUser({ userId: userInfo.userId, movieId: data.id });
+                userFavRefech()
+            }
+        } else {
+            navigate("/login")
+        }
     }
 
     const handleCheckboxChange = (index) => {
@@ -72,9 +113,22 @@ export default function SeriesDetail() {
         tableArray.map((element) => element.id == value.id ? { ...value, crossed: !value.isKnown } : value.isKnown)
     }
 
+    function getGenreNamesByMovieGenres(movieGenres, allGenres) {
+        return movieGenres
+            .map(movieGenre => {
+                const genre = allGenres?.find(genre => genre.id === movieGenre.genreId);
+                return genre ? genre.name : null;
+            })
+            .filter(name => name !== null);
+    }
+
     useEffect(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }, [])
+        if (!genreLoading && !isLoading) {
+            const genreNames = getGenreNamesByMovieGenres(data.movieGenres, allGenre);
+            setMovieGenresName(genreNames);
+        }
+    }, [genreLoading, isLoading, data, allGenre]);
+
 
     return (
         <>
@@ -113,28 +167,23 @@ export default function SeriesDetail() {
                                     </div>
                                     <div>
                                         {
-                                            data.movieGenres.length ? (
-                                                data.movieGenres.map((genre) => {
-                                                    <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded">{genre}</span>
-                                                })
-                                            ) : (
-                                                <>
-                                                    {/* <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded text-white">genre</span>
-                                                    <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded text-white">genre</span>
-                                                    <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded text-white">genre</span>
-                                                    <span className="mx-1 font-['Kanit'] px-1 bg-gray-500 rounded text-white">genre</span> */}
-                                                </>
-                                            )
+                                            movieGenresName?.length ? (
+                                                movieGenresName?.map((genre, index) => (
+                                                    <span key={index} className="mx-1 font-['Kanit'] px-2 bg-gray-600 rounded text-white">
+                                                        {genre}
+                                                    </span>
+                                                ))
+                                            ) : ('')
                                         }
-
                                     </div>
                                     <div className="my-1 flex items-center">
                                         <div className="text-xl font-['Kanit'] mr-3"><span className="bg-yellow-300 text-black font-bold text-lg px-2 ">IMBd</span> {data.imdb}</div>
                                         <div
-                                            onClick={() => handleFavorites()}
-                                            className='text-red-500 text-2xl cursor-pointer'>
-                                            {/* {favorites.find((fav) => fav.id === item.id) ? <FaHeart/> : <FaRegHeart />} */}
-                                            <FaRegHeart />
+                                            onClick={(e) => handleFavorites(e, data)}
+                                            className='text-2xl cursor-pointer text-red-500'>
+                                            {
+                                                userFavoritesArray?.find((fav) => fav.id == data.id) ? <FaHeart /> : <FaRegHeart />
+                                            }
                                         </div>
                                     </div>
                                     <p>{data.description} </p>

@@ -8,16 +8,9 @@ import { useEffect, useRef } from 'react';
 
 export default function UserFooter() {
     let upArrowRef = useRef()
-    // window.addEventListener("scroll" , () => {
-    //     if (window.scrollY < 530) {
-    //         upArrowRef.current.classList.add("hidden")
-    //     } else {
-    //         upArrowRef.current.classList.remove("hidden")
-    //     }
-    // })
     useEffect(() => {
         const handleScroll = () => {
-            if (!upArrowRef.current) return; // Əgər ref hələ bağlı deyilsə, kodu icra etmə
+            if (!upArrowRef.current) return;
             if (window.scrollY < 530) {
                 upArrowRef.current.classList.add("hidden");
             } else {

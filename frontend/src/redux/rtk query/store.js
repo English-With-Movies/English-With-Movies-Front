@@ -13,6 +13,7 @@ import { seasonApi } from './Slices/seasonSlice'
 import { episodeApi } from './Slices/episodeSlice'
 import { customWordListApi } from './Slices/customWordListSlice'
 import { knownWordListApi } from './Slices/knownWordListSlice'
+import { userApi } from './Slices/userSlice'
 
 export const store = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ export const store = configureStore({
     [episodeApi.reducerPath]: episodeApi.reducer,
     [customWordListApi.reducerPath]: customWordListApi.reducer,
     [knownWordListApi.reducerPath]: knownWordListApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -45,6 +47,7 @@ export const store = configureStore({
       episodeApi.middleware,
       customWordListApi.middleware,
       knownWordListApi.middleware,
+      userApi.middleware,
     )
 
 })

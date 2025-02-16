@@ -1,5 +1,5 @@
+import { Navigate } from "react-router";
 import AdminDashboard from "../pages/Admin/Admin Dashboard";
-import AdminNotFound from "../pages/Admin/Admin NotFound";
 import AdminLayout from "../pages/Admin/AdminLayout";
 import BlogPage from "../pages/Client/Blog page";
 import ClientLayout from "../pages/Client/ClientLayout";
@@ -17,7 +17,9 @@ import SeriesPage from "../pages/Client/Series page";
 import StreakRanking from "../pages/Client/Streak Ranking";
 import UserProfile from "../pages/Client/User page";
 import NotFound from "../pages/NotFound";
-
+import AvatarTable from "../pages/Admin/Admin Tables/Avatar Table";
+import UserTable from "../pages/Admin/Admin Tables/User Table";
+// favorites, store
 const ROUTES = [
     {
         path: "/",
@@ -91,7 +93,23 @@ const ROUTES = [
         children: [
             {
                 path: "",
+                element: <Navigate to="dashboard" replace />
+            },
+            {
+                path: "dashboard",
                 element: <AdminDashboard />,
+            },
+            {
+                path: "tables",
+                element: <Navigate to="user-table" replace />,
+            },
+            {
+                path: "tables/avatar-table",
+                element: <AvatarTable />
+            },
+            {
+                path: "tables/user-table",
+                element: <UserTable />,
             }
         ]
 

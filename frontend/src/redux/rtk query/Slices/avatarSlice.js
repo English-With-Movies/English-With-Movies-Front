@@ -26,10 +26,10 @@ export const avatarApi = createApi({
         updatePostAvatar: builder.mutation({
             query: (updateAvatar) => ({
                 url: `avatar/update`,
-                method: 'POST',
+                method: 'PUT',
                 body: updateAvatar
             }),
-        }),
+        }), 
     }),
 })
 
