@@ -5,15 +5,19 @@ import RegisterProvider from './context/RegisterContext.jsx'
 import { Provider } from 'react-redux'
 import { store } from './redux/rtk query/store.js'
 import UserInfo from './context/UserInfo.jsx'
+import QuizData from './context/QuizDataContext.jsx'
 
 createRoot(document.getElementById('root')).render(
-    <UserInfo>
-        <RegisterProvider>
-            <ThemeProvider>
-                <Provider store={store}>
-                    <App />
-                </Provider>
-            </ThemeProvider>
-        </RegisterProvider>
-    </UserInfo>
+    <QuizData>
+        <UserInfo>
+            <RegisterProvider>
+                <ThemeProvider>
+                    <Provider store={store}>
+                        <App />
+                    </Provider>
+                </ThemeProvider>
+            </RegisterProvider>
+        </UserInfo>
+    </QuizData>
+
 )

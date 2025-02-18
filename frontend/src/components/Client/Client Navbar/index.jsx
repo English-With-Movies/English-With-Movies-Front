@@ -23,12 +23,8 @@ export default function UserNavbar() {
     }
     let { userInfo, setUserInfo } = useContext(userInfoContext)
     let { data } = useGetByIdUserQuery(userInfo?.userId)
-    console.log(data);
-    let { data: avatarData } = useGetByIdAvatarQuery(data?.avatarId)
-    console.log(avatarData);
     
-    // let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
-
+    let { data: avatarData } = useGetByIdAvatarQuery(data?.avatarId)
 
     const logOut = () => {
         localStorage.removeItem("token")
@@ -175,6 +171,15 @@ export default function UserNavbar() {
                                                 }}
                                             >
                                                 <span className='text-lg px-3'>Profilim </span>
+                                            </NavLink>
+                                            <NavLink
+                                                to="/favorites"
+                                                className="no-underline font-['PT_Serif']"
+                                                style={({ isActive }) => {
+                                                    return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
+                                                }}
+                                            >
+                                                <span className='text-lg px-3'>Favoritlərim </span>
                                             </NavLink>
                                             <div className='h-[2px] w-full bg-black'></div>
                                             <span onClick={() => logOut()} className='cursor-pointer text-lg px-3 text-[var(--text-color)] font-["PT_Serif"]'>Çıxış et </span>

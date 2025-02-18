@@ -13,24 +13,58 @@ import { useGetAllLevelQuery } from "../../../redux/rtk query/Slices/levelSlice"
 import premiumIcon from "../../../assets/premium-icon.png"
 import { useGetAllGenreQuery } from "../../../redux/rtk query/Slices/genreSlice";
 import { userInfoContext } from "../../../context/UserInfo";
-import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetFavoriteMoviesUserQuery } from "../../../redux/rtk query/Slices/userSlice";
+import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetByIdUserQuery, useGetFavoriteMoviesUserQuery } from "../../../redux/rtk query/Slices/userSlice";
+import { useGetByIdSeasonQuery } from "../../../redux/rtk query/Slices/seasonSlice";
+import { useGetByIdEpisodeQuery } from "../../../redux/rtk query/Slices/episodeSlice";
+import { usePostWordFromKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
+import { IoRocketSharp } from "react-icons/io5";
+import MovieTable from "../../../components/Client/Movies Detail Table";
+import QuizIcon from "../../../components/Client/Quiz Icon";
+import { quizDataContext } from "../../../context/QuizDataContext";
 
 export default function MoviesDetail() {
+    // scrool 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
     let { id } = useParams()
     let navigate = useNavigate()
+
+    // user info data
     let { userInfo } = useContext(userInfoContext)
+    let { data: userAllData } = useGetByIdUserQuery(userInfo.userId)
+
+    // favorites 
     let [addToFavoritesUser] = useAddToFavoritesUserMutation()
     let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
     let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
 
-    let [movieGenresName, setMovieGenresName] = useState()
+    // add to and delete from knownList
+    let [postWordFromKnownWordList] = usePostWordFromKnownWordListMutation()
+
     // detail data
     let { data, isLoading, isError, error } = useGetByIdMovieQuery(id)
+    useEffect(() => {
+        if (isError) {
+            console.log(error);
+        }
+    }, [isError, error])
+
+    // movie genre
+    let [movieGenresName, setMovieGenresName] = useState()
     let { data: allGenre, isLoading: genreLoading } = useGetAllGenreQuery()
 
+    // words in table
+    let { data: seasonData } = useGetByIdSeasonQuery(data?.seasons[0].id)
+    let { data: episodesData, isLoading: episodeIsLoading } = useGetByIdEpisodeQuery(seasonData?.episodes[0].id)
+    let [wordList, setWordList] = useState([])
+    useEffect(() => {
+        if (!episodeIsLoading && episodesData) {
+            setWordList(episodesData?.episodeWords)
+        }
+    }, [episodesData])
+
+    // movie level
     let { data: levelData, isLoading: levelIsLoading } = useGetAllLevelQuery()
     let [movieLevel, setMovieLevel] = useState()
     useEffect(() => {
@@ -39,54 +73,24 @@ export default function MoviesDetail() {
         }
     }, [isLoading, levelIsLoading])
 
+    // select word level checkbox
     const [checkboxStates, setCheckboxStates] = useState(
-        Array.from({ length: 5 }).fill(false)
+        Array.from({ length: 5 }).fill(true)
     );
+    const [selectedLevels, setSelectedLevels] = useState([]);
+    useEffect(() => {
+        const selected = checkboxStates
+            .map((isChecked, i) => (isChecked ? i + 1 : null))
+            .filter(Boolean);
+        setSelectedLevels(selected);
+    }, [checkboxStates])
 
-    const tableArray = [
-        {
-            id: 1,
-            engword: "word",
-            azeword: "söz",
-            isKnown: false
-        },
-        {
-            id: 2,
-            engword: "movies",
-            azeword: "filmlər",
-            isKnown: false
-        },
-        {
-            id: 3,
-            engword: "series",
-            azeword: "seriallar",
-            isKnown: true
-        },
-        {
-            id: 4,
-            engword: "color",
-            azeword: "rəng",
-            isKnown: false
-        }
-    ]
+    useEffect(() => {
+        const filteredWords = selectedLevels?.length ? episodesData?.episodeWords.filter((value) => selectedLevels.includes(value.word.levelId)) : wordList;
+        setWordList(filteredWords);
+    }, [selectedLevels, checkboxStates])
 
-    let sortWords = useRef()
-
-    const sortedWordsFunction = () => {
-        sortWords.current.classList.toggle("handleBars")
-    }
-
-    const handleSortWords = (value) => {
-        if (value == 'a-z') {
-            let sortAZ = useStatedenGelenSozler.toSorted((a, b) => a.name.localeCompare(b.name))
-            // setuseStatedenGelenSozler(sortAz)
-        } else if (value == 'z-a') {
-            let sortZA = useStatedenGelenSozler.toSorted((a, b) => b.name.localeCompare(a.name))
-            // setuseStatedenGelenSozler(sortZA)
-        }
-    }
-
-    // add to fav
+    // add to and delete from fav
     const handleFavorites = async (e, data) => {
         e.stopPropagation();
         if (userInfo.userId) {
@@ -103,16 +107,7 @@ export default function MoviesDetail() {
         }
     }
 
-    const handleCheckboxChange = (index) => {
-        const updatedStates = [...checkboxStates];
-        updatedStates[index] = !updatedStates[index];
-        setCheckboxStates(updatedStates);
-    };
-
-    const underlineWord = (value) => {
-        tableArray.map((element) => element.id == value.id ? { ...value, crossed: !value.isKnown } : value.isKnown)
-    }
-
+    // movie genre filter
     function getGenreNamesByMovieGenres(movieGenres, allGenres) {
         return movieGenres
             .map(movieGenre => {
@@ -122,6 +117,7 @@ export default function MoviesDetail() {
             .filter(name => name !== null);
     }
 
+    // movies genres name
     useEffect(() => {
         if (!genreLoading && !isLoading) {
             const genreNames = getGenreNamesByMovieGenres(data.movieGenres, allGenre);
@@ -129,6 +125,12 @@ export default function MoviesDetail() {
         }
     }, [genreLoading, isLoading, data, allGenre]);
 
+    // add to and delete from known word list
+    const underlineWord = async (word) => {
+        // console.log(word.wordId);
+        // add list
+
+    }
 
     return (
         <>
@@ -190,84 +192,61 @@ export default function MoviesDetail() {
                             </div>
                         </div>
                         <Container>
-                            {/* level choice */}
-                            <div className="max-w-[1000px] mx-auto my-5 text-[var(--text-color)] bg-[var(--movies-bg)] rounded-4 py-3 flex flex-col">
-                                <h3 className="text-center mb-4 font-[Kanit]">Sözlərin çətinlik səviyyəsini seçin</h3>
-                                <div className="flex items-center gap-2 justify-around flex-wrap sm:flex-nowrap">
-                                    {
-                                        Array.from({ length: 5 }).map((_, index) => (
-                                            <div key={index + 1}>
-                                                <div className="text-[var(--text-color)] font-bold text-lg">LEVEL {index + 1}</div>
-                                                <div className="level-button flex items-center justify-center">
-                                                    <input type="checkbox" className="difficulty-check" id={`difficulty-check-${index + 1}`} checked={checkboxStates[index]} onChange={() => handleCheckboxChange(index)} />
-                                                    <label htmlFor={`difficulty-check-${index + 1}`} className="theme-label"></label>
-                                                    <div className="background"></div>
-                                                </div>
+                            {
+                                userInfo ? (
+                                    userAllData?.subscriptionId == 1 ? (
+                                        !data?.isPremiumFilm ? (
+                                            <div className="items-center flex flex-col justify-center pb-5">
+                                                <h4>Premium istifadəçilər üçündür</h4>
+                                                <h4
+                                                    onClick={() => navigate('/premium')}
+                                                    className='cursor-pointer p-3 rounded-4 transition-all duration-200 ease-in flex items-center justify-center hover:shadow-[0_0px_20px_0px_yellow] cursor-pointer my-2 bg-[var(--movies-bg)]'>PREMİUM OL!</h4>
                                             </div>
-                                        ))
-                                    }
-                                </div>
-                            </div>
-                            {/* <p className="text-[var(--text-color)] mt-4">
-                    Seçilən səviyyələr:{" "}
-                    {checkboxStates
-                        .map((isChecked, index) => (isChecked ? `LEVEL ${index + 1}` : null))
-                        .filter(Boolean)
-                        .join(", ") || "Heç biri"}
-                </p> */}
-                            <div className="flex items-center justify-between mt-3">
-                                <div className="text-xl">1234 söz</div>
-                                <div className="text-4xl font-['Kanit']">Sözlər</div>
-                                <div className="my-3 relative flex justify-end">
-                                    <span className="text-3xl cursor-pointer" onClick={() => sortedWordsFunction()}><FaBarsStaggered /></span>
-                                    <ul
-                                        className='absolute w-[100px] -top-4 rounded bg-white text-black opacity-90 
-                                                transition-all duration-200 ease-in right-10 handleBars'
-                                        ref={sortWords}>
-                                        <li data-value="1" onClick={() => handleSortWords('a-z')}
-                                            className='hover:bg-[#91d1dec0] rounded ml-[-32px] p-1 cursor-pointer'>A-Z</li>
-                                        <li data-value="2" onClick={() => handleSortWords('z-a')}
-                                            className='hover:bg-[#91d1dec0] rounded ml-[-32px] p-1 cursor-pointer'>Z-A</li>
-
-                                    </ul>
-                                </div>
-                            </div>
-
-                            {/* table */}
-                            <div className="rounded max-[750px]:overflow-x-scroll py-3">
-                                <table className="w-full rounded-5  whitespace-nowrap">
-                                    <tbody className="rounded-5">
-                                        {
-                                            tableArray.map((value) => (
-                                                <tr className="bg-[var(--movies-bg)] text-xl rounded-5 text-[var(--text-color)] border-y" key={value.id}>
-                                                    <td className="p-3 text-3xl relative hover:text-blue-600 transition-all ease-in duration-200 hover-title flex">
-                                                        <div className="p-2 bg-blue-600 absolute top-[-35%] z-index-2 text-sm text-white rounded-4">Səsləndirin</div>
-                                                        <span className="cursor-pointer p-1"><HiSpeakerWave /></span>
-                                                    </td>
-                                                    <td className="p-3" style={{ textDecoration: value.isKnown ? "line-through" : "none" }}>{value.engword}</td>
-                                                    <td className="p-3" style={{ textDecoration: value.isKnown ? "line-through" : "none" }}>{value.azeword}</td>
-                                                    <td className="p-3 text-3xl text-lime-400 hover-title relative">
-                                                        {/* js kodu eger bilinenlerdedirse div ve span olmasa hecne */}
-                                                        {/* <div className="p-2 bg-lime-400 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısındadır</div>
-                                                <FaRegCircleCheck /> */}
-                                                    </td>
-                                                    {/* bilinenler siyahisindadisa icon gorunsun */}
-                                                    <td className="p-3 text-3xl relative hover-title flex">
-                                                        <div className="p-2 bg-pink-400 absolute top-[-50%] z-index-2 text-sm text-white rounded-4">Bilinənlər siyahısına <br /> əlavə edin</div>
-                                                        <span onClick={() => underlineWord(value)} className="cursor-pointer p-1"><FaRegEye /></span>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+                                        ) : (
+                                            <MovieTable checkboxStates={checkboxStates} wordList={wordList} setWordList={setWordList} setCheckboxStates={setCheckboxStates} setSelectedLevels={setSelectedLevels} />
+                                        )
+                                    ) : (
+                                        <MovieTable checkboxStates={checkboxStates} wordList={wordList} setWordList={setWordList} setCheckboxStates={setCheckboxStates} setSelectedLevels={setSelectedLevels} />
+                                    )
+                                ) : (
+                                    !data?.isPremiumFilm ? (
+                                        <div className="items-center flex flex-col justify-center pb-5">
+                                            <h4>Premium istifadəçilər üçündür</h4>
+                                            <h4
+                                                onClick={() => navigate('/premium')}
+                                                className='cursor-pointer p-3 rounded-4 transition-all duration-200 ease-in flex items-center justify-center hover:shadow-[0_0px_20px_0px_yellow] cursor-pointer my-2 bg-[var(--movies-bg)]'>PREMİUM OL!</h4>
+                                        </div>
+                                    ) : (
+                                        <MovieTable checkboxStates={checkboxStates} wordList={wordList} setWordList={setWordList} setCheckboxStates={setCheckboxStates} setSelectedLevels={setSelectedLevels} />
+                                    )
+                                )
+                            }
                         </Container>
+
+
+
+                        {
+                            userInfo ? (
+                                userAllData?.subscriptionId == 1 ? (
+                                    !data?.isPremiumFilm ? (
+                                        <></>
+                                    ) : (
+                                        <QuizIcon wordList={wordList} />
+                                    )
+                                ) : (
+                                    <QuizIcon wordList={wordList} />
+                                )
+                            ) : (
+                                !data?.isPremiumFilm ? (
+                                    <></>
+                                ) : (
+                                    <QuizIcon wordList={wordList} />
+                                )
+                            )
+                        }
                     </div>
                 )
             }
-
         </>
-
     )
 }

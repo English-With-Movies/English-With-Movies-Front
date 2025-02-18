@@ -4,39 +4,38 @@ import { jwtDecode } from "jwt-decode";
 export const userInfoContext = createContext()
 
 export default function UserInfo({ children }) {
-    let [userInfo, setUserInfo] = useState(() => {
+    const [userInfo, setUserInfo] = useState({});
+
+    const updateUserInfo = () => {
         const userToken = localStorage.getItem("token");
+        const userExpiration = localStorage.getItem("expiration");
         if (userToken) {
             try {
                 const decoded = jwtDecode(userToken);
-                return {
+                setUserInfo({
                     userName: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
                     userId: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
-                };
+                });
             } catch (error) {
                 console.error("Token-i decode etmək mümkün olmadı:", error);
             }
         }
-        return {};
-    });
-    // console.log(userInfo);
-    
-
-    const userToken = localStorage.getItem("token");
-    const userExpiration = localStorage.getItem("expiration");
+        if (userToken && userExpiration && new Date(userExpiration) < new Date()) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("expiration");
+            setUserInfo({});
+        }
+    };
 
     useEffect(() => {
-        if (userToken && userExpiration) {
-            const currentTime = new Date().toISOString();
-            if (new Date(userExpiration) < new Date(currentTime)) {
-                localStorage.removeItem("token");
-                localStorage.removeItem("expiration");
-                setUserInfo({});
-                window.location.href = "/login";
-                return;
-            }
-        }
-    }, [userToken, userExpiration]);
+        updateUserInfo();
+    }, []);
+
+    useEffect(() => {
+        const observer = new MutationObserver(updateUserInfo);
+        observer.observe(document.body, { subtree: true, childList: true });
+        return () => observer.disconnect();
+    }, []);
 
     return <userInfoContext.Provider value={{ userInfo, setUserInfo }}>{children}</userInfoContext.Provider>
 }

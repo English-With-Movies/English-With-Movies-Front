@@ -5,15 +5,15 @@ export const rankApi = createApi({
     baseQuery: fetchBaseQuery({ baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/' }),
     endpoints: (builder) => ({
         getRanksForPoint: builder.query({
-            query: () => `rank/getranksforpoint`,
+            query: (userId) => `rank/getranksforpoint?userId=${userId}`,
         }),
         getRanksForTodaysPoint: builder.query({
-            query: () => `rank/getranksfortodayspoint`,
+            query: (userId) => `rank/getranksfortodayspoint?userId=${userId}`,
         }),
         getRanksForStreak: builder.query({
-            query: () => `rank/getranksforstreak`,
+            query: (userId) => `rank/getranksforstreak?userId=${userId}`,
         }),
-    }),
+    })
 })
 
 export const { useGetRanksForPointQuery, useGetRanksForTodaysPointQuery, useGetRanksForStreakQuery } = rankApi

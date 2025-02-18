@@ -46,18 +46,14 @@ export default function LoginFirstPart({ setPage }) {
                                 formData.append("EmailOrUserName", values.email);
                                 formData.append("Password", values.password);
                                 formData.append("RememberMe", values.rememberMe);     
-                                // console.log(...formData);
-                                                           
                                 try {
                                     const response = await postLogin(formData);
                                     if (response.data) {
                                         localStorage.setItem("token", response.data.token);
                                         localStorage.setItem("expiration", response.data.expiration);
-                                        window.location.href = "/"
+                                        navigate('/')
                                     }
                                     if (response.error) {
-                                        console.log(response.error);
-                                        
                                         setLoginError("❌ " + response.error.data)
                                     }
                                 } catch (error) {

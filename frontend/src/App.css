@@ -16,7 +16,7 @@
   --admin-page-bg-color: #e4e5e7;
   --admin-bg-color: #445264;
   --admin-text-color: #fff;
-  --bg-color: #fefff4;
+  --bg-color: #fdffe5;
   --text-color: #121212;
   --movies-bg: #1a222c;
 }
@@ -152,7 +152,7 @@ body {
     visibility: hidden;
 
     &:checked+label {
-      background: #33c552;
+      background: #0a0;
 
       &:after {
         left: 70px;
@@ -317,17 +317,10 @@ input[type="number"] {
     .wrap {
       height: 100%;
       width: 100%;
-
-      /* z-index: 2; */
       background-color: #819dc5;
       display: flex;
       align-items: center;
       justify-content: center;
-
-      /* position: relative; */
-      h4 {}
-
-      .level {}
 
       .imdb-fav {
         display: flex;
@@ -337,8 +330,6 @@ input[type="number"] {
         position: absolute;
         bottom: 0;
         left: 0;
-
-        .fav-button {}
       }
     }
   }
@@ -398,3 +389,28 @@ input[type="number"] {
   }
 }
 
+.old-price {
+  color: #7f7f7f;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    width: 45px;
+    height: 1.5px;
+    background-color: rgba(255, 0, 0, 0.7);
+    bottom: 15%;
+    left: 50%;
+    transform: rotate(25deg) translateX(-50%);
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    width: 45px;
+    height: 1.5px;
+    background-color: rgba(255, 0, 0, 0.7);
+    top: 10%;
+    left: 50%;
+    transform: rotate(-25deg) translateX(-50%) ;
+  }
+}

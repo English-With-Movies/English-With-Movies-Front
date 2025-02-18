@@ -14,12 +14,14 @@ import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useG
 import { useGetAllGenreQuery } from '../../../redux/rtk query/Slices/genreSlice';
 import { userInfoContext } from '../../../context/UserInfo';
 import LoaderIcon from '../../../components/Loaders/Loader';
+import { useGetSettingsByKeyQuery } from '../../../redux/rtk query/Slices/settingsSlice';
 
 
 export default function MoviesPage() {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
+    let { data: filmsText } = useGetSettingsByKeyQuery('FilmsText')
 
     let navigate = useNavigate()
     let { userInfo } = useContext(userInfoContext)
@@ -118,9 +120,7 @@ export default function MoviesPage() {
                             <div className="text-[var(--text-color)]">
                                 <h1>İngiliscə Filmlərdə İstifadə Olunan Sözlər və Mənaları</h1>
                                 <div className='bg-[var(--movies-bg)] p-3 series-about-wrapper mt-4'>
-                                    <p className='text-lg'>
-                                        Artık filmleri altyazısız izleyebileceksin. Nasıl mı? Öncelikle ingilizce düzeyine göre aşağıdaki filmlerden birini seç. Yeni başlayanlar için biz Çok Kolay seviyesindeki filmleri öneriyoruz. Ardından o filmde kullanılan tüm kelimeler ve anlamları karşına gelecek. Burada istersen seçtiğin filmde kullanılan tüm kelimelere çalışabilirsin veya zorluk barını kullanarak istediğin seviyedeki kelimelere çalışabilirsin. Diyelim sadece zor kelimelere çalışmak istiyorsun. Bar çubuğunu kaydırarak Zor seviyesine getir ve Quiz'i başlat. 1000 kelime var tek seferde nasıl bitireyim? Diyorsan üye olup quiz de daha sonra kaldığın yerden devam edebilirsin. Ayrıca kendi kelime listelerini oluşturup arkadaşlarınla paylaşabilirsin. İyi Çalışmalar :)
-                                    </p>
+                                    <p className='text-lg'>{filmsText?.value}</p>
                                     <div className='flex gap-4 items-center'>
                                         <input
                                             onChange={(e) => handleSearch(e)}

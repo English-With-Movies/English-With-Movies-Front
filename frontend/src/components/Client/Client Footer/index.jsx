@@ -5,8 +5,15 @@ import { FaArrowUp, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { HiArrowLongUp } from "react-icons/hi2";
 import { BsArrowUp } from "react-icons/bs";
 import { useEffect, useRef } from 'react';
+import { useGetSettingsByKeyQuery } from '../../../redux/rtk query/Slices/settingsSlice';
 
 export default function UserFooter() {
+    let { data: footer } = useGetSettingsByKeyQuery('aboutUs')
+    let { data: facebook } = useGetSettingsByKeyQuery('facebook')
+    let { data: instagram } = useGetSettingsByKeyQuery('instagram')
+    let { data: linkedIn } = useGetSettingsByKeyQuery('linkedIn')
+    let { data: twitter } = useGetSettingsByKeyQuery('twitter')
+
     let upArrowRef = useRef()
     useEffect(() => {
         const handleScroll = () => {
@@ -56,12 +63,12 @@ export default function UserFooter() {
                         <h4>ƏLAQƏ:</h4>
                         <h5>SOSİAL HESABLAR</h5>
                         <div className='text-2xl flex gap-3'>
-                            <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open('https://www.facebook.com', '_blank')}>
+                            <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open(`${facebook?.value}`, '_blank')}>
                                 <FaFacebook />
                             </span>
-                            <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open('https://www.instagram.com', '_blank')}><FaInstagram /></span>
-                            <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open('https://www.linkedin.com', '_blank')}><FaLinkedinIn /></span>
-                            <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open('https://www.x.com', '_blank')}><FaXTwitter /></span>
+                            <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open(`${instagram?.value}`, '_blank')}><FaInstagram /></span>
+                            <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open(`${linkedIn?.value}`, '_blank')}><FaLinkedinIn /></span>
+                            <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open(`${twitter?.value}`, '_blank')}><FaXTwitter /></span>
 
                         </div>
                     </div>
@@ -69,7 +76,7 @@ export default function UserFooter() {
                 <div className='h-[0.1px] w-full bg-white my-4'></div>
                 <div>
                     <h4>HAQQIMIZDA:</h4>
-                    <p>Diziyle Öğren İngilizce öğrenmek için dizi ve film izleyenlere yönelik olarak 2019'da kurulmuş olan bir platformdur. Ziyaretçilerimiz istedikleri bir dizi veya filmde kullanılan tüm kelimeleri sitemizden veya mobil uygulamamızdan öğrenebilir. Detaylı bilgi</p>
+                    <p>{footer?.value}</p>
                 </div>
             </div>
             {/* fixed arrow */}

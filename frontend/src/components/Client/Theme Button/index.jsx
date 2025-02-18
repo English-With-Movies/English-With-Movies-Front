@@ -17,7 +17,7 @@ export default function ThemeButton() {
         );
         document.documentElement.style.setProperty(
             "--movies-bg",
-            darkMode ? "#1e2d3e" : '#e6f0fa'
+            darkMode ? "#1e2d3e" : '#d4dcf2'
         );
     }, [darkMode]);
 

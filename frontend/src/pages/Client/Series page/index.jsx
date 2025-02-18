@@ -14,12 +14,15 @@ import { useNavigate } from 'react-router';
 import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetFavoriteMoviesUserQuery } from '../../../redux/rtk query/Slices/userSlice';
 import { userInfoContext } from '../../../context/UserInfo';
 import { useGetAllGenreQuery } from '../../../redux/rtk query/Slices/genreSlice';
+import { useGetSettingsByKeyQuery } from '../../../redux/rtk query/Slices/settingsSlice';
 
 
 export default function SeriesPage() {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
+    let { data: seriesText } = useGetSettingsByKeyQuery('SeriesText')
+
 
     let navigate = useNavigate()
     let { userInfo } = useContext(userInfoContext)
@@ -115,9 +118,7 @@ export default function SeriesPage() {
                             <div className="text-[var(--text-color)]">
                                 <h1>İngiliscə Seriallarda İstifadə Olunan Sözlər və Mənaları</h1>
                                 <div className='bg-[var(--movies-bg)] p-3 series-about-wrapper mt-4'>
-                                    <p className='text-lg'>
-                                        Dizi izleyerek ingilizce öğrenmek istiyorsun ama nereden başlaman gerektiğini bilmiyor musun ? Senin için en popüler dizilerin tüm bölümlerini tarayıp kullanılan tüm kelimeleri ve anlamlarını bulduk. Dizileri zorluk düzeylerine göre Çok Kolay - Kolay - Orta - Zor şeklinde 4 seviyeye böldük. Tek yapman gereken kelimelerini öğrenmek istediğin diziyi seçmek. Bu noktada ingilizce öğrenmek için Çok Kolay dizilerden başlamanı öneririz. Kelime bilgin arttıkça orta ve zor seviyesindeki dizilere geçebilirsin. Hadi başlayalım o zaman! Dizi, sezon ve bölüm seç. Seçtiğin bölümde kullanılan tüm kelimeler ve anlamları karşına gelecek. Dilersen zorluk ayarlama barı ile sadece zor kelimelere de çalışabilirsin.
-                                    </p>
+                                    <p className='text-lg'>{seriesText.value}</p>
                                     <div className='flex gap-4 items-center'>
                                         <input
                                             onChange={(e) => handleSearch(e)}

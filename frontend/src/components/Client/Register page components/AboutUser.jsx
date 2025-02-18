@@ -144,7 +144,10 @@ export default function AboutUser({ }) {
                                                 console.log(response);
                                                 if (response.data) {
                                                     if (values.loginAfterRegister) {
-                                                        // token yaratmalidi
+                                                        localStorage.setItem("token", response.data.token);
+                                                        localStorage.setItem("expiration", response.data.expiration);
+                                                        // window.location.href = "/"
+                                                        navigate('/')
                                                     } else {
                                                         navigate("/login")
                                                     }
@@ -155,9 +158,9 @@ export default function AboutUser({ }) {
                                             } catch (error) {
                                                 if (error.response) {
                                                     const { status, data, statusText } = error.response;
-                                                    console.error("Error Status Code:", status);  
-                                                    console.error("Error Message:", data);         
-                                                    console.error("Error Status Text:", statusText); 
+                                                    console.error("Error Status Code:", status);
+                                                    console.error("Error Message:", data);
+                                                    console.error("Error Status Text:", statusText);
 
                                                     if (status === 400) {
                                                         setRegisterError("❌ Bad request, check your input.");

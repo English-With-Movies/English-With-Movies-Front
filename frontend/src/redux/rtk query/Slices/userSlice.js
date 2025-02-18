@@ -25,7 +25,13 @@ export const userApi = createApi({
                 method: 'DELETE'
             })
         }),
+        addPointToUser: builder.mutation({
+            query: ({ userId, amount }) => ({
+                url: `user/addpointtouser?userId=${userId}&amount=${amount}`,
+                method: 'POST'
+            }),
+        }),
     }),
 })
 
-export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation } = userApi
+export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useAddPointToUserMutation } = userApi

@@ -78,7 +78,7 @@ export default function SeeMore() {
                                 transition-all duration-150 ease-in'>daha çoxu &#62;&#62;</button>
                                 </div>
                                 {
-                                    data.films.map((film, index) => (
+                                    data?.films.map((film, index) => (
                                         <div key={film.id} onClick={() => navigate(`/movies/${film.id}`)}
                                             className={`card-hover max-w-[200px] h-[300px] rounded-[15px] max-[450px]:h-[230px]
                                                 ${index == 1 ? 'hidden md:block' : ''}
@@ -132,7 +132,7 @@ export default function SeeMore() {
                             {/* series */}
                             <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                                 {
-                                    data.series.map((serie, index) => (
+                                    data?.series.map((serie, index) => (
                                         <div key={serie.id} onClick={() => navigate(`/series/${serie.id}`)}
                                             className={`card-hover max-w-[200px] h-[300px] rounded-[15px] max-[450px]:h-[230px]
                                                 ${index == 1 ? 'hidden md:block' : ''}
