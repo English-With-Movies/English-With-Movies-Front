@@ -4,13 +4,16 @@ export const knownWordListApi = createApi({
     reducerPath: 'knownWordListApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/' }),
     endpoints: (builder) => ({
+        getKnownWordListById: builder.query({
+            query: (id) => `knownwordlist/getbyid/${id}`,
+        }),
         deleteWordFromKnownWordList: builder.mutation({
             query: ({ knownWordListId, wordId }) => ({
                 url: `knownwordlist/${knownWordListId}/removeword/${wordId}`,
                 method: 'DELETE'
             })
         }),
-        postWordFromKnownWordList: builder.mutation({
+        postWordToKnownWordList: builder.mutation({
             query: ({ knownWordListId, wordId }) => ({
                 url: `knownwordlist//${knownWordListId}/addword/${wordId}`,
                 method: 'POST'
@@ -19,4 +22,4 @@ export const knownWordListApi = createApi({
     }),
 })
 
-export const { useDeleteWordFromKnownWordListMutation, usePostWordFromKnownWordListMutation } = knownWordListApi
+export const { useDeleteWordFromKnownWordListMutation, usePostWordToKnownWordListMutation, useGetKnownWordListByIdQuery } = knownWordListApi

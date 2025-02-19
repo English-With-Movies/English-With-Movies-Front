@@ -99,14 +99,14 @@ export default function SeeMore() {
                                                         <span className='flex items-center justify-center mx-auto my-0 text-center font-semibold'>{film.name}</span>
                                                     </div>
                                                     <div className=' w-full p-2 absolute bottom-0 left-0 '>
-                                                        <div className='mb-1 px-2 bg-yellow-400 inline-block rounded'>
+                                                        <div className='mb-1 px-2 bg-[#f3ce13] inline-block rounded'>
                                                             <span className=' text-black text-sm font-bold font-["Kanit"]'>IMDb:</span>
                                                             <span className='ml-1 text-white font-bold'>{film.imdb}</span>
                                                         </div>
                                                         <div className='flex items-center justify-between'>
                                                             <span
                                                                 className={`px-2 font-['Kanit'] font-semibold text-white rounded
-                                                                ${film?.levelId == 1 ? "bg-lime-600" : film?.levelId == 2 ? "bg-blue-600" : film?.levelId == 3 ? "bg-orange-600" : film?.levelId == 4 ? "bg-purple-600" : film?.levelId == 5 ? "bg-red-600" : "bg-gray-600"}`}>
+                                                                ${film?.levelId == 1 ? "bg-[#167323]" : film?.levelId == 2 ? "bg-[#25487a]" : film?.levelId == 3 ? "bg-[#b07212]" : film?.levelId == 4 ? "bg-[#480f7a]" : film?.levelId == 5 ? "bg-[#8a1111]" : "bg-gray-600"}`}>
                                                                 {levelData?.find((data) => data.id == film.levelId).name}
                                                             </span>
                                                             <div
@@ -153,14 +153,14 @@ export default function SeeMore() {
                                                         <span className='flex items-center justify-center mx-auto my-0 text-center font-semibold'>{serie.name}</span>
                                                     </div>
                                                     <div className=' w-full p-2 absolute bottom-0 left-0 '>
-                                                        <div className='mb-1 px-2 bg-yellow-400 inline-block rounded'>
+                                                        <div className='mb-1 px-2 bg-[#f3ce13] inline-block rounded'>
                                                             <span className=' text-black text-sm font-bold font-["Kanit"]'>IMDb:</span>
                                                             <span className='ml-1 text-white font-bold'>{serie.imdb}</span>
                                                         </div>
                                                         <div className='flex items-center justify-between'>
                                                             <span
                                                                 className={`px-2 font-['Kanit'] font-semibold text-white rounded
-                                                                ${serie?.levelId == 1 ? "bg-lime-600" : serie?.levelId == 2 ? "bg-blue-600" : serie?.levelId == 3 ? "bg-orange-600" : serie?.levelId == 4 ? "bg-purple-600" : serie?.levelId == 5 ? "bg-red-600" : "bg-gray-600"}`}>
+                                                                ${serie?.levelId == 1 ? "bg-[#167323]" : serie?.levelId == 2 ? "bg-[#25487a]" : serie?.levelId == 3 ? "bg-[#b07212]" : serie?.levelId == 4 ? "bg-[#480f7a]" : serie?.levelId == 5 ? "bg-[#8a1111]" : "bg-gray-600"}`}>
                                                                 {levelData?.find((data) => data.id == serie.levelId).name}
                                                             </span>
                                                             <div

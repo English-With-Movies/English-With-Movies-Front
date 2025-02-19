@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router';
 
 export default function EnglishQuestionsPage() {
     // known word listde olanlar cixmasin
-    
+
     let { quizDataArray } = useContext(quizDataContext)
     let [quizWords, setQuizWords] = useState([...quizDataArray])
     let navigate = useNavigate()
@@ -61,13 +61,14 @@ export default function EnglishQuestionsPage() {
         setOptions(newOptions.sort(() => Math.random() - 0.5));
     }, [question]);
 
-    const checkAnswer = (option) => {
+    const checkAnswer = async (option) => {
         disableButtons(true)
         setSelectedOption(option)
         nextButtonRef.current.classList.remove("hidden")
         sentenceRef.current.classList.remove("hidden")
         if (option === question.word.meaning) {
             setTotalPoint(prevTotal => prevTotal + point)
+            await addPointToUser({ userId: userInfo.userId, amount: point });
         }
         setQuizWords(prev => prev.filter(q => q.word.wordText !== question.word.wordText));
         clearInterval(intervalRef.current);
@@ -88,11 +89,6 @@ export default function EnglishQuestionsPage() {
             startedRef.current.classList.add("hidden")
             finishedRef.current.classList.remove("hidden")
         }
-    }
-
-    const addPoint = async () => {
-        await addPointToUser({ userId: userInfo.userId, amount: totalPoint });
-        navigate("/")
     }
 
     // point function
@@ -187,7 +183,7 @@ export default function EnglishQuestionsPage() {
                 </div>
                 <div className='max-w-[500px] py-5 mx-auto my-0 flex gap-3 flex-col justify-center items-center hidden relative' ref={finishedRef}>
                     <h1 className='font-["Kanit"]'>Test bitdi!</h1>
-                    <button onClick={() => addPoint()} className='px-3 py-1 bg-blue-500 font-["Kanit"] rounded'>Sonlandır</button>
+                    <button onClick={() => navigate("/")} className='px-3 py-1 bg-blue-500 font-["Kanit"] rounded'>Sonlandır</button>
                     <p className='font-["Kanit"] text-lg'>Testi sonlandırmaq üçün düyməyə basın</p>
                     <div className='h-[180px]'>
                         <DotLottieReact
@@ -197,7 +193,7 @@ export default function EnglishQuestionsPage() {
                         />
                     </div>
                     <div className='font-["Kanit"] text-lg'>Topladığınız xal: {totalPoint}</div>
-                    <div className='font-["Kanit"] text-sm'>Testi sonlandırsaz topladığınız xal sizin ümumi xalınızın üzərinə gələcək</div>
+                    <div className='font-["Kanit"] text-sm'>Testi sonlandırsanız ana səhifəyə qayıdacaqsınız</div>
                 </div>
             </div>
 

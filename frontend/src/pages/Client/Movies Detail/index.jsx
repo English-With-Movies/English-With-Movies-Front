@@ -16,7 +16,6 @@ import { userInfoContext } from "../../../context/UserInfo";
 import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetByIdUserQuery, useGetFavoriteMoviesUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 import { useGetByIdSeasonQuery } from "../../../redux/rtk query/Slices/seasonSlice";
 import { useGetByIdEpisodeQuery } from "../../../redux/rtk query/Slices/episodeSlice";
-import { usePostWordFromKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
 import { IoRocketSharp } from "react-icons/io5";
 import MovieTable from "../../../components/Client/Movies Detail Table";
 import QuizIcon from "../../../components/Client/Quiz Icon";
@@ -40,7 +39,6 @@ export default function MoviesDetail() {
     let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
 
     // add to and delete from knownList
-    let [postWordFromKnownWordList] = usePostWordFromKnownWordListMutation()
 
     // detail data
     let { data, isLoading, isError, error } = useGetByIdMovieQuery(id)
@@ -131,6 +129,7 @@ export default function MoviesDetail() {
         // add list
 
     }
+console.log(wordList?.length);
 
     return (
         <>
@@ -158,8 +157,8 @@ export default function MoviesDetail() {
                                     <div className="flex items-center">
                                         <h1 className="mr-3 font-['Kanit']">{data.name}</h1>
                                         <span
-                                            className={`px-2 font-['Kanit'] font-semibold text-white
-                                            ${data.levelId == 1 ? "bg-lime-600" : data.levelId == 2 ? "bg-blue-600" : data.levelId == 3 ? "bg-orange-600" : data.levelId == 4 ? "bg-purple-600" : data.levelId == 5 ? "bg-red-600" : "bg-gray-600"}`}>
+                                            className={`px-2 font-['Kanit'] font-semibold text-white py-1
+                                            ${data.levelId == 1 ? "bg-[#167323]" : data.levelId == 2 ? "bg-[#25487a]" : data.levelId == 3 ? "bg-[#b07212]" : data.levelId == 4 ? "bg-[#480f7a]" : data.levelId == 5 ? "bg-[#8a1111]" : "bg-gray-600"}`}>
                                             {movieLevel?.name}
                                         </span>
                                         <div className='ml-3 text-2xl w-[30px] h-[30px]'>{data.isPremiumFilm ? (
@@ -178,7 +177,7 @@ export default function MoviesDetail() {
                                         }
                                     </div>
                                     <div className="my-1 flex items-center">
-                                        <div className="text-xl font-['Kanit'] mr-3"><span className="bg-yellow-300 text-black font-bold text-lg px-2 ">IMBd</span> {data.imdb}</div>
+                                        <div className="text-xl font-['Kanit'] mr-3"><span className="bg-[#f3ce13] text-black font-bold text-lg px-2 ">IMDb</span> {data.imdb}</div>
                                         <div
                                             onClick={(e) => handleFavorites(e, data)}
                                             className='text-2xl cursor-pointer text-red-500'>
@@ -187,7 +186,7 @@ export default function MoviesDetail() {
                                             }
                                         </div>
                                     </div>
-                                    <p>{data.description} </p>
+                                    <p className="font-semibold text-sm xs:text-lg">{data.description} </p>
                                 </div>
                             </div>
                         </div>
@@ -195,12 +194,12 @@ export default function MoviesDetail() {
                             {
                                 userInfo ? (
                                     userAllData?.subscriptionId == 1 ? (
-                                        !data?.isPremiumFilm ? (
+                                        data?.isPremiumFilm ? (
                                             <div className="items-center flex flex-col justify-center pb-5">
-                                                <h4>Premium istifadəçilər üçündür</h4>
+                                                <h4 className="text-[var(--text-color)]">Premium istifadəçilər üçündür</h4>
                                                 <h4
                                                     onClick={() => navigate('/premium')}
-                                                    className='cursor-pointer p-3 rounded-4 transition-all duration-200 ease-in flex items-center justify-center hover:shadow-[0_0px_20px_0px_yellow] cursor-pointer my-2 bg-[var(--movies-bg)]'>PREMİUM OL!</h4>
+                                                    className='cursor-pointer p-3 rounded-4 transition-all duration-200 ease-in flex items-center justify-center hover:shadow-[0_0px_20px_0px_yellow] cursor-pointer my-2 bg-[var(--movies-bg)] text-[var(--text-color)]'>PREMİUM OL!</h4>
                                             </div>
                                         ) : (
                                             <MovieTable checkboxStates={checkboxStates} wordList={wordList} setWordList={setWordList} setCheckboxStates={setCheckboxStates} setSelectedLevels={setSelectedLevels} />
@@ -209,12 +208,12 @@ export default function MoviesDetail() {
                                         <MovieTable checkboxStates={checkboxStates} wordList={wordList} setWordList={setWordList} setCheckboxStates={setCheckboxStates} setSelectedLevels={setSelectedLevels} />
                                     )
                                 ) : (
-                                    !data?.isPremiumFilm ? (
+                                    data?.isPremiumFilm ? (
                                         <div className="items-center flex flex-col justify-center pb-5">
-                                            <h4>Premium istifadəçilər üçündür</h4>
+                                            <h4 className="text-[var(--text-color)]">Premium istifadəçilər üçündür</h4>
                                             <h4
                                                 onClick={() => navigate('/premium')}
-                                                className='cursor-pointer p-3 rounded-4 transition-all duration-200 ease-in flex items-center justify-center hover:shadow-[0_0px_20px_0px_yellow] cursor-pointer my-2 bg-[var(--movies-bg)]'>PREMİUM OL!</h4>
+                                                className='cursor-pointer p-3 rounded-4 transition-all duration-200 ease-in flex items-center justify-center hover:shadow-[0_0px_20px_0px_yellow] cursor-pointer my-2 bg-[var(--movies-bg)] text-[var(--text-color)]'>PREMİUM OL!</h4>
                                         </div>
                                     ) : (
                                         <MovieTable checkboxStates={checkboxStates} wordList={wordList} setWordList={setWordList} setCheckboxStates={setCheckboxStates} setSelectedLevels={setSelectedLevels} />
@@ -228,19 +227,19 @@ export default function MoviesDetail() {
                         {
                             userInfo ? (
                                 userAllData?.subscriptionId == 1 ? (
-                                    !data?.isPremiumFilm ? (
+                                    data?.isPremiumFilm ? (
                                         <></>
                                     ) : (
-                                        <QuizIcon wordList={wordList} />
+                                        <QuizIcon wordList={wordList} checkboxStates={checkboxStates}/>
                                     )
                                 ) : (
-                                    <QuizIcon wordList={wordList} />
+                                    <QuizIcon wordList={wordList} checkboxStates={checkboxStates}/>
                                 )
                             ) : (
-                                !data?.isPremiumFilm ? (
+                                data?.isPremiumFilm ? (
                                     <></>
                                 ) : (
-                                    <QuizIcon wordList={wordList} />
+                                    <QuizIcon wordList={wordList} checkboxStates={checkboxStates}/>
                                 )
                             )
                         }

@@ -20,18 +20,30 @@ import NotFound from "../pages/NotFound";
 import AvatarTable from "../pages/Admin/Admin Tables/Avatar Table";
 import UserTable from "../pages/Admin/Admin Tables/User Table";
 import UserFavoritesPage from "../pages/Client/User Favorites Page";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { quizDataContext } from "../context/QuizDataContext";
 import EnglishQuestionsPage from "../pages/Client/Quiz page/English question page";
 import AzerbaijanQuestionsPage from "../pages/Client/Quiz page/Azerbaijani question page";
-
-
+import { userInfoContext } from "../context/UserInfo";
 
 function ProtectedRoute({ children }) {
     let { quizDataArray } = useContext(quizDataContext);
     console.log(quizDataArray);
     return quizDataArray.length ? children : <Navigate to="/" />;
 }
+// function ProtectedRouteUser({ children }) {
+//     const { userInfo } = useContext(userInfoContext);
+//     const [loading, setLoading] = useState(true);
+
+//     useEffect(() => {
+//         const timer = setTimeout(() => {
+//             setLoading(false);
+//         }, 500);
+//         return () => clearTimeout(timer);
+//     }, [userInfo]);
+
+//     return userInfo.userId ? children : <Navigate to="/login" />;
+// }
 
 // favorites, store
 const ROUTES = [

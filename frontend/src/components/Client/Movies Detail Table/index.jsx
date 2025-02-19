@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { FaRegEye } from "react-icons/fa";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
+import { userInfoContext } from "../../../context/UserInfo";
 
 export default function MovieTable({ checkboxStates, wordList, setWordList, setCheckboxStates, setSelectedLevels }) {
     // visible sort 
@@ -32,6 +33,10 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
             .filter(Boolean);
         setSelectedLevels(selected);
     };
+
+    // known word list
+    let { userInfo } = useContext(userInfoContext)
+    us
 
 
     return (
@@ -69,8 +74,8 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
                     </ul>
                 </div>
             </div>
-            <div className="rounded max-[800px]:overflow-x-scroll py-3">
-                <table className="w-full rounded-5  whitespace-nowrap">
+            <div className="rounded overflow-x-scroll py-3">
+                <table className="w-full rounded-5 whitespace-nowrap">
                     <tbody className="rounded-5">
                         {
                             checkboxStates.find((bool) => bool == true) && wordList?.length != 0 ? (

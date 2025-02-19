@@ -44,7 +44,7 @@ export default function QuizFirstPage() {
                             Azərbaycanca suallar
                         </button>
                     </div>
-                    <p className='mt-2 font-["Kanit"] text-lg text-red-400 mb-0'>Testin yarısından çıxmaq istəsəz topladığınız xallar silinəcək</p>
+                    <p className='mt-2 font-["Kanit"] text-lg mb-0'>Testin yarısından çıxsanız belə topladığınız xallar silinməyəcək</p>
                     <p>{quizDataArray.length < 4 ? 'Testə başlamaq üçün ən azı 4 sual olmalıdır' : ''}</p>
                 </div>
             </div >

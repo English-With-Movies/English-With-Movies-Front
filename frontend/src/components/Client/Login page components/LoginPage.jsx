@@ -8,8 +8,8 @@ import { Helmet } from 'react-helmet';
 import { usePostLoginMutation } from '../../../redux/rtk query/Slices/registerSlice';
 
 let validationSchema = yup.object().shape({
-    email: yup.string().email().required(),
-    password: yup.string().required()
+    email: yup.string().required("Email or username required"),
+    password: yup.string().required("Password required")
 });
 
 export default function LoginFirstPart({ setPage }) {
@@ -63,7 +63,7 @@ export default function LoginFirstPart({ setPage }) {
                         >
                             {({ isSubmitting }) => (
                                 <Form>
-                                    <label htmlFor="email" className='mt-4 text-xl'>E-mail: </label>
+                                    <label htmlFor="email" className='mt-4 text-xl'>E-mail or UserName: </label>
                                     <Field type="text" name="email"
                                         placeholder='Enter your email or username'
                                         className="focus:outline-none 

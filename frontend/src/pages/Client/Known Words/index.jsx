@@ -5,6 +5,7 @@ import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { ImBin } from "react-icons/im";
 import { IoRocketSharp } from "react-icons/io5";
+import { useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
 
 export default function KnownWords() {
     const [checkboxStates, setCheckboxStates] = useState(
@@ -20,15 +21,26 @@ export default function KnownWords() {
     const sortedWordsFunction = () => {
         sortWords.current.classList.toggle("handleBars")
     }
+
+    let { data, refetch } = useGetKnownWordListByIdQuery(2)
+    console.log(data);
+    let [postWordToKnownWordList] = usePostWordToKnownWordListMutation()
+    const addword = async () => {
+        await postWordToKnownWordList({ knownWordListId: 2, wordId: 2 })
+        refetch()
+        console.log(data);
+        
+    }
+
     return (
         <>
             <Helmet>
                 <title>Bilinən sözlər</title>
             </Helmet>
 
-            <div className="py-3 bg-[var(--bg-color)] text-white">
+            <div className="pt-[130px] bg-[var(--bg-color)] text-white">
                 <Container>
-                    <h1 className="font-['Kanit']">Bilinən sözlər</h1>
+                    <h1 className="font-['Kanit']" onClick={() => addword()}>Bilinən sözlər</h1>
                     {/* level choice */}
                     <div className="max-w-[1000px] mx-auto my-5 text-[var(--text-color)] bg-[var(--movies-bg)] rounded-4 py-3 flex flex-col">
                         <h3 className="text-center mb-4 font-[Kanit]">Sözlərin çətinlik səviyyəsini seçin</h3>

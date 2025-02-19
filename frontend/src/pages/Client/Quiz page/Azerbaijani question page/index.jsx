@@ -61,13 +61,14 @@ export default function AzerbaijanQuestionsPage() {
         setOptions(newOptions.sort(() => Math.random() - 0.5));
     }, [question]);
 
-    const checkAnswer = (option) => {
+    const checkAnswer = async (option) => {
         disableButtons(true)
         setSelectedOption(option)
         nextButtonRef.current.classList.remove("hidden")
         sentenceRef.current.classList.remove("hidden")
         if (option === question.word.wordText) {
             setTotalPoint(prevTotal => prevTotal + point)
+            await addPointToUser({ userId: userInfo.userId, amount: point });
         }
         setQuizWords(prev => prev.filter(q => q.word.meaning !== question.word.meaning));
         clearInterval(intervalRef.current);

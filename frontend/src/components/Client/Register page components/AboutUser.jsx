@@ -142,11 +142,10 @@ export default function AboutUser({ }) {
                                             try {
                                                 const response = await postRegister(formData);
                                                 console.log(response);
-                                                if (response.data) {
+                                                if (response) {
                                                     if (values.loginAfterRegister) {
                                                         localStorage.setItem("token", response.data.token);
                                                         localStorage.setItem("expiration", response.data.expiration);
-                                                        // window.location.href = "/"
                                                         navigate('/')
                                                     } else {
                                                         navigate("/login")
