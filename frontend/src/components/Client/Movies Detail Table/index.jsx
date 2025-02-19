@@ -1,4 +1,4 @@
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { FaRegEye } from "react-icons/fa";
 import { FaBarsStaggered } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
@@ -35,8 +35,10 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
     };
 
     // known word list
-    let { userInfo } = useContext(userInfoContext)
-    us
+    // let { userInfo } = useContext(userInfoContext)
+    // useEffect(() => {
+        
+    // }, [userInfo])
 
 
     return (
