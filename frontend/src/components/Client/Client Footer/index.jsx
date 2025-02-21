@@ -29,7 +29,7 @@ export default function UserFooter() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
     return (
-        <div className="py-[70px] px-[30px] bg-no-repeat bg-cover bg-[var(--movies-bg)] text-[var(--text-color)] footer-bg">
+        <div className="p-[30px] bg-no-repeat bg-cover bg-[var(--movies-bg)] text-[var(--text-color)] footer-bg">
             <div className='max-w-[900px] mx-auto my-0'>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

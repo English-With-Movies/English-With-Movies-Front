@@ -20,32 +20,20 @@ import NotFound from "../pages/NotFound";
 import AvatarTable from "../pages/Admin/Admin Tables/Avatar Table";
 import UserTable from "../pages/Admin/Admin Tables/User Table";
 import UserFavoritesPage from "../pages/Client/User Favorites Page";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { quizDataContext } from "../context/QuizDataContext";
 import EnglishQuestionsPage from "../pages/Client/Quiz page/English question page";
 import AzerbaijanQuestionsPage from "../pages/Client/Quiz page/Azerbaijani question page";
-import { userInfoContext } from "../context/UserInfo";
+import BlogReadAndComment from "../pages/Client/Blog page/Blog read and comment page";
+import FrameStore from "../pages/Client/Frame store";
+import AddBlog from "../pages/Client/Blog page/Add Blog";
 
 function ProtectedRoute({ children }) {
     let { quizDataArray } = useContext(quizDataContext);
     console.log(quizDataArray);
     return quizDataArray.length ? children : <Navigate to="/" />;
 }
-// function ProtectedRouteUser({ children }) {
-//     const { userInfo } = useContext(userInfoContext);
-//     const [loading, setLoading] = useState(true);
 
-//     useEffect(() => {
-//         const timer = setTimeout(() => {
-//             setLoading(false);
-//         }, 500);
-//         return () => clearTimeout(timer);
-//     }, [userInfo]);
-
-//     return userInfo.userId ? children : <Navigate to="/login" />;
-// }
-
-// favorites, store
 const ROUTES = [
     {
         path: "/",
@@ -96,6 +84,14 @@ const ROUTES = [
                 element: <BlogPage />
             },
             {
+                path: '/blog/:id',
+                element: <BlogReadAndComment />
+            },
+            {
+                path: '/blog/create',
+                element: <AddBlog/>
+            },
+            {
                 path: '/login',
                 element: <LoginPage />
             },
@@ -118,6 +114,10 @@ const ROUTES = [
             {
                 path: '/favorites',
                 element: <UserFavoritesPage />
+            },
+            {
+                path: '/frame-store',
+                element: <FrameStore />
             },
             {
                 path: '/*',

@@ -2,14 +2,15 @@ import Container from 'react-bootstrap/Container';
 import { NavLink, useNavigate } from "react-router-dom";
 import { FaCircleUser } from "react-icons/fa6";
 import ThemeButton from '../Theme Button';
-import FilmLogo from "../../../assets/logo.png"
 import { useContext, useEffect, useRef } from 'react';
 import { FaBars } from "react-icons/fa6";
 import { userInfoContext } from '../../../context/UserInfo';
 import { useGetByIdUserQuery } from '../../../redux/rtk query/Slices/userSlice';
 import { useGetByIdAvatarQuery } from '../../../redux/rtk query/Slices/avatarSlice';
+import { useGetSettingsByKeyQuery } from '../../../redux/rtk query/Slices/settingsSlice';
 
 export default function UserNavbar() {
+    let { data: mainLogo } = useGetSettingsByKeyQuery('MainLogo')
     let hiddenRef = useRef()
     let barsRef = useRef()
     let navigate = useNavigate()
@@ -23,12 +24,12 @@ export default function UserNavbar() {
     }
     let { userInfo, setUserInfo } = useContext(userInfoContext)
     let { data } = useGetByIdUserQuery(userInfo?.userId)
-    
+
     let { data: avatarData } = useGetByIdAvatarQuery(data?.avatarId)
 
     const logOut = () => {
-        localStorage.removeItem("token")
-        localStorage.removeItem("expiration")
+        localStorage.removeItem("accessToken")
+        localStorage.removeItem("refreshToken")
         setUserInfo({})
         navigate("/")
     }
@@ -49,13 +50,13 @@ export default function UserNavbar() {
     }, []);
 
     return (
-        <div className="user-navbar bg-[var(--bg-color)] py-3 border-b-2 fixed w-full top-0 left-0 z-20">
+        <div className="user-navbar bg-[var(--bg-color)] py-3 border-b-2 border-[var(--movies-bg)] fixed w-full top-0 left-0 z-20">
             <Container>
                 <div className="navbar-wrapper flex items-center justify-between">
                     <div className="links flex items-center relative">
                         <NavLink
                             to="/">
-                            <img src={FilmLogo} alt="." width={"70px"} height={"70px"} />
+                            <img src={mainLogo?.value} alt="." width={"70px"} height={"70px"} />
                         </NavLink>
                         <NavLink
                             to="/"
@@ -87,12 +88,22 @@ export default function UserNavbar() {
                         </NavLink>
                         <NavLink
                             to="/blog"
-                            className="no-underline font-['PT_Serif'] font-semibold hidden md:block"
+                            className="no-underline mr-3 font-['PT_Serif'] font-semibold hidden md:block"
                             style={({ isActive }) => {
                                 return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
                             }}
                         >
                             <span className='text-xl'>Bloqlar</span>
+
+                        </NavLink>
+                        <NavLink
+                            to="/frame-store"
+                            className="no-underline font-['PT_Serif'] font-semibold hidden md:block"
+                            style={({ isActive }) => {
+                                return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
+                            }}
+                        >
+                            <span className='text-xl'>Market</span>
 
                         </NavLink>
                         <div className='text-3xl mx-2 text-[var(--text-color)] block md:hidden'>
@@ -139,6 +150,16 @@ export default function UserNavbar() {
                                     <span className='text-lg'>Bloqlar</span>
 
                                 </NavLink>
+                                <NavLink
+                                    to="/frame-store"
+                                    className="no-underline font-['PT_Serif']"
+                                    style={({ isActive }) => {
+                                        return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
+                                    }}
+                                >
+                                    <span className='text-lg'>Market</span>
+
+                                </NavLink>
                             </div>
                         </div>
 
@@ -181,6 +202,19 @@ export default function UserNavbar() {
                                             >
                                                 <span className='text-lg px-3'>Favoritlərim </span>
                                             </NavLink>
+                                            {
+                                                userInfo?.role == 'Admin' ? (
+                                                    <NavLink
+                                                        to="/manage"
+                                                        className="no-underline font-['PT_Serif']"
+                                                        style={({ isActive }) => {
+                                                            return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
+                                                        }}
+                                                    >
+                                                        <span className='text-lg px-3'>Admin</span>
+                                                    </NavLink>
+                                                ) : (<></>)
+                                            }
                                             <div className='h-[2px] w-full bg-black'></div>
                                             <span onClick={() => logOut()} className='cursor-pointer text-lg px-3 text-[var(--text-color)] font-["PT_Serif"]'>Çıxış et </span>
                                         </>

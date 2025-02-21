@@ -2,7 +2,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const wordApi = createApi({
     reducerPath: 'wordApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/' }),
+    baseQuery: fetchBaseQuery({ 
+        baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/',
+        prepareHeaders: (headers) => {
+            const token = localStorage.getItem("accessToken");
+            if (token) {
+                headers.set("Authorization", `Bearer ${token}`);
+            }
+            return headers;
+        },
+     }),
     endpoints: (builder) => ({
         getAllWords: builder.query({
             query: () => `word/getall`,
@@ -30,6 +39,7 @@ export const wordApi = createApi({
                 body: updateWord
             })
         }),
+        
     }),
 })
 

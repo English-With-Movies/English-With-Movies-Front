@@ -7,8 +7,6 @@ export default function QuizFirstPage() {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
-    // asagida nece sual qalib gostersin buttonlarin rengi deyissin
-    // hansisa pageden quize kecende o secilmis sozler ki var onlari contexte atacaq, quiz ordan goturecek ve useStateye menimsedecek
     let { quizDataArray } = useContext(quizDataContext)
     let navigate = useNavigate()
 

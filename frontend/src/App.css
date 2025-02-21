@@ -16,7 +16,7 @@
   --admin-page-bg-color: #e4e5e7;
   --admin-bg-color: #445264;
   --admin-text-color: #fff;
-  --bg-color: #fdffe5;
+  --bg-color: #fbffde;
   --text-color: #121212;
   --movies-bg: #1a222c;
 }
@@ -113,10 +113,6 @@ body {
         background: #242424;
       }
     }
-
-    /* &:active:after {
-    width: 20px;
-  } */
   }
 }
 
@@ -337,6 +333,7 @@ input[type="number"] {
 
 
 .card-hover {
+  cursor: pointer;
   perspective: 999px;
 
   .card {

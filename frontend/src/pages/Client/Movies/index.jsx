@@ -187,7 +187,7 @@ export default function MoviesPage() {
                                         allData.filter(item => item.isFilm === true) ? (
                                             allMoviesData?.map((film, index) => (
                                                 <div key={film.id} onClick={() => navigate(`${film.id}`)}
-                                                    className={`card-hover max-w-[200px] xs:h-[300px] rounded-[15px] h-[170px] 
+                                                    className={`card-hover max-w-[200px] xs:h-[300px] rounded-[15px] h-[260px] 
                                                         ${!film.isReady ? 'opacity-50 pointer-events-none' : ''}`}  >
                                                     <div className="card">
                                                         <div className="front-img">

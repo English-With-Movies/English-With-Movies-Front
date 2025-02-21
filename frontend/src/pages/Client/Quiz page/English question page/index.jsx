@@ -6,21 +6,23 @@ import { FaPlus } from "react-icons/fa";
 import { FaAnglesRight } from "react-icons/fa6";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { quizDataContext } from '../../../../context/QuizDataContext';
-import { useAddPointToUserMutation } from '../../../../redux/rtk query/Slices/userSlice';
+import { useAddPointToUserMutation, useGetByIdUserQuery } from '../../../../redux/rtk query/Slices/userSlice';
 import { userInfoContext } from '../../../../context/UserInfo';
 import { useNavigate } from 'react-router';
+import { useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from '../../../../redux/rtk query/Slices/knownWordListSlice';
 
 export default function EnglishQuestionsPage() {
-    // known word listde olanlar cixmasin
-
     let { quizDataArray } = useContext(quizDataContext)
     let [quizWords, setQuizWords] = useState([...quizDataArray])
     let navigate = useNavigate()
     let [addPointToUser] = useAddPointToUserMutation()
     let { userInfo } = useContext(userInfoContext)
-
+    let [postWordToKnownWordList] = usePostWordToKnownWordListMutation()
+    let { data: userData } = useGetByIdUserQuery(userInfo?.userId)
+    let { data: knowmData, refech } = useGetKnownWordListByIdQuery(userData?.knownWordListId)
     let [point, setPoint] = useState(150)
     let [totalPoint, setTotalPoint] = useState(0)
+    let [correctQuestion, setCorrectQuestion] = useState(0)
     let intervalRef = useRef()
     let nextButtonRef = useRef()
     let sentenceRef = useRef()
@@ -67,11 +69,15 @@ export default function EnglishQuestionsPage() {
         nextButtonRef.current.classList.remove("hidden")
         sentenceRef.current.classList.remove("hidden")
         if (option === question.word.meaning) {
+            setCorrectQuestion(prev => prev + 1)
             setTotalPoint(prevTotal => prevTotal + point)
-            await addPointToUser({ userId: userInfo.userId, amount: point });
+            clearInterval(intervalRef.current);
+            await postWordToKnownWordList({ knownWordListId: userData?.knownWordListId, wordId: question.wordId })
+            await addPointToUser({ userId: userInfo?.userId, amount: point });
+        } else {
+            clearInterval(intervalRef.current);
         }
         setQuizWords(prev => prev.filter(q => q.word.wordText !== question.word.wordText));
-        clearInterval(intervalRef.current);
     }
 
     const changeQuestion = () => {
@@ -192,6 +198,7 @@ export default function EnglishQuestionsPage() {
                             autoplay
                         />
                     </div>
+                    <div className='font-["Kanit"] text-lg'>Düzgün sual sayınız: {correctQuestion}</div>
                     <div className='font-["Kanit"] text-lg'>Topladığınız xal: {totalPoint}</div>
                     <div className='font-["Kanit"] text-sm'>Testi sonlandırsanız ana səhifəyə qayıdacaqsınız</div>
                 </div>

@@ -7,6 +7,7 @@ import 'swiper/css/pagination';
 import { EffectFade, Navigation, Pagination, Autoplay  } from 'swiper/modules';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import Container from 'react-bootstrap/esm/Container';
+import sliderBG from '../../../../assets/bg-home-slider.jpg'
 
 export default function HomeSwipper() {
   return (
@@ -18,17 +19,17 @@ export default function HomeSwipper() {
         pagination={{
           clickable: true,
         }}
-        autoplay={{
-          delay: 2000,
-          disableOnInteraction: true,
-        }}
+        // autoplay={{
+        //   delay: 2000,
+        //   disableOnInteraction: true,
+        // }}
         modules={[EffectFade, Navigation, Pagination, Autoplay]}
         className="mySwiper z-0 mt-[103px]"
       >
         <SwiperSlide>
-          <div className='h-full w-full py-3 flex items-center justify-center bg-[var(--movies-bg)]'>
+          <div className='h-full w-full py-3 flex items-center justify-center bg-center' style={{ backgroundImage: `url(${sliderBG})` }}>
             <Container>
-              <div>
+              {/* <div>
                 <h1 className='font-["Kanit"] text-center text-[var(--text-color)]'>Filmlərə baxmaq üçün ingiliscə öyrənmək istəyirsiz mi?</h1>
                 <div className='grid grid-cols-[3fr_2fr] max-w-[1000px] mx-auto my-0'>
                   <DotLottieReact
@@ -40,7 +41,7 @@ export default function HomeSwipper() {
                     <p>Elə isə ilk öncə istədiyiniz film və ya serialı seçin</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </Container>
           </div>
         </SwiperSlide>

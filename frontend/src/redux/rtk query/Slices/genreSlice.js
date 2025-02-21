@@ -2,7 +2,16 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const genreApi = createApi({
     reducerPath: 'genreApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/',
+        prepareHeaders: (headers) => {
+            const token = localStorage.getItem("accessToken");
+            if (token) {
+                headers.set("Authorization", `Bearer ${token}`);
+            }
+            return headers;
+        },
+    }),
     endpoints: (builder) => ({
         getAllGenre: builder.query({
             query: () => `genre/getall`,

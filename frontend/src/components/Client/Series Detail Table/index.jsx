@@ -10,9 +10,17 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { themeContext } from "../../../context/ThemeContext";
 import QuizIcon from "../Quiz Icon";
+import { useDeleteWordFromKnownWordListMutation, useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
+import { userInfoContext } from "../../../context/UserInfo";
+import { useContext } from "react";
+import { useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
+import { useNavigate } from "react-router";
+import LoaderIcon from "../../Loaders/Loader";
+import { useEffect } from "react";
+import { FaRegEyeSlash } from "react-icons/fa";
 
 export default function SerieTable({ season, handleChangeSeason, data, episode, handleChangeEpisode, seasonData, wordList, setWordList, setCheckboxStates, checkboxStates }) {
-
+    let navigate = useNavigate()
     let { darkMode } = React.useContext(themeContext)
 
     // visible sort
@@ -43,6 +51,46 @@ export default function SerieTable({ season, handleChangeSeason, data, episode, 
             .filter(Boolean);
         setSelectedLevels(selected);
     };
+
+    // known word list
+    let [postWordToKnownWordList] = usePostWordToKnownWordListMutation()
+    let [deleteWordFromKnownWordList] = useDeleteWordFromKnownWordListMutation()
+    let { userInfo } = useContext(userInfoContext)
+    const { data: userData, isLoading: userLoading } = useGetByIdUserQuery(userInfo?.userId, { skip: !userInfo?.userId });
+    const { data: userKnownList, refetch, isLoading: knownListLoading } = useGetKnownWordListByIdQuery(
+        userData?.knownWordListId, { skip: !userData?.knownWordListId }
+    );
+    // `knownWordListId` dəyişdikdə refetch çağır
+    useEffect(() => {
+        if (userData?.knownWordListId) {
+            refetch();
+        }
+    }, [userData?.knownWordListId, refetch]);
+
+    if (userLoading || knownListLoading) {
+        return <LoaderIcon />; // Yüklənmə animasiyası göstər
+    }
+
+    console.log("User Data:", userData);
+    console.log("Known Word List:", userKnownList);
+
+
+    const addToKnownListFunction = async (word) => {
+        if (userData) {
+            let finded = userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == word.wordId)
+            console.log(finded);
+
+            if (finded) {
+                await deleteWordFromKnownWordList({ knownWordListId: userKnownList.id, wordId: word.wordId })
+                refetch()
+            } else {
+                await postWordToKnownWordList({ knownWordListId: userKnownList.id, wordId: word.wordId })
+                refetch()
+            }
+        } else {
+            navigate('/login')
+        }
+    }
 
 
     return (
@@ -158,14 +206,27 @@ export default function SerieTable({ season, handleChangeSeason, data, episode, 
                                                     <td className="p-3" style={{ textDecoration: value.isKnown ? "line-through" : "none" }}>{value.word.wordText}</td>
                                                     <td className="p-3" style={{ textDecoration: value.isKnown ? "line-through" : "none" }}>{value.word.meaning}</td>
                                                     <td className="p-3 text-3xl text-lime-400 hover-title relative">
-                                                        {/* js kodu eger bilinenlerdedirse div ve span olmasa hecne */}
-                                                        {/* <div className="p-2 bg-lime-400 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısındadır</div> 
-                                                        <FaRegCircleCheck /> */}
+                                                        {
+                                                            (userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? (
+                                                                <>
+                                                                    <div className="p-2 bg-lime-400 absolute top-[-52%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısındadır</div>
+                                                                    <FaRegCircleCheck />
+                                                                </>
+                                                            ) : (
+                                                                <></>
+                                                            )
+                                                        }
                                                     </td>
-                                                    {/* bilinenler siyahisindadisa icon gorunsun */}
                                                     <td className="p-3 text-3xl relative hover-title flex">
-                                                        <div className="p-2 bg-pink-400 absolute top-[-50%] z-index-2 text-sm text-white rounded-4">Bilinənlər siyahısına <br /> əlavə edin</div>
-                                                        <span onClick={() => underlineWord(value)} className="cursor-pointer p-1"><FaRegEye /></span>
+                                                        <div className="p-2 bg-pink-400 absolute top-[-50%] z-index-2 text-sm text-white rounded-4">
+                                                            {(userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ?
+                                                                <span dangerouslySetInnerHTML={{ __html: 'Bilinənlər siyahısından <br /> silin' }} /> :
+                                                                <span dangerouslySetInnerHTML={{ __html: 'Bilinənlər siyahısına <br /> əlavə edin' }} />
+                                                            }
+                                                        </div>
+                                                        <span onClick={() => addToKnownListFunction(value)} className="cursor-pointer p-1">
+                                                            {(userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? <FaRegEyeSlash /> : <FaRegEye />}
+                                                        </span>
                                                     </td>
                                                 </tr>
                                             ))
@@ -179,7 +240,7 @@ export default function SerieTable({ season, handleChangeSeason, data, episode, 
                             </table>
                         </div>
 
-                        <QuizIcon wordList={wordList}/>
+                        <QuizIcon checkboxStates={checkboxStates} wordList={wordList} />
                     </>
                 ) : (<></>)
             }

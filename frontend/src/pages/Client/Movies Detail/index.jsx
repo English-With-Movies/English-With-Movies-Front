@@ -26,6 +26,7 @@ export default function MoviesDetail() {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
+
     let { id } = useParams()
     let navigate = useNavigate()
 
@@ -37,8 +38,6 @@ export default function MoviesDetail() {
     let [addToFavoritesUser] = useAddToFavoritesUserMutation()
     let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
     let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
-
-    // add to and delete from knownList
 
     // detail data
     let { data, isLoading, isError, error } = useGetByIdMovieQuery(id)
@@ -123,13 +122,6 @@ export default function MoviesDetail() {
         }
     }, [genreLoading, isLoading, data, allGenre]);
 
-    // add to and delete from known word list
-    const underlineWord = async (word) => {
-        // console.log(word.wordId);
-        // add list
-
-    }
-console.log(wordList?.length);
 
     return (
         <>
@@ -221,11 +213,8 @@ console.log(wordList?.length);
                                 )
                             }
                         </Container>
-
-
-
                         {
-                            userInfo ? (
+                            userInfo.userId ? (
                                 userAllData?.subscriptionId == 1 ? (
                                     data?.isPremiumFilm ? (
                                         <></>

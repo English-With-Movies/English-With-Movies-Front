@@ -1,10 +1,15 @@
 import { useContext, useEffect, useRef } from "react";
-import { FaRegEye } from "react-icons/fa";
-import { FaBarsStaggered } from "react-icons/fa6";
+import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { userInfoContext } from "../../../context/UserInfo";
+import { useDeleteWordFromKnownWordListMutation, useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
+import { useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
+import { useNavigate } from "react-router";
 
 export default function MovieTable({ checkboxStates, wordList, setWordList, setCheckboxStates, setSelectedLevels }) {
+    let navigate = useNavigate()
+
     // visible sort 
     let sortWords = useRef()
     const sortedWordsFunction = () => {
@@ -35,11 +40,26 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
     };
 
     // known word list
-    // let { userInfo } = useContext(userInfoContext)
-    // useEffect(() => {
-        
-    // }, [userInfo])
+    let [postWordToKnownWordList] = usePostWordToKnownWordListMutation()
+    let [deleteWordFromKnownWordList] = useDeleteWordFromKnownWordListMutation()
+    let { userInfo } = useContext(userInfoContext)
+    let { data: userData } = useGetByIdUserQuery(userInfo?.userId, { skip: !userInfo?.userId })
+    let { data: userKnownList, refetch } = useGetKnownWordListByIdQuery(userData?.knownWordListId, { skip: !userData?.knownWordListId })
 
+    const addToKnownListFunction = async (word) => {
+        if (userData) {
+            let finded = userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == word.wordId)
+            if (finded) {
+                await deleteWordFromKnownWordList({ knownWordListId: userKnownList.id, wordId: word.wordId })
+                refetch()
+            } else {
+                await postWordToKnownWordList({ knownWordListId: userKnownList.id, wordId: word.wordId })
+                refetch()
+            }
+        } else {
+            navigate('/login')
+        }
+    }
 
     return (
         <>
@@ -76,7 +96,7 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
                     </ul>
                 </div>
             </div>
-            <div className="rounded overflow-x-scroll py-3">
+            <div className="rounded overflow-x-scroll py-[35px] relative z-0">
                 <table className="w-full rounded-5 whitespace-nowrap">
                     <tbody className="rounded-5">
                         {
@@ -87,17 +107,30 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
                                             <div className="p-2 bg-blue-600 absolute top-[-35%] z-index-2 text-sm text-white rounded-4">Səsləndirin</div>
                                             <span className="cursor-pointer p-1"><HiSpeakerWave /></span>
                                         </td>
-                                        <td className="p-3" style={{ textDecoration: value.isKnown ? "line-through" : "none" }}>{value.word.wordText}</td>
-                                        <td className="p-3" style={{ textDecoration: value.isKnown ? "line-through" : "none" }}>{value.word.meaning}</td>
+                                        <td className="p-3" style={{ textDecoration: (userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? "line-through" : "none", textDecorationColor: "#3d3d3d", textDecorationThickness: "2px" }}>{value.word.wordText}</td>
+                                        <td className="p-3" style={{ textDecoration: (userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? "line-through" : "none", textDecorationColor: "#3d3d3d", textDecorationThickness: "2px" }}>{value.word.meaning}</td>
                                         <td className="p-3 text-3xl text-lime-400 hover-title relative">
-                                            {/* js kodu eger bilinenlerdedirse div ve span olmasa hecne */}
-                                            {/* <div className="p-2 bg-lime-400 absolute top-[-70%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısındadır</div>
-                                            <FaRegCircleCheck /> */}
+                                            {
+                                                (userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? (
+                                                    <>
+                                                        <div className="p-2 bg-lime-400 absolute top-[-52%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısındadır</div>
+                                                        <FaRegCircleCheck />
+                                                    </>
+                                                ) : (
+                                                    <></>
+                                                )
+                                            }
                                         </td>
-                                        {/* bilinenler siyahisindadisa icon gorunsun */}
                                         <td className="p-3 text-3xl relative hover-title flex">
-                                            <div className="p-2 bg-pink-400 absolute top-[-50%] z-index-2 text-sm text-white rounded-4">Bilinənlər siyahısına <br /> əlavə edin</div>
-                                            <span className="cursor-pointer p-1"><FaRegEye /></span>
+                                            <div className="p-2 bg-pink-400 absolute top-[-50%] text-sm text-white rounded-4">
+                                                {(userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ?
+                                                    <span dangerouslySetInnerHTML={{ __html: 'Bilinənlər siyahısından <br /> silin' }} /> :
+                                                    <span dangerouslySetInnerHTML={{ __html: 'Bilinənlər siyahısına <br /> əlavə edin' }} />
+                                                }
+                                            </div>
+                                            <span onClick={() => addToKnownListFunction(value)} className="cursor-pointer p-1">
+                                                {(userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? <FaRegEyeSlash /> : <FaRegEye />}
+                                            </span>
                                         </td>
                                     </tr>
                                 ))

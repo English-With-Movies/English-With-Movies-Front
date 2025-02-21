@@ -2,8 +2,20 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const userApi = createApi({
     reducerPath: 'userApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/' }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: 'https://ravanguliyeff-001-site1.ntempurl.com/api/',
+        prepareHeaders: (headers) => {
+            const token = localStorage.getItem("accessToken");
+            if (token) {
+                headers.set("Authorization", `Bearer ${token}`);
+            }
+            return headers;
+        },
+    }),
     endpoints: (builder) => ({
+        getAllUser: builder.query({
+            query: () => `user/getall`,
+        }),
         getByNameUser: builder.query({
             query: (userName) => `user/getbyusername/${userName}`,
         }),
@@ -12,6 +24,9 @@ export const userApi = createApi({
         }),
         getFavoriteMoviesUser: builder.query({
             query: (userId) => `user/getfavoritemovies?userId=${userId}`,
+        }),
+        getResetCodeCheck: builder.query({
+            query: ({ userId, movieId }) => `user/resetcodecheck?userId=${userId}&movieId=${movieId}`,
         }),
         addToFavoritesUser: builder.mutation({
             query: ({ userId, movieId }) => ({
@@ -31,7 +46,13 @@ export const userApi = createApi({
                 method: 'POST'
             }),
         }),
+        // postRefreshTokenUser: builder.mutation({
+        //     query: (refreshToken) => ({
+        //         url: `user/refreshtoken?refreshToken=${refreshToken}`,
+        //         method: 'POST'
+        //     }),
+        // }),
     }),
 })
 
-export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useAddPointToUserMutation } = userApi
+export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useAddPointToUserMutation, useGetAllUserQuery } = userApi

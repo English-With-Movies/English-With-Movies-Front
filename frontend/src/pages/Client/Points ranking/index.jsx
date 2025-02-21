@@ -10,11 +10,9 @@ import LoaderIcon from "../../../components/Loaders/Loader";
 export default function PointsRanking() {
     let navigate = useNavigate()
     let { userInfo } = useContext(userInfoContext)
-    // useEffect(() => {
-    //     if (!userInfo?.userId) {
-    //         navigate('/login')
-    //     }
-    // }, [userInfo])
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [])
     let { data, isLoading } = useGetRanksForPointQuery(userInfo?.userId)
     let [pointsRanking, setPointsRanking] = useState()
     useEffect(() => {
@@ -38,13 +36,13 @@ export default function PointsRanking() {
                             <Container>
                                 <div className="max-w-[1000px] mx-auto my-0">
                                     <div className="my-5">
-                                        <p className="text-center text-3xl font-['Dancing_Script']">ŞUBAT YARIŞMASI LİDERLİK TABLOSU</p>
+                                        <p className="text-center text-3xl font-['Dancing_Script']">ÜMUMİ XAL SIRALAMASI</p>
                                         <div className="grid grid-cols-3 items-end">
                                             <div className="flex flex-col items-center justify-center">
                                                 <div>{pointsRanking?.[1].userName}</div>
                                                 <div>{pointsRanking?.[1].value}</div>
                                                 <div className="border-[8px] border-r-0 border-solid border-[var(--movies-bg)] w-full 
-                                    h-[150px] flex items-center justify-center text-7xl text-[gray]">
+                                    h-[100px] md:h-[150px] flex items-center justify-center text-4xl md:text-7xl text-[gray]">
                                                     <FaMedal />
                                                 </div>
                                             </div>
@@ -52,22 +50,21 @@ export default function PointsRanking() {
                                                 <div>{pointsRanking?.[0].userName}</div>
                                                 <div>{pointsRanking?.[0].value}</div>
                                                 <div className="border-[8px] border-solid border-[var(--movies-bg)] w-full 
-                                    min-h-[200px] flex items-center justify-center text-7xl text-[yellow]">
+                                    h-[130px] md:h-[200px] flex items-center justify-center text-4xl md:text-7xl text-[yellow]">
                                                     <FaMedal />
                                                 </div>
                                             </div>
                                             <div className="flex flex-col items-center justify-center">
                                                 <div>{pointsRanking?.[2].userName}</div>
                                                 <div>{pointsRanking?.[2].value}</div>
-                                                <div className="border-[8px] border-l-0 border-solid border-[var(--movies-bg)] w-full 
-                                    h-[100px] flex items-center justify-center text-7xl text-[#CD7F32]">
+                                                <div className="border-[8px] border-l-0 border-solid border-[var(--movies-bg)] w-full h-[70px] md:h-[100px] flex items-center justify-center text-4xl md:text-7xl text-[#CD7F32]">
                                                     <FaMedal />
                                                 </div>
                                             </div>
                                         </div>
 
                                     </div>
-                                    <div className=" bg-[var(--movies-bg)]  ">
+                                    <div className="bg-[var(--movies-bg)] max-[576px]:overflow-x-scroll">
                                         <table className="w-full">
                                             <thead>
                                                 <tr className="bg-[var(--movies-bg)] text-xl text-gray-500 border-y">
@@ -103,8 +100,6 @@ export default function PointsRanking() {
                                         </table>
                                     </div>
                                 </div>
-
-
                             </Container>
                         </div>
                     </div>

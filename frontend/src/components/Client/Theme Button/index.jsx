@@ -9,7 +9,7 @@ export default function ThemeButton() {
     useEffect(() => {
         document.documentElement.style.setProperty(
             "--bg-color",
-            darkMode ? "#0f1620" : "#fefff4"
+            darkMode ? "#0f1620" : "#fbffde"
         );
         document.documentElement.style.setProperty(
             "--text-color",

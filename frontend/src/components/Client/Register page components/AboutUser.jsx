@@ -311,12 +311,12 @@ export default function AboutUser({ }) {
                                     <Modal.Title>Choose Avatar</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body className='bg-[var(--movies-bg)] text-[var(--text-color)] rounded'>
-                                    <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 items-center justify-between'>
+                                    <div className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 items-center justify-between'>
                                         <>
                                             <div className="flex items-center justify-center">
                                                 <div
                                                     onClick={handleButtonClick}
-                                                    className="w-[100px] h-[100px] rounded-[50%] hover:opacity-60
+                                                    className="w-[60px] h-[60px] xs:w-[100px] xs:h-[100px] rounded-[50%] hover:opacity-60
                                                     flex items-center justify-center text-gray-300 text-3xl text-center
                                                     transition-all duration-200 ease-in cursor-pointer"
                                                     style={{

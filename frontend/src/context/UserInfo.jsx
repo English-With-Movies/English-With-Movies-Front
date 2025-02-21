@@ -1,29 +1,45 @@
 import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
-
+import axios from 'axios';
 export const userInfoContext = createContext()
 
 export default function UserInfo({ children }) {
     const [userInfo, setUserInfo] = useState({});
 
-    const updateUserInfo = () => {
-        const userToken = localStorage.getItem("token");
-        const userExpiration = localStorage.getItem("expiration");
+    const updateUserInfo = async () => {
+        const userToken = localStorage.getItem("accessToken");
         if (userToken) {
             try {
                 const decoded = jwtDecode(userToken);
+                const currentTime = Math.floor(Date.now() / 1000);
                 setUserInfo({
                     userName: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-                    userId: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
+                    userId: decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"],
+                    role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"],
+                    exp: decoded.exp
                 });
+                if (decoded.exp < currentTime) {
+                    const userRefreshToken = localStorage.getItem("refreshToken");
+                    if (userRefreshToken) {
+                        try {
+                            const response = await axios.post(`https://ravanguliyeff-001-site1.ntempurl.com/api/user/refreshtoken?refreshToken=${userRefreshToken}`);
+                            localStorage.setItem("accessToken", response.data.accessToken);
+                            localStorage.setItem("refreshToken", response.data.refreshToken);
+                        } catch (error) {
+                            console.error("Error:", error);
+                            localStorage.removeItem("accessToken");
+                            localStorage.removeItem("refreshToken");
+                            setUserInfo({});
+                        }
+                    } else {
+                        localStorage.removeItem("accessToken");
+                        localStorage.removeItem("refreshToken");
+                        setUserInfo({});
+                    }
+                }
             } catch (error) {
                 console.error("Token-i decode etmək mümkün olmadı:", error);
             }
-        }
-        if (userToken && userExpiration && new Date(userExpiration) < new Date()) {
-            localStorage.removeItem("token");
-            localStorage.removeItem("expiration");
-            setUserInfo({});
         }
     };
 

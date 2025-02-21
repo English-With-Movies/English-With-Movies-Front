@@ -66,10 +66,6 @@ export default function SeriesDetail() {
     useEffect(() => {
         setWordList(episodesData?.episodeWords)
     }, [episodesData])
-    // console.log(wordList);
-    console.log(data?.seasons);
-    console.log(seasonData);
-    console.log(episodesData);
 
 
     // movie level
@@ -171,7 +167,7 @@ export default function SeriesDetail() {
                                             ${data.levelId == 1 ? "bg-[#167323]" : data.levelId == 2 ? "bg-[#25487a]" : data.levelId == 3 ? "bg-[#b07212]" : data.levelId == 4 ? "bg-[#480f7a]" : data.levelId == 5 ? "bg-[#8a1111]" : "bg-gray-600"}`}>
                                             {movieLevel?.name}
                                         </span>
-                                        <div className='ml-3 text-2xl w-[30px] h-[30px]'>{data.isPremiumFilm ? (
+                                        <div className='ml-1 text-2xl w-[30px] h-[30px]'>{data.isPremiumFilm ? (
                                             <img className='w-full h-full' src={premiumIcon} alt="" />
                                         ) : ("")}</div>
                                     </div>

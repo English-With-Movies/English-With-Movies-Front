@@ -137,7 +137,8 @@ export default function SeeMore() {
                                             className={`card-hover max-w-[200px] h-[300px] rounded-[15px] max-[450px]:h-[230px]
                                                 ${index == 1 ? 'hidden md:block' : ''}
                                                 ${index == 3 ? 'block lg:hidden xl:block' : ''}  
-                                                ${index == 4 ? 'hidden md:block lg:hidden' : ''}`}  >
+                                                ${index == 4 ? 'hidden md:block lg:hidden' : ''}
+                                                ${!serie.isReady ? 'opacity-50 pointer-events-none' : ''}`}  >
                                             <div className="card">
                                                 <div className="front-img">
                                                     <div className='h-full w-full relative'>
@@ -174,7 +175,6 @@ export default function SeeMore() {
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                     ))
                                 }

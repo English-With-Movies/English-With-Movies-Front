@@ -48,9 +48,10 @@ export default function LoginFirstPart({ setPage }) {
                                 formData.append("RememberMe", values.rememberMe);     
                                 try {
                                     const response = await postLogin(formData);
+                                    console.log(response)
                                     if (response.data) {
-                                        localStorage.setItem("token", response.data.token);
-                                        localStorage.setItem("expiration", response.data.expiration);
+                                        localStorage.setItem("accessToken", response.data.accessToken);
+                                        localStorage.setItem("refreshToken", response.data.refreshToken);
                                         navigate('/')
                                     }
                                     if (response.error) {

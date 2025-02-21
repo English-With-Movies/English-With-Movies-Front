@@ -7,20 +7,22 @@ import { FaAnglesRight } from "react-icons/fa6";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import { quizDataContext } from '../../../../context/QuizDataContext';
 import { useNavigate } from 'react-router';
-import { useAddPointToUserMutation } from '../../../../redux/rtk query/Slices/userSlice';
+import { useAddPointToUserMutation, useGetByIdUserQuery } from '../../../../redux/rtk query/Slices/userSlice';
 import { userInfoContext } from '../../../../context/UserInfo';
+import { useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from '../../../../redux/rtk query/Slices/knownWordListSlice';
 
 export default function AzerbaijanQuestionsPage() {
-    // known word listde olanlar cixmasin
-
     let { quizDataArray } = useContext(quizDataContext)
     let [quizWords, setQuizWords] = useState([...quizDataArray])
     let navigate = useNavigate()
     let [addPointToUser] = useAddPointToUserMutation()
     let { userInfo } = useContext(userInfoContext)
-
+    let [postWordToKnownWordList] = usePostWordToKnownWordListMutation()
+    let { data: userData } = useGetByIdUserQuery(userInfo?.userId)
+    let { data: knowmData, refech } = useGetKnownWordListByIdQuery(userData?.knownWordListId)
     let [point, setPoint] = useState(150)
     let [totalPoint, setTotalPoint] = useState(0)
+    let [correctQuestion, setCorrectQuestion] = useState()
     let intervalRef = useRef()
     let nextButtonRef = useRef()
     let sentenceRef = useRef()
@@ -67,11 +69,16 @@ export default function AzerbaijanQuestionsPage() {
         nextButtonRef.current.classList.remove("hidden")
         sentenceRef.current.classList.remove("hidden")
         if (option === question.word.wordText) {
+            setCorrectQuestion(prev => prev + 1)
             setTotalPoint(prevTotal => prevTotal + point)
+            clearInterval(intervalRef.current);
+            await postWordToKnownWordList({ knownWordListId: userData?.knownWordListId, wordId: question.wordId })
             await addPointToUser({ userId: userInfo.userId, amount: point });
+        } else {
+            clearInterval(intervalRef.current)
         }
         setQuizWords(prev => prev.filter(q => q.word.meaning !== question.word.meaning));
-        clearInterval(intervalRef.current);
+
     }
 
     const changeQuestion = () => {
@@ -186,7 +193,7 @@ export default function AzerbaijanQuestionsPage() {
                 </div>
                 <div className='max-w-[500px] py-5 mx-auto my-0 flex gap-3 flex-col justify-center items-center hidden relative' ref={finishedRef}>
                     <h1 className='font-["Kanit"]'>Test bitdi!</h1>
-                    <button  onClick={() => addPoint()} className='px-3 py-1 bg-blue-500 font-["Kanit"] rounded'>Sonlandır</button>
+                    <button onClick={() => addPoint()} className='px-3 py-1 bg-blue-500 font-["Kanit"] rounded'>Sonlandır</button>
                     <p className='font-["Kanit"] text-lg'>Testi sonlandırmaq üçün düyməyə basın</p>
                     <div className='h-[180px]'>
                         <DotLottieReact
@@ -195,6 +202,7 @@ export default function AzerbaijanQuestionsPage() {
                             autoplay
                         />
                     </div>
+                    <div className='font-["Kanit"] text-lg'>Düzgün sual sayınız: {correctQuestion}</div>
                     <div className='font-["Kanit"] text-lg'>Topladığınız xal: {totalPoint}</div>
                     <div className='font-["Kanit"] text-sm'>Testi sonlandırsaz topladığınız xal sizin ümumi xalınızın üzərinə gələcək</div>
                 </div>

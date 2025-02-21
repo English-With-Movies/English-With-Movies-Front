@@ -98,7 +98,8 @@ export default function SeriesPage() {
             .filter(item => item.genreId === genreId)
             .map(item => item.movieId);
 
-        const filtered = allSeriesData.filter(movie =>
+        let myGenreData = allData.filter(item => item.isFilm === false)
+        const filtered = myGenreData.filter(movie =>
             filteredMovieId.includes(movie.id)
         );
         setAllSeriesData(filtered);
@@ -187,7 +188,7 @@ export default function SeriesPage() {
                                             allSeriesData?.map((film, index) => (
                                                 <div key={film.id} onClick={() => navigate(`${film.id}`)}
                                                     className={`card-hover max-w-[200px] xs:h-[300px] rounded-[15px] h-[170px] 
-                                                    ${film.isReady ? 'opacity-50 pointer-events-none' : ''}`}  >
+                                                    ${!film.isReady ? 'opacity-50 pointer-events-none' : ''}`}  >
                                                     <div className="card">
                                                         <div className="front-img">
                                                             <div className='h-full w-full relative'>
