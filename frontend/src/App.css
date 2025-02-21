@@ -214,14 +214,34 @@ input[type="number"] {
 }
 
 /* swipper */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .swiper {
+  position: relative;
   width: 100%;
-  height: 70vh;
+  aspect-ratio: 24 / 9;
+  @media (max-width: 640px) {
+    aspect-ratio: 16 / 9;
+  }
 }
 
 .swiper-slide {
   background-position: center;
   background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.swiper-slide div {
+  animation: slideIn 1.5s ease-out forwards;
 }
 
 .swiper-slide img {

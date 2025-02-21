@@ -8,6 +8,7 @@ import { userInfoContext } from '../../../context/UserInfo';
 import { useGetByIdUserQuery } from '../../../redux/rtk query/Slices/userSlice';
 import { useGetByIdAvatarQuery } from '../../../redux/rtk query/Slices/avatarSlice';
 import { useGetSettingsByKeyQuery } from '../../../redux/rtk query/Slices/settingsSlice';
+import { useGetByIdFrameQuery } from '../../../redux/rtk query/Slices/frameSlice';
 
 export default function UserNavbar() {
     let { data: mainLogo } = useGetSettingsByKeyQuery('MainLogo')
@@ -26,6 +27,12 @@ export default function UserNavbar() {
     let { data } = useGetByIdUserQuery(userInfo?.userId)
 
     let { data: avatarData } = useGetByIdAvatarQuery(data?.avatarId)
+    let frameId = null;
+    if (data?.userFrames?.length) {
+        const currentFrame = data.userFrames.find((value) => value.isCurrent);
+        frameId = currentFrame ? currentFrame.frameId : null;
+    }
+    let { data: frame } = useGetByIdFrameQuery(frameId);
 
     const logOut = () => {
         localStorage.removeItem("accessToken")
@@ -168,10 +175,13 @@ export default function UserNavbar() {
                         <div className="user-logo text-cyan-500 text-3xl relative">
                             {
                                 Object.keys(userInfo).length ? (
-                                    <div
-                                        onClick={(e) => handleDisplay(e)}
-                                        className='user-logo text-cyan-500 text-3xl cursor-pointer'>
-                                        <img className='w-[50px] h-[50px] object-cover rounded-full' src={`https://englishwithmovies.blob.core.windows.net/avatar/${avatarData?.imgName}`} alt="" />
+                                    <div onClick={(e) => handleDisplay(e)} className='user-logo text-cyan-500 text-3xl cursor-pointer relative flex items-center justify-center w-[50px] h-[50px]'>
+                                        <img className='w-[75%] h-[75%] rounded-full object-cover z-0' src={`https://englishwithmovies.blob.core.windows.net/avatar/${avatarData?.imgName}`} alt="profile" />
+                                        <div
+                                            key={frame?.id}
+                                            className="absolute w-full h-full bg-cover bg-center z-10"
+                                            style={{ backgroundImage: `url('https://englishwithmovies.blob.core.windows.net/frame/${frame?.imgName}')` }}
+                                        ></div>
                                     </div>
                                 ) : (
                                     <div

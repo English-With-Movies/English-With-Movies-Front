@@ -98,7 +98,7 @@ export default function UserProfile() {
                                                             <div
                                                                 key={frame.frameId}
                                                                 className="absolute w-full h-full bg-cover bg-center z-10"
-                                                                style={{ backgroundImage: `url('https://englishwithmovies.blob.core.windows.net/frame/${userFrame.imgName}')` }}
+                                                                style={{ backgroundImage: `url('https://englishwithmovies.blob.core.windows.net/frame/${userFrame?.imgName}')` }}
                                                             ></div>
                                                         );
                                                     }

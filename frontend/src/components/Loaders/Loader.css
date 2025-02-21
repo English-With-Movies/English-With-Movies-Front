@@ -8,13 +8,13 @@
     justify-content: space-evenly;
     height: 80vh;
     min-height: 200px;
-    background-color: #F5F1ED;
+    background-color: var(--bg-color);
 }
 
 .loader {
     .loader-text {
         margin: 5px auto;
-        color: #3D314A;
+        color: #735099;
         text-transform: uppercase;
         letter-spacing: 1px;
         font-family: Anton, sans-serif;
@@ -24,14 +24,14 @@
         position: relative;
         width: 56px;
         height: 70px;
-        background-color: #3D314A;
+        background-color: #735099;
 
         &:before,
         &:after {
             content: '';
             position: absolute;
             height: 120%;
-            border-left: 5px dashed #F5F1ED;
+            border-left: 5px dashed var(--bg-color);
             animation: roll 30ms infinite;
         }
 

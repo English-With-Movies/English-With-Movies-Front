@@ -1,15 +1,13 @@
 import Container from 'react-bootstrap/Container';
 import { useNavigate } from 'react-router';
-import { NavLink } from "react-router-dom";
 import { useGetForHomePageMoviesQuery } from '../../../../redux/rtk query/Slices/moviesSlice';
 import LoaderIcon from '../../../Loaders/Loader';
 import { FaRegHeart } from 'react-icons/fa6';
 import premiumIcon from "../../../../assets/premium-icon.png"
 import { useGetAllLevelQuery } from '../../../../redux/rtk query/Slices/levelSlice';
-import { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import { userInfoContext } from '../../../../context/UserInfo';
-import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetByIdUserQuery, useGetFavoriteMoviesUserQuery } from '../../../../redux/rtk query/Slices/userSlice';
+import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetFavoriteMoviesUserQuery } from '../../../../redux/rtk query/Slices/userSlice';
 import { FaHeart } from 'react-icons/fa';
 
 export default function SeeMore() {
@@ -17,15 +15,15 @@ export default function SeeMore() {
     let { userInfo } = useContext(userInfoContext)
     let [addToFavoritesUser] = useAddToFavoritesUserMutation()
     let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
-    let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
+    let { data: userFavoritesArray, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
 
     const goToPage = (string) => {
         navigate(`/${string}`);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    let { data, isLoading, isError, error, refetch } = useGetForHomePageMoviesQuery()
-    let { data: levelData, isLoading: levelIsLoading } = useGetAllLevelQuery()
+    let { data, isLoading } = useGetForHomePageMoviesQuery()
+    let { data: levelData } = useGetAllLevelQuery()
 
     const handleFavorites = async (e, movie) => {
         e.stopPropagation();
@@ -55,25 +53,25 @@ export default function SeeMore() {
                             <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                                 <div className='flex flex-col items-center justify-center text-center'>
                                     <div
-                                        className="text-gray-500 hidden sm:block sm:text-2xl flex-col flex font-['Kanit']">
+                                        className="text-gray-500 text-sm sm:text-2xl flex-col flex font-['Kanit']">
                                         təqdim edilən filmlər
                                     </div>
                                     <div
-                                        className="text-gray-500 sm:text-2xl flex-col flex font-['Kanit']">
+                                        className="text-gray-500 text-sm sm:text-2xl flex-col flex font-['Kanit']">
                                         öyrənmək üçün tələs
                                     </div>
-                                    <div className='text-3xl sm:text-6xl font-["Kanit"]'>filmlər</div>
+                                    <div className='text-2xl sm:text-5xl font-["Kanit"]'>filmlər</div>
                                     <div
-                                        className="text-gray-500 sm:text-2xl font-['Kanit'] leading-7">
+                                        className="text-gray-500 text-sm sm:text-2xl font-['Kanit'] leading-7">
                                         sizin üçün seçilmiş
                                     </div>
                                     <div
-                                        className="text-gray-500 hidden sm:block sm:text-2xl font-['Kanit'] leading-7">
+                                        className="text-gray-500 text-sm sm:text-2xl font-['Kanit'] leading-7">
                                         indi trenddədir
                                     </div>
                                     <button
                                         onClick={() => goToPage("movies")}
-                                        className='px-1 sm:px-3 py-1 border-2 rounded-4 border-[#02C9A8] sm:my-3 
+                                        className='px-3 py-1 border-2 rounded-4 border-[#02C9A8] sm:my-3 
                                 hover:shadow-[0_0px_20px_0px_#06b6d4] font-["Kanit"]
                                 transition-all duration-150 ease-in'>daha çoxu &#62;&#62;</button>
                                 </div>
@@ -120,7 +118,6 @@ export default function SeeMore() {
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                     ))
                                 }
@@ -180,25 +177,25 @@ export default function SeeMore() {
                                 }
                                 <div className='flex flex-col items-center justify-center text-center'>
                                     <div
-                                        className="text-gray-500 hidden sm:block sm:text-2xl flex-col flex font-['Kanit']">
+                                        className="text-gray-500 text-sm sm:text-2xl flex-col flex font-['Kanit']">
                                         təqdim edilən filmlər
                                     </div>
                                     <div
-                                        className="text-gray-500 sm:text-2xl flex-col flex font-['Kanit']">
+                                        className="text-gray-500 text-sm sm:text-2xl flex-col flex font-['Kanit']">
                                         öyrənmək üçün tələs
                                     </div>
-                                    <div className='text-3xl sm:text-6xl font-["Kanit"]'>seriallar</div>
+                                    <div className='text-2xl sm:text-5xl font-["Kanit"]'>seriallar</div>
                                     <div
-                                        className="text-gray-500 sm:text-2xl font-['Kanit'] leading-7">
+                                        className="text-gray-500 text-sm sm:text-2xl font-['Kanit'] leading-7">
                                         sizin üçün seçilmiş
                                     </div>
                                     <div
-                                        className="text-gray-500 hidden sm:block sm:text-2xl font-['Kanit'] leading-7">
+                                        className="text-gray-500 text-sm sm:text-2xl font-['Kanit'] leading-7">
                                         indi trenddədir
                                     </div>
                                     <button
                                         onClick={() => goToPage("series")}
-                                        className='sm:px-3 py-1 border-2 rounded-4 border-[#02C9A8] sm:my-3 
+                                        className='px-3 py-1 border-2 rounded-4 border-[#02C9A8] sm:my-3 
                                 hover:shadow-[0_0px_20px_0px_#06b6d4] font-["Kanit"]
                                 transition-all duration-150 ease-in'>daha çoxu &#62;&#62;
                                     </button>

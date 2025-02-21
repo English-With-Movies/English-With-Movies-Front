@@ -1,9 +1,14 @@
 import { useState } from "react";
 import Container from "react-bootstrap/esm/Container";
+import { useParams } from "react-router";
+import { useGetByIdBlogQuery } from "../../../../redux/rtk query/Slices/blogSlice";
 
 export default function BlogReadAndComment() {
+    let { id } = useParams()
+    console.log(id);
+    let { data, isLoading } = useGetByIdBlogQuery(id)
+
     let myArray = Array.from({ length: 19 })
-    console.log(myArray);
     let [sliceNumber, setSliceNumber] = useState(5)
 
     const showMoreLess = () => {
