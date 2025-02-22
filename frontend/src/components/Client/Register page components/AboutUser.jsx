@@ -141,18 +141,20 @@ export default function AboutUser({ }) {
                                         if (values.checkbox) {
                                             try {
                                                 const response = await postRegister(formData);
+
                                                 console.log(response);
+                                                
                                                 if (response) {
                                                     if (values.loginAfterRegister) {
-                                                        localStorage.setItem("token", response.data.token);
-                                                        localStorage.setItem("expiration", response.data.expiration);
+                                                        localStorage.setItem("accessToken", response.data.accessToken);
+                                                        localStorage.setItem("refreshToken", response.data.refreshToken);
                                                         navigate('/')
                                                     } else {
                                                         navigate("/login")
                                                     }
                                                 }
                                                 if (response.error) {
-                                                    setRegisterError("❌ " + response.error.data)
+                                                    alert("❌ " + response.error.data)
                                                 }
                                             } catch (error) {
                                                 if (error.response) {
@@ -247,14 +249,14 @@ export default function AboutUser({ }) {
                                                     <Field type="checkbox" name="loginAfterRegister" id='cbtest-19'
                                                         className="p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
                                                     <label htmlFor="cbtest-19" className='check-box'></label>
-                                                    <label htmlFor="cbtest-19" className='cursor-pointer font-["PT_Serif"] ml-2'> Birbaşa Login etmək istəyirsiz mi? </label>
+                                                    <label htmlFor="cbtest-19" className='cursor-pointer font-["PT_Serif"] ml-2'> Birbaşa Login etmək istəyirsiz? </label>
                                                 </div>
 
                                                 <div className='flex items-center checkbox-wrapper-19 mt-1 text-lg'>
                                                     <Field type="checkbox" name="acceptMail" id='cbtest-19-1'
                                                         className="p-2 border-2 border-[#06b6d4] rounded cursor-pointer" />
                                                     <label htmlFor="cbtest-19-1" className='check-box'></label>
-                                                    <label htmlFor="cbtest-19-1" className='cursor-pointer ml-2'> Bildiriş maillərini qəbul edirsiniz mi? </label>
+                                                    <label htmlFor="cbtest-19-1" className='cursor-pointer ml-2'> Bildiriş maillərini qəbul edirsiz? </label>
                                                 </div>
 
                                                 <div className='flex items-center checkbox-wrapper-19 mt-1 text-lg'>
@@ -264,7 +266,7 @@ export default function AboutUser({ }) {
                                                     <label htmlFor="cbtest-19-2" className='cursor-pointer ml-2'>
                                                         <span
                                                             onClick={() => setShow(true)}
-                                                            className='text-blue-400'> Şərtlərimizi</span> qəbul edirsiz mi?
+                                                            className='text-blue-400'> Şərtlərimizi</span> qəbul edirsiz?
                                                     </label>
                                                 </div>
                                                 <div>{registerError}</div>

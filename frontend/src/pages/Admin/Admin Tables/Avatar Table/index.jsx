@@ -34,7 +34,6 @@ let validationSchema = yup.object().shape({
         .required("Admin, please enter avatar name!")
         .trim()
         .max(20, "Maximum 20 characters").min(3, "Minimum 3 characters"),
-    // imgName: yup.number().required().positive().integer(),
 });
 
 export default function AvatarTable() {

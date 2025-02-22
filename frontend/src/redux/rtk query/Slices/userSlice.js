@@ -25,8 +25,11 @@ export const userApi = createApi({
         getFavoriteMoviesUser: builder.query({
             query: (userId) => `user/getfavoritemovies?userId=${userId}`,
         }),
+        getFavoriteBlogsUser: builder.query({
+            query: (userId) => `user/getfavoriteblogs?userId=${userId}`,
+        }),
         getResetCodeCheck: builder.query({
-            query: ({ userId, movieId }) => `user/resetcodecheck?userId=${userId}&movieId=${movieId}`,
+            query: ({ email, code }) => `user/resetcodecheck?email=${email}&code=${code}`,
         }),
         addToFavoritesUser: builder.mutation({
             query: ({ userId, movieId }) => ({
@@ -40,19 +43,51 @@ export const userApi = createApi({
                 method: 'DELETE'
             })
         }),
+        addToFavoriteBlogUser: builder.mutation({
+            query: ({ userId, blogId }) => ({
+                url: `user/addtofavorites?userId=${userId}&blogId=${blogId}`,
+                method: 'POST'
+            }),
+        }),
+        deleteFromFavoriteBlogUser: builder.mutation({
+            query: ({ userId, blogId }) => ({
+                url: `user/removefromfavorites?userId=${userId}&blogId=${blogId}`,
+                method: 'DELETE'
+            })
+        }),
         addPointToUser: builder.mutation({
             query: ({ userId, amount }) => ({
                 url: `user/addpointtouser?userId=${userId}&amount=${amount}`,
                 method: 'POST'
             }),
         }),
-        // postRefreshTokenUser: builder.mutation({
-        //     query: (refreshToken) => ({
-        //         url: `user/refreshtoken?refreshToken=${refreshToken}`,
-        //         method: 'POST'
-        //     }),
-        // }),
+        userBuyFrame: builder.mutation({
+            query: ({ userId, frameId }) => ({
+                url: `user/getframe?userId=${userId}&frameId=${frameId}`,
+                method: 'POST'
+            }),
+        }),
+        userUpdateCurrentFrame: builder.mutation({
+            query: ({ userId, frameId }) => ({
+                url: `user/updatecurrentframe?userId=${userId}&frameId=${frameId}`,
+                method: 'PUT'
+            }),
+        }),
+        userUpdateProfile: builder.mutation({
+            query: (updateUser) => ({
+                url: `user/updateprofile`,
+                method: 'PUT',
+                body: updateUser
+            }),
+        }),
+        userUpdateAvatar: builder.mutation({
+            query: (updateAvatar) => ({
+                url: `user/updateavatar`,
+                method: 'PUT',
+                body: updateAvatar
+            }),
+        }),
     }),
 })
 
-export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useAddPointToUserMutation, useGetAllUserQuery } = userApi
+export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useAddPointToUserMutation, useGetAllUserQuery, useGetResetCodeCheckQuery, useUserBuyFrameMutation, useUserUpdateCurrentFrameMutation, useAddToFavoriteBlogUserMutation, useDeleteFromFavoriteBlogUserMutation, useGetFavoriteBlogsUserQuery, useUserUpdateProfileMutation, useUserUpdateAvatarMutation } = userApi

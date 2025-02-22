@@ -30,10 +30,10 @@ export default function SeeMore() {
         if (userInfo.userId) {
             let finded = userFavoritesArray?.find((fav) => fav.id === movie.id)
             if (finded) {
-                await deleteFromFavoritesUser({ userId: userInfo.userId, movieId: movie.id });
+                await deleteFromFavoritesUser({ userId: userInfo.userId, movieId: movie.id, blogId: null });
                 userFavRefech()
             } else {
-                await addToFavoritesUser({ userId: userInfo.userId, movieId: movie.id });
+                await addToFavoritesUser({ userId: userInfo.userId, movieId: movie.id, blogId: null });
                 userFavRefech()
             }
         } else {

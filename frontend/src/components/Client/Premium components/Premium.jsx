@@ -22,7 +22,7 @@ export default function PremiumFirstPage({ setPage, setPrice }) {
                         <Container>
                             <div className="pt-[103px]">
                                 <h2 className="font-['Kanit'] text-center">Premium üzv olmaq üçün tələs!</h2>
-                                <div className="grid grid-cols-2 max-w-[800px] min-h-[200px] mx-auto my-4 gap-6 font-['PT_Serif']">
+                                <div className="grid grid-col-1 sm:grid-cols-2 max-w-[800px] min-h-[200px] mx-auto my-4 gap-6 font-['PT_Serif']">
                                     <div className="flex flex-col items-center justify-between p-2 border-4 border-[var(--movies-bg)] rounded gap-3">
                                         {
                                             data.slice(1).map((price) => (

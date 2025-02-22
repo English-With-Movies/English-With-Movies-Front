@@ -1,28 +1,48 @@
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import Container from "react-bootstrap/esm/Container";
-import { FaPlus } from "react-icons/fa";
+import { FaHeart, FaPlus, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router";
 import { useGetAllBlogsQuery } from "../../../redux/rtk query/Slices/blogSlice";
 import { Helmet } from "react-helmet";
 import LoaderIcon from "../../../components/Loaders/Loader";
 import moment from 'moment';
-import { useGetAllUserQuery, useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
-import { useGetAllAvatarQuery, useGetByIdAvatarQuery } from "../../../redux/rtk query/Slices/avatarSlice";
+import { useAddToFavoriteBlogUserMutation, useDeleteFromFavoriteBlogUserMutation, useGetAllUserQuery, useGetByIdUserQuery, useGetFavoriteBlogsUserQuery } from "../../../redux/rtk query/Slices/userSlice";
+import { useGetAllAvatarQuery } from "../../../redux/rtk query/Slices/avatarSlice";
 import { useGetAllFrameQuery } from "../../../redux/rtk query/Slices/frameSlice";
+import { userInfoContext } from "../../../context/UserInfo";
 
 const BlogPage = () => {
     let navigate = useNavigate()
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
-
+    let [addToFavoriteBlogUser] = useAddToFavoriteBlogUserMutation()
+    let [deleteFromFavoriteBlogUser] = useDeleteFromFavoriteBlogUserMutation()
     let { data: allBlogs, isLoading, refech } = useGetAllBlogsQuery()
-    console.log(allBlogs);
     let { data: allUsers, isLoading: usersLoading } = useGetAllUserQuery()
-    console.log(allUsers);
     let { data: allAvatar, isLoading: avatarLoading } = useGetAllAvatarQuery()
-    console.log(allAvatar);
-    const { data: allFrame } = useGetAllFrameQuery();
+    let { data: allFrame } = useGetAllFrameQuery();
+    let { userInfo } = useContext(userInfoContext)
+    let { data: userData } = useGetByIdUserQuery(userInfo?.userId)
+    let { data: userFavoritesArray, refetch: userFavRefech } = useGetFavoriteBlogsUserQuery(userInfo?.userId)
+
+    const addFavBlog = async (e, id) => {
+        e.stopPropagation();
+        if (userInfo?.userId) {
+            const response = await addToFavoriteBlogUser({ userId: userInfo.userId, blogId: id })
+            console.log(response);
+            if (response.error) {
+                const responseDelete = await deleteFromFavoriteBlogUser({ userId: userInfo.userId, blogId: id })
+                console.log(responseDelete);
+            }
+            userFavRefech()
+            console.log(userFavoritesArray);
+            
+        } else {
+            navigate("/login")
+        }
+        console.log(id);
+    }
 
     return (
         <>
@@ -49,19 +69,15 @@ const BlogPage = () => {
                                         {
                                             allBlogs.length ? (
                                                 allBlogs.map((blog, index) => {
-                                                    // const { data: userData, isLoading: userLoading } = useGetByIdUserQuery(blog?.authorId);
-                                                    // const { data: avatar, isLoading: avatarLoading } = useGetByIdAvatarQuery(user?.avatarId);
-                                                    // console.log(avatar);
-
-                                                    // if (userLoading) return <LoaderIcon />;
                                                     let user = allUsers?.find(user => user.id === blog?.authorId);
                                                     let userPhoto = allAvatar?.find(avatar => avatar.id === user?.avatarId)
-                                                    console.log(user);
-
-                                                    let time = moment(blog.createdAt).fromNow();
+                                                    let time = moment.utc(blog?.createdAt.split('.')[0]).local().fromNow()
                                                     return (
                                                         <div key={blog.id} onClick={() => { navigate(`${blog.id}`) }} className="cursor-pointer p-3 rounded-4 bg-[var(--movies-bg)] transition-all duration-250 ease-in hover:shadow-gray-500 hover:shadow-lg">
-                                                            <h3 className="font-['Kanit'] text-sm md:text-xl">{blog.title}</h3>
+                                                            <div className="flex items-center justify-between">
+                                                                <h3 className="font-['Kanit'] text-sm md:text-xl">{blog.title}</h3>
+                                                                <span onClick={(e) => addFavBlog(e, blog.id)} className="text-xl"><FaRegHeart /></span>
+                                                            </div>
                                                             <div className="flex gap-2 justify-end">
                                                                 <div className="flex flex-col items-end justify-center">
                                                                     <span className="font-['PT_Serif'] text-sm md:text-md">{user?.userName}</span>

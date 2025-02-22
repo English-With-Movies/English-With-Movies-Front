@@ -119,7 +119,7 @@ export default function SeriesPage() {
                             <div className="text-[var(--text-color)]">
                                 <h1>İngiliscə Seriallarda İstifadə Olunan Sözlər və Mənaları</h1>
                                 <div className='bg-[var(--movies-bg)] p-3 series-about-wrapper mt-4'>
-                                    <p className='text-lg'>{seriesText.value}</p>
+                                    <p className='text-lg'>{seriesText?.value}</p>
                                     <div className='flex gap-4 items-center'>
                                         <input
                                             onChange={(e) => handleSearch(e)}

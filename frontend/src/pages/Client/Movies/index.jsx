@@ -27,7 +27,7 @@ export default function MoviesPage() {
     let { userInfo } = useContext(userInfoContext)
     let [addToFavoritesUser] = useAddToFavoritesUserMutation()
     let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
-    let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
+    let { data: userFavoritesArray, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo?.userId)
 
     let { data: allGenre, isLoading: genreLoading } = useGetAllGenreQuery()
     let sortRef = useRef()
@@ -45,7 +45,7 @@ export default function MoviesPage() {
     // add to favorites
     const handleFavorites = async (e, movie) => {
         e.stopPropagation();
-        if (userInfo.userId) {
+        if (userInfo?.userId) {
             let finded = userFavoritesArray?.find((fav) => fav.id === movie.id)
             if (finded) {
                 await deleteFromFavoritesUser({ userId: userInfo.userId, movieId: movie.id });

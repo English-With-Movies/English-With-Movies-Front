@@ -27,6 +27,7 @@ import AzerbaijanQuestionsPage from "../pages/Client/Quiz page/Azerbaijani quest
 import BlogReadAndComment from "../pages/Client/Blog page/Blog read and comment page";
 import FrameStore from "../pages/Client/Frame store";
 import AddBlog from "../pages/Client/Blog page/Add Blog";
+import OtherUserPage from "../pages/Client/Other User Page";
 
 function ProtectedRoute({ children }) {
     let { quizDataArray } = useContext(quizDataContext);
@@ -118,6 +119,10 @@ const ROUTES = [
             {
                 path: '/frame-store',
                 element: <FrameStore />
+            },
+            {
+                path: '/user/:userName',
+                element: <OtherUserPage />
             },
             {
                 path: '/*',

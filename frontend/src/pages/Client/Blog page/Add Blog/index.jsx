@@ -4,8 +4,10 @@ import * as yup from "yup";
 import { useContext, useEffect, useRef, useState } from "react";
 import { userInfoContext } from "../../../../context/UserInfo";
 import { usePostBlogMutation } from "../../../../redux/rtk query/Slices/blogSlice";
+import { useNavigate } from "react-router";
 
 export default function AddBlog() {
+    let navigate = useNavigate()
     let { userInfo } = useContext(userInfoContext)
     let [id, setId] = useState()
     useEffect(() => {
@@ -21,7 +23,7 @@ export default function AddBlog() {
     let [postBlog] = usePostBlogMutation()
 
     return (
-        <div className="bg-[var(--bg-color)] pb-3 pt-[130px] ">
+        <div className="bg-[var(--bg-color)] pb-5 pt-[150px] ">
             <div className="max-w-[1000px] mx-auto my-0">
                 <Formik
                     enableReinitialize={true}
@@ -38,6 +40,7 @@ export default function AddBlog() {
                             console.log(response);
                             if (response.data) {
                                 alert('Successfully');
+                                navigate('/blog')
                             }
                             if (response.error) {
                                 alert("❌ " + response.error.data)
