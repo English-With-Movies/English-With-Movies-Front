@@ -175,26 +175,6 @@ body {
     linear-gradient(to bottom, var(--bg-color), transparent 5%, transparent 95%, var(--bg-color));
 }
 
-/* hover */
-.film-hover {
-  .hover-about {
-    transform: scale(0);
-    transition: all .5s ease;
-  }
-
-  &:hover {
-    img {
-      filter: blur(4px);
-    }
-
-    .hover-about {
-      text-shadow: 1px 1px 2px var(--bg-color), 0 0 1em blue, 0 0 0.2em blue;
-      transform: scale(1) rotate(360deg);
-      height: 100%;
-    }
-  }
-}
-
 /* navbar (640px) */
 .handleBars {
   opacity: 0;

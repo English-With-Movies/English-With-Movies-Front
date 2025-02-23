@@ -6,28 +6,20 @@ import { useNavigate } from "react-router";
 import { userInfoContext } from "../../../context/UserInfo";
 import { useGetRanksForStreakQuery } from "../../../redux/rtk query/Slices/rankSlice";
 import LoaderIcon from "../../../components/Loaders/Loader";
-import { useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 
 export default function StreakRanking() {
     let navigate = useNavigate()
     let { userInfo } = useContext(userInfoContext)
-    // useEffect(() => {
-    //     if (!userInfo?.userId) {
-    //         navigate('/login')
-    //     }
-    // }, [userInfo])
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
     let { data, isLoading } = useGetRanksForStreakQuery(userInfo?.userId)
-    let { data: userData } = useGetByIdUserQuery(userInfo?.userId)
     let [streakRanking, setStreakRanking] = useState()
     useEffect(() => {
         if (!isLoading && data) {
             setStreakRanking(data?.toSorted((a, b) => b.value - a.value))
         }
     }, [isLoading, data])
-    console.log(userInfo);
 
     return (
         <>

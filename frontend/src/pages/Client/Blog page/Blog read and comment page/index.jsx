@@ -8,7 +8,7 @@ import moment from 'moment';
 import { useGetAllAvatarQuery, useGetByIdAvatarQuery } from "../../../../redux/rtk query/Slices/avatarSlice";
 import { useGetAllFrameQuery } from "../../../../redux/rtk query/Slices/frameSlice";
 import { userInfoContext } from "../../../../context/UserInfo";
-import { FaArrowUp } from "react-icons/fa";
+import { FaArrowUp, FaHeart } from "react-icons/fa";
 // formik and yup
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
@@ -81,8 +81,6 @@ export default function BlogReadAndComment() {
     }
 
     let { data: userFavoritesArray, refetch: userFavRefech } = useGetFavoriteBlogsUserQuery(userInfo?.userId)
-    console.log(userFavoritesArray);
-
     let { data: blogUser } = useGetByIdUserQuery(data?.authorId)
     let { data: avatar } = useGetByIdAvatarQuery(blogUser?.avatarId)
     // all
@@ -124,13 +122,10 @@ export default function BlogReadAndComment() {
     const addAndDeleteFavoriteBlog = async (id) => {
         if (userInfo?.userId) {
             const response = await addToFavoriteBlogUser({ userId: userInfo.userId, blogId: id })
-            console.log(response);
             if (response.error) {
                 const responseDelete = await deleteFromFavoriteBlogUser({ userId: userInfo.userId, blogId: id })
-                console.log(responseDelete);
             }
             userFavRefech()
-            console.log(userFavoritesArray);
         } else {
             navigate("/login")
         }
@@ -187,8 +182,12 @@ export default function BlogReadAndComment() {
 
                                 <div className="break-all" dangerouslySetInnerHTML={{ __html: data?.content }} />
                                 <div className="flex gap-2 items-center justify-end">
-                                    <div onClick={() => addAndDeleteFavoriteBlog(id)} className="cursor-pointer text-2xl">
-                                        <FaRegHeart />
+                                    <div onClick={() => addAndDeleteFavoriteBlog(id)} className="cursor-pointer text-2xl text-red-600">
+                                        {
+                                            userFavoritesArray.find((userFav) => userFav.id == id) ? (
+                                                <FaHeart />) : (<FaRegHeart />)
+                                        }
+
                                     </div>
                                     <div className="flex flex-col items-end justify-center">
                                         <span className="font-['PT_Serif'] text-sm md:text-md">{blogUser?.userName}</span>
@@ -479,7 +478,6 @@ export default function BlogReadAndComment() {
                                                 blogEditFormData.append("Id", values.id)
                                                 try {
                                                     const response = await updateBlog(blogEditFormData);
-                                                    console.log(response);
                                                     if (response.data) {
                                                         alert('Successfully');
                                                         handleCloseEditModal()

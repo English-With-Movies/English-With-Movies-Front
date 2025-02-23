@@ -33,7 +33,6 @@ import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
 function ProtectedRoute({ children }) {
     let { quizDataArray } = useContext(quizDataContext);
-    console.log(quizDataArray);
     return quizDataArray.length ? children : <Navigate to="/" />;
 }
 

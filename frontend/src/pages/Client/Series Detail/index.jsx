@@ -1,10 +1,8 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import { Helmet } from "react-helmet";
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
-import { FaBarsStaggered, FaRegCircleCheck, FaRegEye } from "react-icons/fa6";
-import { HiSpeakerWave } from "react-icons/hi2";
 import { useNavigate, useParams } from "react-router";
 import { useGetByIdMovieQuery } from "../../../redux/rtk query/Slices/moviesSlice";
 import { useGetAllLevelQuery } from "../../../redux/rtk query/Slices/levelSlice";
@@ -15,14 +13,7 @@ import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useG
 import { useGetAllGenreQuery } from "../../../redux/rtk query/Slices/genreSlice";
 import { useGetByIdSeasonQuery } from "../../../redux/rtk query/Slices/seasonSlice";
 import { useGetByIdEpisodeQuery } from "../../../redux/rtk query/Slices/episodeSlice";
-
-// material ui
 import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
-import { themeContext } from "../../../context/ThemeContext";
 import SerieTable from "../../../components/Client/Series Detail Table";
 
 export default function SeriesDetail() {
@@ -42,7 +33,7 @@ export default function SeriesDetail() {
     let { id } = useParams()
     let navigate = useNavigate()
     // detail data
-    let { data, isLoading, isError, error } = useGetByIdMovieQuery(id)
+    let { data, isLoading } = useGetByIdMovieQuery(id)
 
     // user info data
     let { userInfo } = useContext(userInfoContext)
@@ -52,8 +43,6 @@ export default function SeriesDetail() {
     let [addToFavoritesUser] = useAddToFavoritesUserMutation()
     let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
     let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
-
-    // add to and delete from knownList
 
     // movie genre
     let [movieGenresName, setMovieGenresName] = useState()
@@ -128,13 +117,6 @@ export default function SeriesDetail() {
             setMovieGenresName(genreNames);
         }
     }, [genreLoading, isLoading, data, allGenre]);
-
-    // add to and delete from known word list
-    const underlineWord = async (word) => {
-        console.log(word.wordId);
-        // add list
-
-    }
 
     return (
         <>

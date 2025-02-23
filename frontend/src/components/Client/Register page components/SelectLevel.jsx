@@ -19,7 +19,6 @@ export default function SelectLevel({ name }) {
             {...field}
             showSearch
             className='placeholder:text-black'
-            // placeholder="Select a your level"
             optionFilterProp="label"
             onChange={onChange}
             onSearch={onSearch}

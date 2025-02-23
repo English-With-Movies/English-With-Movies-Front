@@ -41,8 +41,6 @@ export default function AvatarTable() {
     let [deleteAvatar] = useDeleteAvatarMutation()
     let [postAvatar] = usePostAvatarMutation()
     let [updatePostAvatar] = useUpdatePostAvatarMutation()
-    // console.log(avatarData);
-    // let [binnaryAvatar, setBinnaryAvatar] = React.useState(null);
     // post modal
     const [openPostModal, setOpenPostModal] = React.useState(false);
     const handleOpenPostModal = () => setOpenPostModal(true);
@@ -57,7 +55,6 @@ export default function AvatarTable() {
 
     const [openAlert, setOpenAlert] = React.useState(false);
 
-    // burda klik edende falan hemin avatar obj dusur bura
     const [selectedAvatar, setSelectedAvatar] = React.useState({})
 
     const handleClickOpen = (avatar) => {
@@ -72,35 +69,6 @@ export default function AvatarTable() {
         setOpenAlert(false);
         refetch()
     }
-    // console.log(selectedAvatar);
-
-    // const handlePostAvatar = () => {
-    //     // formik acilacaq, melumatlari ele onun icinde post atacagiq, submit eliyenden sonra modal baglanacaq 
-    // }
-
-    // const fileInputRef = useRef(null);
-    // const handleButtonClick = () => {
-    //     fileInputRef.current.click();
-    // };
-    // const handleFileChange = (event) => {
-    //     const file = event.target.files[0];
-    //     console.log(file);
-
-    //     if (file && file.type.startsWith("image/")) {
-    //         // setBinnaryAvatar(file)
-    //         console.log(file);
-
-    //         // const reader = new FileReader();
-    //         // reader.onload = (e) => {
-    //         //     setSelectedAvatar(e.target.result);
-    //         // };
-    //         // reader.readAsDataURL(file);
-    //         // setShowAvatar(false)
-    //     } else {
-    //         alert("Zəhmət olmasa şəkil seçin");
-    //     }
-    // };
-
 
     return (
 
@@ -205,8 +173,7 @@ export default function AvatarTable() {
                                                 refetch()
                                                 console.log(response);
                                                 if (response.data) {
-                                                    // alert(re);
-
+                                                    alert("Successfully")
                                                 }
                                                 if (response.error) {
                                                     alert("❌ " + response.error.data)
@@ -290,7 +257,6 @@ export default function AvatarTable() {
                                             try {
                                                 const response = await updatePostAvatar(editPostFormData);
                                                 refetch()
-                                                console.log(response);
                                                 if (response.data) {
                                                     alert('Avatar edit olundu');
                                                     setOpenEditModal(false)
@@ -333,7 +299,6 @@ export default function AvatarTable() {
                                                         setFieldValue("imgName", event.currentTarget.files[0]);
                                                     }}
                                                     className="border-2 border-blue-400 rounded py-1 px-2 focus:outline-none"
-                                                // required
                                                 />
                                                 <ErrorMessage name="imgName" component="div" />
                                                 <img src={`https://englishwithmovies.blob.core.windows.net/avatar/${selectedAvatar.imgName}`} width={'80px'} height={'80px'} className="mt-1" alt="editPhoto" />

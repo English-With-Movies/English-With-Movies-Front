@@ -8,14 +8,11 @@ import { useContext } from "react"
 import { userInfoContext } from "../../../context/UserInfo"
 import { useNavigate } from "react-router"
 
-
 export default function FrameStore() {
     let navigate = useNavigate()
     let { data: allFrame, refetch, isLoading } = useGetAllFrameQuery()
-    console.log(allFrame);
     let { userInfo } = useContext(userInfoContext)
     let { data: userData, refetch: userRefetch } = useGetByIdUserQuery(userInfo?.userId)
-    console.log(userData);
     let [userUpdateCurrentFrame] = useUserUpdateCurrentFrameMutation()
     let [userBuyFrame] = useUserBuyFrameMutation()
 
@@ -26,7 +23,6 @@ export default function FrameStore() {
             navigate('/premium')
         } else {
             const response = await userBuyFrame({ userId: userData?.id, frameId: frame.id })
-            console.log(response);
             if (response.error) {
                 alert(response.error.data)
             }
@@ -37,7 +33,6 @@ export default function FrameStore() {
 
     const chooseCurrentFrame = async (frame) => {
         const response = await userUpdateCurrentFrame({ userId: userData?.id, frameId: frame.id })
-        console.log(response);
         refetch()
         userRefetch()
     }

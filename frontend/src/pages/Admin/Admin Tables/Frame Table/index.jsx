@@ -42,8 +42,6 @@ export default function FrameTable() {
     let [deleteFrame] = useDeleteFrameMutation()
     let [postFrame] = usePostFrameMutation()
     let [updatePostFrame] = useUpdatePostFrameMutation()
-    // console.log(avatarData);
-    // let [binnaryAvatar, setBinnaryAvatar] = React.useState(null);
     // post modal
     const [openPostModal, setOpenPostModal] = React.useState(false);
     const handleOpenPostModal = () => setOpenPostModal(true);
@@ -58,7 +56,6 @@ export default function FrameTable() {
 
     const [openAlert, setOpenAlert] = React.useState(false);
 
-    // burda klik edende falan hemin avatar obj dusur bura
     const [selectedAvatar, setSelectedAvatar] = React.useState({})
 
     const handleClickOpen = (avatar) => {
@@ -73,35 +70,6 @@ export default function FrameTable() {
         setOpenAlert(false);
         refetch()
     }
-    // console.log(selectedAvatar);
-
-    // const handlePostAvatar = () => {
-    //     // formik acilacaq, melumatlari ele onun icinde post atacagiq, submit eliyenden sonra modal baglanacaq 
-    // }
-
-    // const fileInputRef = useRef(null);
-    // const handleButtonClick = () => {
-    //     fileInputRef.current.click();
-    // };
-    // const handleFileChange = (event) => {
-    //     const file = event.target.files[0];
-    //     console.log(file);
-
-    //     if (file && file.type.startsWith("image/")) {
-    //         // setBinnaryAvatar(file)
-    //         console.log(file);
-
-    //         // const reader = new FileReader();
-    //         // reader.onload = (e) => {
-    //         //     setSelectedAvatar(e.target.result);
-    //         // };
-    //         // reader.readAsDataURL(file);
-    //         // setShowAvatar(false)
-    //     } else {
-    //         alert("Zəhmət olmasa şəkil seçin");
-    //     }
-    // };
-
 
     return (
 

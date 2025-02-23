@@ -36,9 +36,7 @@ export default function QuizIcon({ wordList, checkboxStates }) {
         } else {
             navigate("/login")
         }
-
     }
-    console.log(quizDataArray);
 
     return (
         <div className={`${!(checkboxStates?.find((bool) => bool == true)) ? 'hidden' : 'block'}`}>

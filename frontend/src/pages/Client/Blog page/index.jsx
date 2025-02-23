@@ -14,11 +14,10 @@ import { userInfoContext } from "../../../context/UserInfo";
 const BlogPage = () => {
     let navigate = useNavigate()
     let { data: allBlogs, isLoading, refetch } = useGetAllBlogsQuery()
-    let { data: allUsers, isLoading: usersLoading } = useGetAllUserQuery()
-    let { data: allAvatar, isLoading: avatarLoading } = useGetAllAvatarQuery()
+    let { data: allUsers } = useGetAllUserQuery()
+    let { data: allAvatar } = useGetAllAvatarQuery()
     let { data: allFrame } = useGetAllFrameQuery();
     let { userInfo } = useContext(userInfoContext)
-    let { data: userData } = useGetByIdUserQuery(userInfo?.userId)
     useEffect(() => {
         refetch()
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -47,7 +46,7 @@ const BlogPage = () => {
                                     <div className="flex flex-col gap-3">
                                         {
                                             allBlogs.length ? (
-                                                allBlogs.map((blog, index) => {
+                                                allBlogs.map((blog) => {
                                                     let user = allUsers?.find(user => user.id === blog?.authorId);
                                                     let userPhoto = allAvatar?.find(avatar => avatar.id === user?.avatarId)
                                                     let time = moment.utc(blog?.createdAt.split('.')[0]).local().fromNow()
@@ -86,7 +85,6 @@ const BlogPage = () => {
                                                 <h1>Hələ ki heç bir bloq yoxdur</h1>
                                             )
                                         }
-
                                     </div>
                                 </div>
                             </div>

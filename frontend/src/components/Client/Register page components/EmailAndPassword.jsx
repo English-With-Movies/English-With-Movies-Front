@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router';
 import { registerContext } from '../../../context/RegisterContext';
 import { FaRegEye } from 'react-icons/fa';
 
-//  name surname username email password profilephoto 
 let validationSchema = yup.object().shape({
     email: yup.string().email().required("Please, enter your email."),
     password: yup.string().required("Please, enter your password.")
@@ -23,7 +22,6 @@ let validationSchema = yup.object().shape({
 export default function EmailAndPassword({ setPage }) {
     let navigate = useNavigate()
     let { emailPassword, setEmailPassword } = useContext(registerContext)
-    // console.log(emailPassword);
     let passwordRef = useRef()
     let confirmRef = useRef()
 

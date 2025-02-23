@@ -32,7 +32,7 @@ export default function MoviesPage() {
     let { data: allGenre, isLoading: genreLoading } = useGetAllGenreQuery()
     let sortRef = useRef()
     let genreRef = useRef()
-    let { data: allData, isLoading, isError, error } = useGetAllMoviesQuery()
+    let { data: allData, isLoading } = useGetAllMoviesQuery()
     let [allMoviesData, setAllMoviesData] = useState([])
     useEffect(() => {
         if (!isLoading && allData) {

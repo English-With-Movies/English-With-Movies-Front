@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import Container from 'react-bootstrap/Container';
@@ -38,7 +38,6 @@ export default function LoginFirstPart({ setPage }) {
                         <h1 className='text-center text-[#06b6d4] font-["Dancing_Script"]'>Login</h1>
                         {/* formik */}
                         <Formik
-                            // remember me
                             initialValues={{ email: '', password: '', rememberMe: false }}
                             validationSchema={validationSchema}
                             onSubmit={async (values, { setSubmitting }) => {
@@ -48,7 +47,6 @@ export default function LoginFirstPart({ setPage }) {
                                 formData.append("RememberMe", values.rememberMe);     
                                 try {
                                     const response = await postLogin(formData);
-                                    console.log(response)
                                     if (response.data) {
                                         localStorage.setItem("accessToken", response.data.accessToken);
                                         localStorage.setItem("refreshToken", response.data.refreshToken);

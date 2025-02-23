@@ -5,7 +5,6 @@ import { quizDataContext } from '../../../context/QuizDataContext';
 
 export default function QuizPage() {
     let { quizDataArray } = useContext(quizDataContext)
-    console.log(quizDataArray);
     
     return (
         <>

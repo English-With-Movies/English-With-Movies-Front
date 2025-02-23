@@ -23,11 +23,8 @@ export default function UserNavbar() {
         e.stopPropagation()
         barsRef.current.classList.toggle("handleBars")
     }
-    let { userInfo, setUserInfo } = useContext(userInfoContext)
-    console.log(userInfo);
-    
+    let { userInfo, setUserInfo } = useContext(userInfoContext)    
     let { data } = useGetByIdUserQuery(userInfo?.userId)
-
     let { data: avatarData } = useGetByIdAvatarQuery(data?.avatarId)
     let frameId = null;
     if (data?.userFrames?.length) {
@@ -256,7 +253,6 @@ export default function UserNavbar() {
                                 }
                             </div>
                         </div>
-
                         <div className="theme-button">
                             <ThemeButton />
                         </div>

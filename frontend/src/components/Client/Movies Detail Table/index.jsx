@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
@@ -13,7 +13,7 @@ import { IoCloseSharp } from "react-icons/io5";
 export default function MovieTable({ checkboxStates, wordList, setWordList, setCheckboxStates, setSelectedLevels }) {
     let navigate = useNavigate()
     let [generateSentences, { isLoading }] = useGenerateSentencesMutation()
-    let [generateSpeech, { isLoading: speechLoading }] = useGenerateSpeechMutation()
+    let [generateSpeech] = useGenerateSpeechMutation()
     let [open, setOpen] = useState(false)
     let [stateData, setStateData] = useState({})
 

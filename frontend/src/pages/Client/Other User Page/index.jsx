@@ -7,7 +7,6 @@ import { useGetAllFrameQuery } from "../../../redux/rtk query/Slices/frameSlice"
 import Cup from '../../../assets/trophy.png'
 import Calcifer from '../../../assets/calcifer-streak1.png'
 import moment from 'moment';
-import { FaRegHeart } from 'react-icons/fa6';
 import Container from "react-bootstrap/esm/Container";
 
 export default function OtherUserPage() {
@@ -16,10 +15,6 @@ export default function OtherUserPage() {
     let { data: userData, isLoading, isError, error } = useGetByNameUserQuery(userName)
     let { data: avatarUser } = useGetByIdAvatarQuery(userData?.avatarId)
     let { data: allFrame } = useGetAllFrameQuery()
-    // console.log(userData);
-    // console.log(isError);
-    // console.log(error);
-    // console.log(userData);
     if (error) {
         navigate('/*')
     }
@@ -117,7 +112,8 @@ export default function OtherUserPage() {
                                                                 }
                                                             </div>
                                                         </div>
-                                                    </div>)
+                                                    </div>
+                                                )
                                             )
                                         }
                                     </div>

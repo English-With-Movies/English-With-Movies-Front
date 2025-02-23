@@ -1,8 +1,6 @@
-import Container from 'react-bootstrap/Container';
 import { NavLink } from "react-router-dom";
 import { FaFacebook, FaXTwitter } from "react-icons/fa6";
-import { FaArrowUp, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
-import { HiArrowLongUp } from "react-icons/hi2";
+import { FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { BsArrowUp } from "react-icons/bs";
 import { useEffect, useRef } from 'react';
 import { useGetSettingsByKeyQuery } from '../../../redux/rtk query/Slices/settingsSlice';

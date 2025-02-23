@@ -22,7 +22,6 @@ export default function PointsRanking() {
             setPointsRanking(data?.toSorted((a, b) => b.value - a.value))
         }
     }, [isLoading, data])
-    console.log(pointsRanking);
 
     return (
         <>

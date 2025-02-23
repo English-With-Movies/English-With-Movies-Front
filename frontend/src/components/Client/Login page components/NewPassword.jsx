@@ -51,7 +51,7 @@ export default function NewPassword({ setPage }) {
                             validationSchema={validationSchema}
                             onSubmit={async (values, { setSubmitting }) => {
                                 if (values.password == values.confirmPassword) {
-                                    console.log("passwordunuz deyisdirildi");
+                                    alert("Şifrəniz dəyişdirildi");
                                 } else {
                                     alert("Şifrənizi düzgün daxil edin")
                                     setSubmitting(false)

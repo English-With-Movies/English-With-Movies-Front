@@ -41,11 +41,7 @@ export default function AboutUser({ }) {
     let [binnaryAvatar, setBinnaryAvatar] = useState(null);
     // avatar data
     let { data, isLoading, error, isError } = useGetAllAvatarQuery()
-    console.log(data);
-
     let [registerError, setRegisterError] = useState("")
-
-    // console.log(data);
 
     useEffect(() => {
         if (!isLoading && !isError && data?.length > 0) {
@@ -87,9 +83,7 @@ export default function AboutUser({ }) {
             event.returnValue = message;
             return message;
         };
-
         window.addEventListener("beforeunload", handleBeforeUnload);
-
         return () => {
             window.removeEventListener("beforeunload", handleBeforeUnload);
         };
@@ -141,9 +135,6 @@ export default function AboutUser({ }) {
                                         if (values.checkbox) {
                                             try {
                                                 const response = await postRegister(formData);
-
-                                                console.log(response);
-                                                
                                                 if (response.data) {
                                                     if (values.loginAfterRegister) {
                                                         localStorage.setItem("accessToken", response.data.accessToken);

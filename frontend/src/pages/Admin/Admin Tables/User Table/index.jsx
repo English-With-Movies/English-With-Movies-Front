@@ -45,7 +45,6 @@ export default function UserTable() {
     let [deleteUser] = useDeleteUserMutation()
     let [addPointToUser] = useAddPointToUserMutation()
     let [changeUserRole] = useChangeUserRoleMutation()
-    let [userRoleData, setUserRoleData] = React.useState()
     const [openAddPoint, setOpenAddPoint] = React.useState(false);
     const handleOpenAddPoint = (user) => {
         setOpenAddPoint(true)
@@ -61,8 +60,6 @@ export default function UserTable() {
     const [openChangeRole, setOpenChangeRole] = React.useState(false);
     const handleOpenChangeRole = (user) => {
         setSelectedUser(user);
-        console.log(userData);
-
         setOpenChangeRole(true);
     }
     const handleCloseChangeRole = () => setOpenChangeRole(false);
@@ -71,7 +68,6 @@ export default function UserTable() {
 
     const handleClickOpen = (user) => {
         setSelectedUser(user)
-        console.log(user);
         setOpenAlert(true);
     };
 
@@ -80,7 +76,6 @@ export default function UserTable() {
     const handleDeleteUser = async () => {
         try {
             const response = await deleteUser(selectedUser.id)
-            console.log(response);
             if (response.error) {
                 alert("❌ Xəta baş verdi")
             }
@@ -205,13 +200,9 @@ export default function UserTable() {
                                         initialValues={{ amount: null }}
                                         validationSchema={validationSchema}
                                         onSubmit={async (values) => {
-                                            console.log(values);
-                                            console.log(selectedUser);
-
                                             try {
                                                 const response = await addPointToUser({ userId: selectedUser?.id, amount: values.amount });
                                                 refetch()
-                                                console.log(response);
                                                 if (response.error) {
                                                     alert("❌ " + response.error.data)
                                                 }

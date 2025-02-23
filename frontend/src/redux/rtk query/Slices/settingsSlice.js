@@ -22,7 +22,6 @@ export const settingsApi = createApi({
         getSettingsByKey: builder.query({
             query: (key) => `settings/getbykey/${key}`,
         })
-        // post put delete
     })
 })
 

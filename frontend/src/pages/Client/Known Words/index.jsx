@@ -1,18 +1,17 @@
-import { useContext, useEffect, useReducer, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import { Helmet } from "react-helmet";
 import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { ImBin } from "react-icons/im";
 import { IoCloseSharp, IoRocketSharp } from "react-icons/io5";
-import { useDeleteWordFromKnownWordListMutation, useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
+import { useDeleteWordFromKnownWordListMutation, useGetKnownWordListByIdQuery } from "../../../redux/rtk query/Slices/knownWordListSlice";
 import UserInfo, { userInfoContext } from "../../../context/UserInfo";
 import { useNavigate } from "react-router";
 import { useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 import QuizIcon from "../../../components/Client/Quiz Icon";
 import { useGenerateSentencesMutation, useGenerateSpeechMutation } from "../../../redux/rtk query/Slices/aiSlice";
 import UserLoader from "../../../components/Loaders/UserLoader";
-// import QuizIcon from "../../../components/Client/Quiz Icon";
 
 export default function KnownWords() {
     // scroll
@@ -20,7 +19,6 @@ export default function KnownWords() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
 
-    let navigate = useNavigate()
     let [generateSentences, { isLoading: sentenceLoading }] = useGenerateSentencesMutation()
     let [generateSpeech, { isLoading: speechLoading }] = useGenerateSpeechMutation()
     let [open, setOpen] = useState(false)
@@ -44,7 +42,6 @@ export default function KnownWords() {
     let { userInfo } = useContext(userInfoContext)
     let { data: userData } = useGetByIdUserQuery(userInfo?.userId, { skip: !userInfo?.userId })
     let { data: userKnownList, isLoading, refetch } = useGetKnownWordListByIdQuery(userData?.knownWordListId, { skip: !userData?.knownWordListId })
-    console.log(userKnownList);
 
     const deleteKnownWordListFunction = async (e, word) => {
         e.stopPropagation()

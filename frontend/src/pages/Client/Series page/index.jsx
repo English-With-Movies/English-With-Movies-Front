@@ -23,17 +23,15 @@ export default function SeriesPage() {
     }, [])
     let { data: seriesText } = useGetSettingsByKeyQuery('SeriesText')
 
-
     let navigate = useNavigate()
     let { userInfo } = useContext(userInfoContext)
     let [addToFavoritesUser] = useAddToFavoritesUserMutation()
     let [deleteFromFavoritesUser] = useDeleteFromFavoritesUserMutation()
-    let { data: userFavoritesArray, isLoading: userFavIsLoading, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
-
+    let { data: userFavoritesArray, refetch: userFavRefech } = useGetFavoriteMoviesUserQuery(userInfo.userId)
     let { data: allGenre, isLoading: genreLoading } = useGetAllGenreQuery()
     let sortRef = useRef()
     let genreRef = useRef()
-    let { data: allData, isLoading, isError, error } = useGetAllMoviesQuery()
+    let { data: allData, isLoading } = useGetAllMoviesQuery()
     let [allSeriesData, setAllSeriesData] = useState([])
     useEffect(() => {
         if (!isLoading && allData) {
@@ -41,7 +39,7 @@ export default function SeriesPage() {
         }
     }, [allData, isLoading])
 
-    let { data: levelData, isLoading: levelIsLoading } = useGetAllLevelQuery()
+    let { data: levelData } = useGetAllLevelQuery()
 
     // add to favorites
     const handleFavorites = async (e, movie) => {

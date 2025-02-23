@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 export const registerContext = createContext()
 export default function RegisterProvider({ children }) {

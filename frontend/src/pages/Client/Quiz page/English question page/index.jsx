@@ -10,6 +10,7 @@ import { useAddPointToUserMutation, useGetByIdUserQuery } from '../../../../redu
 import { userInfoContext } from '../../../../context/UserInfo';
 import { useNavigate } from 'react-router';
 import { useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from '../../../../redux/rtk query/Slices/knownWordListSlice';
+import { useGenerateSentencesMutation, useGenerateSpeechMutation } from '../../../../redux/rtk query/Slices/aiSlice';
 
 export default function EnglishQuestionsPage() {
     let { quizDataArray } = useContext(quizDataContext)
@@ -19,7 +20,6 @@ export default function EnglishQuestionsPage() {
     let { userInfo } = useContext(userInfoContext)
     let [postWordToKnownWordList] = usePostWordToKnownWordListMutation()
     let { data: userData } = useGetByIdUserQuery(userInfo?.userId)
-    let { data: knowmData, refech } = useGetKnownWordListByIdQuery(userData?.knownWordListId)
     let [point, setPoint] = useState(150)
     let [totalPoint, setTotalPoint] = useState(0)
     let [correctQuestion, setCorrectQuestion] = useState(0)
@@ -33,6 +33,32 @@ export default function EnglishQuestionsPage() {
     let [question, setQuestion] = useState(getRandomQuestion())
     let [options, setOptions] = useState([]);
     let [selectedOption, setSelectedOption] = useState(null);
+    let [generateSentences] = useGenerateSentencesMutation()
+    let [generateSpeech] = useGenerateSpeechMutation()
+    let [createdSentenceWithWordText, setCreatedSentenceWithWordText] = useState()
+
+    // audio function
+    function playBase64Audio(base64String) {
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Uint8Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const blob = new Blob([byteNumbers], { type: 'audio/mp3' });
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+    }
+
+    const showSentence = async (word) => {
+        const response = await generateSentences(word)
+        setCreatedSentenceWithWordText(response.data)
+    }
+
+    const speakingText = async (text) => {
+        const response = await generateSpeech(text)        
+        playBase64Audio(response.data.audioBase64)
+    }
 
     const disableButtons = (boolean) => {
         optionRefs.current.forEach((btn) => {
@@ -66,6 +92,7 @@ export default function EnglishQuestionsPage() {
     const checkAnswer = async (option) => {
         disableButtons(true)
         setSelectedOption(option)
+        showSentence(question.word.wordText)
         nextButtonRef.current.classList.remove("hidden")
         sentenceRef.current.classList.remove("hidden")
         if (option === question.word.meaning) {
@@ -82,8 +109,8 @@ export default function EnglishQuestionsPage() {
 
     const changeQuestion = () => {
         disableButtons(false)
+        setCreatedSentenceWithWordText({})
         setQuizWords((prevQuestions) => prevQuestions.filter((value) => value.word.wordText !== question.word.wordText))
-        console.log(quizWords);
         setSelectedOption(null)
         const newQuestion = getRandomQuestion();
         if (quizWords.length > 0) {
@@ -158,20 +185,23 @@ export default function EnglishQuestionsPage() {
             <Helmet>
                 <title>İngiliscə suallar</title>
             </Helmet>
-            <div className='bg-[var(--bg-color)] text-[var(--text-color)] pt-[103px]'>
+            <div className='bg-[var(--bg-color)] text-white pt-[103px]'>
                 <div ref={startedRef} className='max-w-[500px] py-5 mx-auto my-0 flex gap-3 flex-col justify-center items-center relative'>
-                    <h1 className='font-["Kanit"] bg-red-300 px-4 py-2 rounded-5'>{point}</h1>
-                    <div className='bg-purple-600 w-full flex justify-center items-center flex-col relative p-2 py-5 rounded-4'>
+                    <h1 className='font-["Kanit"] bg-[#5693db] px-4 py-2 rounded-5'>{point}</h1>
+                    <div className='bg-[#18406e] w-full flex justify-center items-center flex-col relative p-2 py-5 rounded-4'>
                         <h2>{question.word.wordText}</h2>
                         <div className='absolute top-2 left-2 text-3xl cursor-pointer'><FaPlus /></div>
-                        <div className='absolute top-2 right-2 text-3xl cursor-pointer'><HiSpeakerWave /></div>
-                        <div className='absolute bottom-2 left-2 hidden' ref={sentenceRef}>Company advertises new product on TV.</div>
+                        <div onClick={() => speakingText(question.word.wordText)} className='absolute top-2 right-2 text-3xl cursor-pointer'><HiSpeakerWave /></div>
+                        <div className='absolute bottom-2 left-2 hidden' ref={sentenceRef}>
+                            <div className='-mb-1'>{createdSentenceWithWordText?.english}</div>
+                            <div>{createdSentenceWithWordText?.azerbaijani}</div>
+                        </div>
                     </div>
                     <div className='flex flex-col gap-2 w-full'>
                         {
                             options.map((option, index) => (
                                 <button onClick={() => {
-                                    checkAnswer(option)
+                                    checkAnswer(option);
                                 }}
                                     key={index} ref={(el) => (optionRefs.current[index] = el)}
                                     className={`rounded-5 py-1 text-center font-bold text-2xl font-["PT_Series"] cursor-pointer 
@@ -183,7 +213,7 @@ export default function EnglishQuestionsPage() {
                     </div>
                     <div>Sizin ümumi xalınız: {totalPoint}</div>
                     <div>Qalan sual sayı: <strong>{quizWords.length}</strong></div>
-                    <div className='absolute top-[55%] right-[-15%] text-6xl cursor-pointer hidden' onClick={() => changeQuestion()} ref={nextButtonRef}>
+                    <div className='absolute top-[8%] right-[0%] md:top-[50%] md:right-[-15%] text-6xl cursor-pointer hidden' onClick={() => changeQuestion()} ref={nextButtonRef}>
                         <FaAnglesRight />
                     </div>
                 </div>
@@ -202,7 +232,7 @@ export default function EnglishQuestionsPage() {
                     <div className='font-["Kanit"] text-lg'>Topladığınız xal: {totalPoint}</div>
                     <div className='font-["Kanit"] text-sm'>Testi sonlandırsanız ana səhifəyə qayıdacaqsınız</div>
                 </div>
-            </div>
+            </div >
 
         </>
     )

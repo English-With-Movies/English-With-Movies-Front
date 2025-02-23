@@ -1,7 +1,6 @@
 import { useRef } from "react";
 import { FaBarsStaggered, FaRegCircleCheck, FaRegEye } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
-
 // material ui
 import * as React from 'react';
 import InputLabel from '@mui/material/InputLabel';
@@ -90,16 +89,10 @@ export default function SerieTable({ season, handleChangeSeason, data, episode, 
         return <LoaderIcon />;
     }
 
-    console.log("User Data:", userData);
-    console.log("Known Word List:", userKnownList);
-
-
     const addToKnownListFunction = async (e, word) => {
         e.stopPropagation()
         if (userData) {
             let finded = userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == word.wordId)
-            console.log(finded);
-
             if (finded) {
                 await deleteWordFromKnownWordList({ knownWordListId: userKnownList.id, wordId: word.wordId })
                 refetch()
@@ -284,7 +277,6 @@ export default function SerieTable({ season, handleChangeSeason, data, episode, 
                                 </div>
                             </table>
                         </div>
-
                         <QuizIcon checkboxStates={checkboxStates} wordList={wordList} />
                     </>
                 ) : (<></>)

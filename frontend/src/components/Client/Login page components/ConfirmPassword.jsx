@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import Container from 'react-bootstrap/Container';
 import { Helmet } from 'react-helmet';
@@ -23,8 +23,6 @@ export default function ConfirmPassword({ setPage }) {
                             initialValues={{ code: "" }}
                             onSubmit={async (values, { setSubmitting }) => {
                                 if (values.code == variabledidene) {
-                                    // kod bura yazilacaq
-                                    console.log(values);
                                     setPage("new-password")
                                 } else {
                                     alert("sehvsen")
@@ -33,7 +31,6 @@ export default function ConfirmPassword({ setPage }) {
                             }}
                         >
                             {({ isSubmitting, values }) => {
-                                // input length
                                 const isCodeValid = values.code.trim().replace(/\s+/g, '').length === 6;
                                 setIsButtonDisabled(!isCodeValid);
 

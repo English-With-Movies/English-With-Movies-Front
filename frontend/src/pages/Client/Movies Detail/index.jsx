@@ -1,11 +1,7 @@
 import Container from "react-bootstrap/esm/Container";
 import { Helmet } from "react-helmet";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
-import { HiSpeakerWave } from "react-icons/hi2";
-import { useContext, useEffect, useRef, useState } from "react";
-import { ImBin } from "react-icons/im";
-import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
-import { FaRegEye } from 'react-icons/fa';
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useGetByIdMovieQuery } from "../../../redux/rtk query/Slices/moviesSlice";
 import LoaderIcon from "../../../components/Loaders/Loader";
@@ -16,10 +12,8 @@ import { userInfoContext } from "../../../context/UserInfo";
 import { useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useGetByIdUserQuery, useGetFavoriteMoviesUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 import { useGetByIdSeasonQuery } from "../../../redux/rtk query/Slices/seasonSlice";
 import { useGetByIdEpisodeQuery } from "../../../redux/rtk query/Slices/episodeSlice";
-import { IoRocketSharp } from "react-icons/io5";
 import MovieTable from "../../../components/Client/Movies Detail Table";
 import QuizIcon from "../../../components/Client/Quiz Icon";
-import { quizDataContext } from "../../../context/QuizDataContext";
 
 export default function MoviesDetail() {
     // scrool 
