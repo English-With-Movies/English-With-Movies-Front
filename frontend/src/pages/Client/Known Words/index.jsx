@@ -4,12 +4,14 @@ import { Helmet } from "react-helmet";
 import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { ImBin } from "react-icons/im";
-import { IoRocketSharp } from "react-icons/io5";
+import { IoCloseSharp, IoRocketSharp } from "react-icons/io5";
 import { useDeleteWordFromKnownWordListMutation, useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
 import UserInfo, { userInfoContext } from "../../../context/UserInfo";
 import { useNavigate } from "react-router";
 import { useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 import QuizIcon from "../../../components/Client/Quiz Icon";
+import { useGenerateSentencesMutation, useGenerateSpeechMutation } from "../../../redux/rtk query/Slices/aiSlice";
+import UserLoader from "../../../components/Loaders/UserLoader";
 // import QuizIcon from "../../../components/Client/Quiz Icon";
 
 export default function KnownWords() {
@@ -19,14 +21,33 @@ export default function KnownWords() {
     }, [])
 
     let navigate = useNavigate()
-    
+    let [generateSentences, { isLoading: sentenceLoading }] = useGenerateSentencesMutation()
+    let [generateSpeech, { isLoading: speechLoading }] = useGenerateSpeechMutation()
+    let [open, setOpen] = useState(false)
+    let [stateData, setStateData] = useState({})
+
+    // audio function
+    function playBase64Audio(base64String) {
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Uint8Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const blob = new Blob([byteNumbers], { type: 'audio/mp3' });
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+    }
+
     // known list table and delete
     let [deleteWordFromKnownWordList] = useDeleteWordFromKnownWordListMutation()
     let { userInfo } = useContext(userInfoContext)
     let { data: userData } = useGetByIdUserQuery(userInfo?.userId, { skip: !userInfo?.userId })
     let { data: userKnownList, isLoading, refetch } = useGetKnownWordListByIdQuery(userData?.knownWordListId, { skip: !userData?.knownWordListId })
     console.log(userKnownList);
-    const deleteKnownWordListFunction = async (word) => {
+
+    const deleteKnownWordListFunction = async (e, word) => {
+        e.stopPropagation()
         await deleteWordFromKnownWordList({ knownWordListId: userKnownList.id, wordId: word.word.id })
         refetch()
     }
@@ -83,6 +104,17 @@ export default function KnownWords() {
         setSelectedLevels(selected);
     };
 
+    const showSentence = async (word) => {
+        setOpen(true)
+        const response = await generateSentences(word)
+        setStateData(response.data)
+    }
+
+    const speakingText = async (e, text) => {
+        e.stopPropagation()
+        const response = await generateSpeech(text)
+        playBase64Audio(response.data.audioBase64)
+    }
 
     return (
         <>
@@ -92,7 +124,7 @@ export default function KnownWords() {
 
             <div className="pt-[130px] bg-[var(--bg-color)] text-white">
                 <Container>
-                    <h1 className="font-['Kanit']" onClick={() => addword()}>Bilinən sözlər</h1>
+                    <h1 className="font-['Kanit']">Bilinən sözlər</h1>
                     {/* level choice */}
                     <div className="max-w-[1000px] mx-auto my-5 text-[var(--text-color)] bg-[var(--movies-bg)] rounded-4 py-3 flex flex-col">
                         <h3 className="text-center mb-4 font-[Kanit]">Sözlərin çətinlik səviyyəsini seçin</h3>
@@ -129,16 +161,16 @@ export default function KnownWords() {
                         </div>
                     </div>
                     {/* table */}
-                    <div className="rounded max-[850px]:overflow-x-scroll py-[45px]">
+                    <div className="rounded max-[850px]:overflow-x-scroll py-3">
                         <table className="rounded-5 w-full whitespace-nowrap">
                             <tbody className="rounded-5">
                                 {
                                     checkboxStates.find((bool) => bool == true) && wordList?.length != 0 ? (
                                         wordList?.map((value) => (
-                                            <tr className="bg-[var(--movies-bg)] text-xl rounded-5 text-[var(--text-color)] border-y" key={value.id}>
-                                                <td className="p-3 text-3xl cursor-pointer relative hover:text-blue-600 transition-all ease-in duration-200 hover-title">
+                                            <tr onClick={() => showSentence(value.word.wordText)} className="bg-[var(--movies-bg)] text-xl rounded-5 text-[var(--text-color)] border-y" key={value.id}>
+                                                <td className="p-3 text-3xl cursor-pointer relative hover:text-blue-600 transition-all ease-in duration-200 hover-title flex">
                                                     <div className="p-2 bg-blue-600 absolute top-[-35%] z-index-2 text-sm text-white rounded-4">Səsləndirin</div>
-                                                    <HiSpeakerWave />
+                                                    <span onClick={(e) => speakingText(e, value.word.wordText)} className="cursor-pointer p-1"><HiSpeakerWave /></span>
                                                 </td>
                                                 <td className="p-3">{value.word.wordText}</td>
                                                 <td className="p-3">{value.word.meaning}</td>
@@ -148,7 +180,7 @@ export default function KnownWords() {
                                                 </td>
                                                 <td className="p-3 text-3xl relative hover-title flex">
                                                     <div className="p-2 bg-red-600 absolute top-[-55%] z-index-2 text-sm text-white rounded-4">Bilinənlər <br /> siyahısından silin</div>
-                                                    <span onClick={() => deleteKnownWordListFunction(value)} className="cursor-pointer p-1 "><ImBin /></span>
+                                                    <span onClick={(e) => deleteKnownWordListFunction(e, value)} className="cursor-pointer p-1 "><ImBin /></span>
                                                 </td>
                                             </tr>
                                         ))
@@ -159,6 +191,20 @@ export default function KnownWords() {
                                     )
                                 }
                             </tbody>
+                            <div className={`${open ? 'flex' : 'hidden'} items-center justify-center rounded bg-gray-600 fixed bottom-[8%] sm:bottom-[3%] left-1/2 lg:left-1/3 -translate-x-1/2 p-3 max-w-[500px] min-h-[150px] w-full mr-5`}>
+                                <span onClick={() => setOpen(false)} className="cursor-pointer  text-white absolute top-2 right-2 text-4xl hover:text-red-500"><IoCloseSharp /></span>
+                                {
+                                    sentenceLoading ? (
+                                        <UserLoader />
+                                    ) : (
+                                        <div className="font-semibold font-['Kanit'] text-2xl w-full pt-[25px]">
+                                            <div className="break-words whitespace-pre-wrap">{stateData?.english}</div>
+                                            <div>{stateData?.azerbaijani}</div>
+                                            <span onClick={(e) => speakingText(e, stateData?.english)} className="hover:text-blue-600 text-white cursor-pointer absolute top-3 left-3 text-3xl"><HiSpeakerWave /></span>
+                                        </div>
+                                    )
+                                }
+                            </div>
                         </table>
                     </div>
 

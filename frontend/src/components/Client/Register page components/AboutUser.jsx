@@ -35,7 +35,7 @@ let validationSchema = yup.object().shape({
 export default function AboutUser({ }) {
     let navigate = useNavigate()
     let { emailPassword } = useContext(registerContext)
-    let [postRegister, { data: postData, error: postError, isError: postIsError, isLoading: postIsLoading }] = usePostRegisterMutation()
+    let [postRegister, { data: postData, isLoading: postIsLoading }] = usePostRegisterMutation()
 
     let [selectedAvatar, setSelectedAvatar] = useState(null);
     let [binnaryAvatar, setBinnaryAvatar] = useState(null);
@@ -144,7 +144,7 @@ export default function AboutUser({ }) {
 
                                                 console.log(response);
                                                 
-                                                if (response) {
+                                                if (response.data) {
                                                     if (values.loginAfterRegister) {
                                                         localStorage.setItem("accessToken", response.data.accessToken);
                                                         localStorage.setItem("refreshToken", response.data.refreshToken);
@@ -153,7 +153,9 @@ export default function AboutUser({ }) {
                                                         navigate("/login")
                                                     }
                                                 }
-                                                if (response.error) {
+                                                if (response.error.data.title) {
+                                                    alert("❌ " + response.error.data.title)
+                                                } else if (response.error.data) {
                                                     alert("❌ " + response.error.data)
                                                 }
                                             } catch (error) {

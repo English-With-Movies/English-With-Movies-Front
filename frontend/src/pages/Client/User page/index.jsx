@@ -5,21 +5,17 @@ import { useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { userInfoContext } from '../../../context/UserInfo';
 import { useContext, useEffect, useState } from 'react';
-import { useGetByIdUserQuery, useUserUpdateProfileMutation } from '../../../redux/rtk query/Slices/userSlice';
+import { useGetByIdUserQuery, useUserUpdateAvatarByIdMutation, useUserUpdateAvatarMutation, useUserUpdateProfileMutation } from '../../../redux/rtk query/Slices/userSlice';
 import LoaderIcon from '../../../components/Loaders/Loader';
 import { GrUserSettings } from "react-icons/gr";
-import { useGetByIdAvatarQuery } from '../../../redux/rtk query/Slices/avatarSlice';
+import { useGetAllAvatarQuery, useGetByIdAvatarQuery } from '../../../redux/rtk query/Slices/avatarSlice';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
 import moment from 'moment';
-// material ui modal
+import Modal from 'react-bootstrap/Modal';
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
 import { useGetAllFrameQuery } from '../../../redux/rtk query/Slices/frameSlice';
-import { FaRegHeart } from 'react-icons/fa6';
+import { FaPlus } from 'react-icons/fa';
 
 const style = {
     position: 'absolute',
@@ -52,58 +48,68 @@ let validationSchema = yup.object().shape({
 });
 
 export default function UserProfile() {
-    // material ui modal
     const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
     const { userInfo } = useContext(userInfoContext);
     const navigate = useNavigate();
     const userId = userInfo?.userId ?? "";
     const userQuery = useGetByIdUserQuery(userId, { skip: !userId });
     const avatarQuery = useGetByIdAvatarQuery(userQuery.data?.avatarId, { skip: !userQuery.data?.avatarId });
     const { data: allFrame } = useGetAllFrameQuery();
-
+    const { data: allAvatar } = useGetAllAvatarQuery();
+    const userData = userQuery.data;
+    const userRefetch = userQuery.refetch
+    const avatarData = avatarQuery.data;
+    let [userUpdateProfile] = useUserUpdateProfileMutation()
+    let [userUpdateAvatar] = useUserUpdateAvatarMutation()
+    let [userUpdateAvatarById] = useUserUpdateAvatarByIdMutation()
+    // avatar modal
+    let [selectedAvatar, setSelectedAvatar] = useState(null);
+    const [showAvatar, setShowAvatar] = useState(false);
+    // change avatar
+    const fileInputRef = React.useRef(null);
+    const handleButtonClick = () => {
+        fileInputRef.current.click();
+    };
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith("image/")) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setSelectedAvatar(e.target.result);
+            };
+            reader.readAsDataURL(file);
+            let formData = new FormData()
+            formData.append("avatarImage", file);
+            try {
+                const response = await userUpdateAvatar({ userId: userInfo.userId, formData })
+                if (response.error) {
+                    alert("❌ ", response.error.message)
+                } else {
+                    setShowAvatar(false)
+                    userRefetch()
+                }
+            } catch (error) {
+                alert("ERROR")
+            }
+        } else {
+            alert("Zəhmət olmasa şəkil seçin");
+        }
+    };
+    const changeAvatar = async (avatar) => {
+        const response = await userUpdateAvatarById({ userId: userInfo.userId, avatarId: avatar.id })
+        setShowAvatar(false)
+        userRefetch()
+    }
+    // error
     if (userQuery.isError) {
         return <div>Error: {userQuery.error?.message}</div>;
     }
-    const userData = userQuery.data;
-    const userRefetch = userQuery.refetch
-    console.log(userData);
-    const avatarData = avatarQuery.data;
-    let [userUpdateProfile] = useUserUpdateProfileMutation()
-
-    const changeAvatar = (avatarData) => {
-        console.log(avatarData);
-
-    }
-
+    // refetch userpage
     useEffect(() => {
         if (userData) {
             userRefetch()
         }
     }, [])
-
-
-    // function playBase64Audio(base64String) {
-    //     // Base64 string-dən binary məlumat al
-    //     const byteCharacters = atob(base64String);
-    //     const byteNumbers = new Uint8Array(byteCharacters.length);
-        
-    //     for (let i = 0; i < byteCharacters.length; i++) {
-    //         byteNumbers[i] = byteCharacters.charCodeAt(i);
-    //     }
-        
-    //     // Binary məlumatı Blob-a çevir
-    //     const blob = new Blob([byteNumbers], { type: 'audio/mp3' }); // Type-ı backenddən asılı olaraq dəyiş
-        
-    //     // Blob-dan URL yarat
-    //     const audioUrl = URL.createObjectURL(blob);
-    
-    //     // Audio elementi yarat və oynat
-    //     const audio = new Audio(audioUrl);
-    //     audio.play();
-    // }
 
     return (
         <>
@@ -119,8 +125,8 @@ export default function UserProfile() {
                             <Container>
                                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                                     <div className='font-["PT_Serif"]'>
-                                        <div onClick={() => changeAvatar(avatarData)} className='cursor-pointer relative flex items-center justify-center w-[220px] h-[220px]'>
-                                            <img className='w-[75%] h-[75%] rounded-full object-cover z-0' src={`https://englishwithmovies.blob.core.windows.net/avatar/${avatarData?.imgName}`} alt="profile" />
+                                        <div onClick={() => setShowAvatar(true)} className='cursor-pointer relative flex items-center justify-center w-[220px] h-[220px]'>
+                                            <img className='w-[75%] h-[75%] rounded-full object-cover z-0' src={`https://englishwithmovies.blob.core.windows.net/avatar/${avatarData?.imgName}?t=${Date.now()}`} alt="profile" />
                                             {
                                                 userData?.userFrames &&
                                                 userData?.userFrames.map((frame) => {
@@ -142,16 +148,17 @@ export default function UserProfile() {
                                         <h5 className='font-["Kanit"] text-lg'>{userData?.userName}</h5>
                                         <h5 className='text-md'>{userData?.firstName} {userData?.lastName}</h5>
                                         <p>{userData?.about}</p>
-                                        <p>Ümumi xal: <span className='text-orange-500 font-bold text-lg'>{userData?.point}</span></p>
-                                        <div onClick={() => handleOpen()} className='flex items-center gap-2 text-gray-400 cursor-pointer'><GrUserSettings /> Parametrlər</div>
+                                        <p className='mb-0'>Ümumi xal: <span className='text-orange-500 font-bold text-lg'>{userData?.point}</span></p>
+                                        <p>Bugünün xalı: <span className='text-orange-500 font-bold text-lg'>{userData?.todaysPoint}</span></p>
+                                        <div onClick={() => setOpen(true)} className='flex items-center gap-2 text-gray-400 cursor-pointer'><GrUserSettings /> Parametrlər</div>
                                     </div>
 
                                     <div>
                                         <div className='grid grid-cols-2 gap-4 mb-4'>
-                                            <div className='hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)] cursor-pointer p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)]' onClick={() => navigate('points-ranking')}>
+                                            <div className='hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)] cursor-pointer p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)]' onClick={() => navigate('/points-ranking')}>
                                                 <img src={Cup} className='w-full rounded' alt="Points Ranking" />
                                             </div>
-                                            <div className='cursor-pointer flex flex-col items-center justify-center p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)] hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)]' onClick={() => navigate('streak-ranking')}>
+                                            <div className='cursor-pointer flex flex-col items-center justify-center p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)] hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)]' onClick={() => navigate('/streak-ranking')}>
                                                 <div className='items-center justify-center flex flex-col'>
                                                     <img src={Calcifer} className='w-[50%]' alt="Streak" />
                                                     <h5 className='text-center text-sm'>STREAK {userData?.streak} GÜN</h5>
@@ -171,7 +178,6 @@ export default function UserProfile() {
                                                     <div key={blog.id} onClick={() => { navigate(`/blog/${blog.id}`) }} className="cursor-pointer p-3 rounded-4 bg-[var(--movies-bg)] transition-all duration-250 ease-in hover:shadow-gray-500 hover:shadow-lg">
                                                         <div className="flex items-center justify-between">
                                                             <h3 className="font-['Kanit'] text-sm md:text-xl">{blog.title}</h3>
-                                                            <span onClick={() => addFavBlog(blog.id)} className="text-xl"><FaRegHeart /></span>
                                                         </div>
                                                         <div className="flex gap-2 justify-end">
                                                             <div className="flex flex-col items-end justify-center">
@@ -198,7 +204,8 @@ export default function UserProfile() {
                                                                 }
                                                             </div>
                                                         </div>
-                                                    </div>)
+                                                    </div>
+                                                )
                                             )
                                         }
                                     </div>
@@ -206,100 +213,157 @@ export default function UserProfile() {
                             </Container>
                         </div>
 
-                        {/* material ui modal */}
+                        {/* edit profile modal */}
                         <div>
                             <Modal
-                                open={open}
-                                onClose={handleClose}
-                                aria-labelledby="modal-modal-title"
-                                aria-describedby="modal-modal-description"
+                                aria-labelledby="contained-modal-title-vcenter"
+                                centered
+                                size="lg"
+                                className='flex items-center justify-center'
+                                show={open}
+                                onHide={() => setOpen(false)}
+                                backdrop="static"
+                                keyboard={false}
                             >
-                                <Box sx={{ ...style }} className="max-w-2xl mx-auto">
-                                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                                        <strong>Edit Profile</strong>
-                                    </Typography>
-                                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                                        <div>
-                                            <Formik
-                                                initialValues={{ id: userData?.id, email: userData?.email, userName: userData?.userName, firstName: userData?.firstName, lastName: userData?.lastName, about: userData?.about, acceptMail: false }}
-                                                validationSchema={validationSchema}
-                                                onSubmit={async (values) => {
-                                                    const editPostFormData = new FormData()
-                                                    editPostFormData.append("Id", values.id)
-                                                    editPostFormData.append("Email", values.email)
-                                                    editPostFormData.append("UserName", values.userName)
-                                                    editPostFormData.append("FirstName", values.firstName)
-                                                    editPostFormData.append("LastName", values.lastName)
-                                                    editPostFormData.append("About", values.about)
-                                                    editPostFormData.append("AcceptMail", values.acceptMail)
-                                                    try {
-                                                        const response = await userUpdateProfile(editPostFormData);
-                                                        userRefetch()
-                                                        console.log(response);
-                                                        if (response.data) {
-                                                            alert('Profil məlumatlarınız edit olundu');
-                                                            setOpen(false)
-                                                        }
-                                                        if (response.error) {
-                                                            alert("❌ " + response.error.data)
-                                                        }
-                                                    } catch (error) {
-                                                        if (error.response) {
-                                                            const { status, data, statusText } = error.response;
-                                                            console.error("Error Status Code:", status);
-                                                            console.error("Error Message:", data);
-                                                            console.error("Error Status Text:", statusText);
+                                <Modal.Header closeButton className='bg-[var(--movies-bg)] text-[var(--text-color)] rounded'>
+                                    <Modal.Title>Edit your profile</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body className='bg-[var(--movies-bg)] text-[var(--text-color)] rounded'>
+                                    <Formik
+                                        initialValues={{ id: userData?.id, email: userData?.email, userName: userData?.userName, firstName: userData?.firstName, lastName: userData?.lastName, about: userData?.about, acceptMail: true }}
+                                        validationSchema={validationSchema}
+                                        onSubmit={async (values) => {
+                                            const editPostFormData = new FormData()
+                                            editPostFormData.append("Id", values.id)
+                                            editPostFormData.append("Email", values.email)
+                                            editPostFormData.append("UserName", values.userName)
+                                            editPostFormData.append("FirstName", values.firstName)
+                                            editPostFormData.append("LastName", values.lastName)
+                                            editPostFormData.append("About", values.about)
+                                            editPostFormData.append("AcceptMail", values.acceptMail)
+                                            try {
+                                                const response = await userUpdateProfile(editPostFormData);
+                                                userRefetch()
+                                                if (response.data) {
+                                                    alert('Profil məlumatlarınız edit olundu');
+                                                    setOpen(false)
+                                                }
+                                                if (response.error) {
+                                                    alert("❌ " + response.error.data)
+                                                }
+                                            } catch (error) {
+                                                if (error.response) {
+                                                    const { status, data, statusText } = error.response;
+                                                    console.error("Error Status Code:", status);
+                                                    console.error("Error Message:", data);
+                                                    console.error("Error Status Text:", statusText);
 
-                                                            if (status === 400) {
-                                                                alert("❌ Bad request, check your input.");
-                                                            } else if (status === 404) {
-                                                                alert("❌ Endpoint not found.");
-                                                            } else if (status === 500) {
-                                                                alert("❌ Server error, please try again later.");
-                                                            }
-                                                        } else {
-                                                            console.error("Unknown error:", error);
-                                                        }
+                                                    if (status === 400) {
+                                                        alert("❌ Bad request, check your input.");
+                                                    } else if (status === 404) {
+                                                        alert("❌ Endpoint not found.");
+                                                    } else if (status === 500) {
+                                                        alert("❌ Server error, please try again later.");
                                                     }
-                                                }}
-                                            >
-                                                {({ isSubmitting }) => (
-                                                    <Form className="flex flex-col">
-                                                        <label htmlFor="userName" className='mt-1'>Username:</label>
-                                                        <Field type="text" name="userName" id='userName' className='border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Edit username' />
-                                                        <ErrorMessage name="userName" component="div" />
+                                                } else {
+                                                    console.error("Unknown error:", error);
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        {({ isSubmitting }) => (
+                                            <Form className="flex flex-col">
+                                                <label htmlFor="userName" className='mt-1'>Username:</label>
+                                                <Field type="text" name="userName" id='userName' className='border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Edit username' />
+                                                <ErrorMessage name="userName" component="div" />
 
-                                                        <label htmlFor="firstName" className='mt-1'>First Name:</label>
-                                                        <Field type="text" name="firstName" id='firstName' className='border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Edit first name' />
-                                                        <ErrorMessage name="firstName" component="div" />
+                                                <label htmlFor="firstName" className='mt-1'>First Name:</label>
+                                                <Field type="text" name="firstName" id='firstName' className='border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Edit first name' />
+                                                <ErrorMessage name="firstName" component="div" />
 
-                                                        <label htmlFor="lastName" className='mt-1'>Last Name:</label>
-                                                        <Field type="text" name="lastName" id='lastName' className='border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Edit last name' />
-                                                        <ErrorMessage name="lastName" component="div" />
+                                                <label htmlFor="lastName" className='mt-1'>Last Name:</label>
+                                                <Field type="text" name="lastName" id='lastName' className='border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Edit last name' />
+                                                <ErrorMessage name="lastName" component="div" />
 
-                                                        <label htmlFor="about" className='mt-1'>About:</label>
-                                                        <Field type="text" name="about" id='about' className='border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Edit about' />
-                                                        <ErrorMessage name="about" component="div" />
+                                                <label htmlFor="about" className='mt-1'>About:</label>
+                                                <Field type="text" name="about" id='about' className='border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Edit about' />
+                                                <ErrorMessage name="about" component="div" />
 
-                                                        <div className='flex items-center mt-4 text-lg checkbox-wrapper-19'>
-                                                            <Field type="checkbox" name="acceptMail" id='cbtest-19' />
-                                                            <label htmlFor="cbtest-19" className='check-box' style={{ borderColor: 'gray' }}></label>
-                                                            <label htmlFor="cbtest-19" className='cursor-pointer font-["PT_Serif"] ml-2'> Bildiriş maillərini qəbul edirsiz? </label>
-                                                        </div>
+                                                <div className='flex items-center mt-4 text-lg checkbox-wrapper-19'>
+                                                    <Field type="checkbox" name="acceptMail" id='cbtest-19' />
+                                                    <label htmlFor="cbtest-19" className='check-box' style={{ borderColor: 'gray' }}></label>
+                                                    <label htmlFor="cbtest-19" className='cursor-pointer font-["PT_Serif"] ml-2'> Bildiriş maillərini qəbul edirsiz? </label>
+                                                </div>
 
-                                                        <button type="submit" disabled={isSubmitting} className="mt-3 text-white rounded max-w-[150px] bg-gradient-to-r from-blue-800 to-blue-300 mx-auto px-3 py-1">
-                                                            Submit
-                                                        </button>
-                                                    </Form>
-                                                )}
-                                            </Formik>
-                                        </div>
-                                    </Typography>
-                                </Box>
+                                                <button type="submit" disabled={isSubmitting} className="mt-3 text-white rounded max-w-[150px] bg-gradient-to-r from-blue-800 to-blue-300 mx-auto px-3 py-1">
+                                                    Submit
+                                                </button>
+                                            </Form>
+                                        )}
+                                    </Formik>
+                                </Modal.Body>
+                            </Modal>
+
+                        </div>
+
+                        {/* avatar modal */}
+                        <div>
+                            <Modal
+                                aria-labelledby="contained-modal-title-vcenter"
+                                centered
+                                size="lg"
+                                className='flex items-center justify-center'
+                                show={showAvatar}
+                                onHide={() => setShowAvatar(false)}
+                                backdrop="static"
+                                keyboard={false}
+                            >
+                                <Modal.Header closeButton className='bg-[var(--movies-bg)] text-[var(--text-color)] rounded'>
+                                    <Modal.Title>Choose Avatar</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body className='bg-[var(--movies-bg)] text-[var(--text-color)] rounded'>
+                                    <div className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 items-center justify-between'>
+                                        <>
+                                            <div className="flex items-center justify-center">
+                                                <div
+                                                    onClick={handleButtonClick}
+                                                    className="w-[60px] h-[60px] xs:w-[100px] xs:h-[100px] rounded-[50%] hover:opacity-60
+                                                    flex items-center justify-center text-gray-300 text-3xl text-center
+                                                    transition-all duration-200 ease-in cursor-pointer"
+                                                    style={{
+                                                        backgroundSize: "cover",
+                                                        backgroundPosition: "center",
+                                                    }}
+                                                >
+                                                    {(<FaPlus className="cursor-pointer" />)}
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        ref={fileInputRef}
+                                                        style={{ display: "none" }}
+                                                        onChange={handleFileChange}
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            {allAvatar?.map((avatar, index) => (
+                                                !avatar.isCustom ? (
+                                                    <img
+                                                        key={index}
+                                                        src={`https://englishwithmovies.blob.core.windows.net/avatar/` + avatar.imgName}
+                                                        alt={`Avatar ${index + 1}`}
+                                                        className={`w-20 h-20 rounded-full cursor-pointer border-3 ${selectedAvatar?.imgName === avatar.imgName ? "border-blue-500" : "border-transparent"
+                                                            }`}
+                                                        onClick={() => { changeAvatar(avatar) }}
+                                                    />
+                                                ) : (<></>)
+                                            ))}
+                                        </>
+                                    </div>
+                                </Modal.Body>
                             </Modal>
                         </div>
                     </>
-
                 )
             }
         </>

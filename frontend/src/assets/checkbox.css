@@ -1,12 +1,5 @@
-/* <div class="checkbox-wrapper-19">
-  <input type="checkbox" id="cbtest-19" />
-  <label for="cbtest-19" class="check-box">
-</div>
-
-<style> */
   .checkbox-wrapper-19 {
     box-sizing: border-box;
-    /* --background-color: #fff; */
     --checkbox-height: 25px;
   }
 
@@ -14,6 +7,7 @@
     0% {
       height: 0;
     }
+
     100% {
       height: calc(var(--checkbox-height) / 2);
     }
@@ -23,6 +17,7 @@
     0% {
       height: 0;
     }
+
     100% {
       height: calc(var(--checkbox-height) / 2);
     }
@@ -32,6 +27,7 @@
     0% {
       height: 0;
     }
+
     100% {
       height: calc(var(--checkbox-height) / 2);
     }
@@ -41,9 +37,11 @@
     0% {
       height: 0;
     }
+
     50% {
       height: 0;
     }
+
     100% {
       height: calc(var(--checkbox-height) * 1.2);
     }
@@ -53,9 +51,11 @@
     0% {
       height: 0;
     }
+
     50% {
       height: 0;
     }
+
     100% {
       height: calc(var(--checkbox-height) * 1.2);
     }
@@ -65,9 +65,11 @@
     0% {
       height: 0;
     }
+
     50% {
       height: 0;
     }
+
     100% {
       height: calc(var(--checkbox-height) * 1.2);
     }
@@ -94,6 +96,7 @@
     transition: border-color ease 0.2s;
     cursor: pointer;
   }
+
   .checkbox-wrapper-19 .check-box::before,
   .checkbox-wrapper-19 .check-box::after {
     -moz-box-sizing: border-box;
@@ -115,6 +118,7 @@
     -moz-transition: opacity ease 0.5;
     transition: opacity ease 0.5;
   }
+
   .checkbox-wrapper-19 .check-box::before {
     top: calc(var(--checkbox-height) * .72);
     left: calc(var(--checkbox-height) * .41);
@@ -125,6 +129,7 @@
     -webkit-transform: rotate(-135deg);
     transform: rotate(-135deg);
   }
+
   .checkbox-wrapper-19 .check-box::after {
     top: calc(var(--checkbox-height) * .37);
     left: calc(var(--checkbox-height) * .05);
@@ -135,11 +140,12 @@
     transform: rotate(-45deg);
   }
 
-  .checkbox-wrapper-19 input[type=checkbox]:checked + .check-box,
+  .checkbox-wrapper-19 input[type=checkbox]:checked+.check-box,
   .checkbox-wrapper-19 .check-box.checked {
     border-color: #34b93d;
   }
-  .checkbox-wrapper-19 input[type=checkbox]:checked + .check-box::after,
+
+  .checkbox-wrapper-19 input[type=checkbox]:checked+.check-box::after,
   .checkbox-wrapper-19 .check-box.checked::after {
     height: calc(var(--checkbox-height) / 2);
     -moz-animation: dothabottomcheck-19 0.2s ease 0s forwards;
@@ -147,7 +153,8 @@
     -webkit-animation: dothabottomcheck-19 0.2s ease 0s forwards;
     animation: dothabottomcheck-19 0.2s ease 0s forwards;
   }
-  .checkbox-wrapper-19 input[type=checkbox]:checked + .check-box::before,
+
+  .checkbox-wrapper-19 input[type=checkbox]:checked+.check-box::before,
   .checkbox-wrapper-19 .check-box.checked::before {
     height: calc(var(--checkbox-height) * 1.2);
     -moz-animation: dothatopcheck-19 0.4s ease 0s forwards;
@@ -155,4 +162,3 @@
     -webkit-animation: dothatopcheck-19 0.4s ease 0s forwards;
     animation: dothatopcheck-19 0.4s ease 0s forwards;
   }
-/* </style> */

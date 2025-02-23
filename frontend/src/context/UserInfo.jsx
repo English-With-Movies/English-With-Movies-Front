@@ -1,8 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import axios from 'axios';
-export const userInfoContext = createContext()
 
+export const userInfoContext = createContext()
 export default function UserInfo({ children }) {
     const [userInfo, setUserInfo] = useState({});
     const [isRefreshing, setIsRefreshing] = useState(false);

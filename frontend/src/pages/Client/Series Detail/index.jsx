@@ -203,7 +203,7 @@ export default function SeriesDetail() {
                                     userAllData?.subscriptionId == 1 ? (
                                         data?.isPremiumFilm ? (
                                             <div className="items-center flex flex-col justify-center pb-5">
-                                                <h4>Premium istifadəçilər üçündür</h4>
+                                                <h4 className="text-[var(--text-color)]">Premium istifadəçilər üçündür</h4>
                                                 <h4
                                                     onClick={() => navigate('/premium')}
                                                     className='cursor-pointer p-3 rounded-4 transition-all duration-200 ease-in flex items-center justify-center hover:shadow-[0_0px_20px_0px_yellow] cursor-pointer my-2 bg-[var(--movies-bg)] text-[var(--text-color)]'>PREMİUM OL!</h4>

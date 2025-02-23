@@ -24,6 +24,8 @@ export default function UserNavbar() {
         barsRef.current.classList.toggle("handleBars")
     }
     let { userInfo, setUserInfo } = useContext(userInfoContext)
+    console.log(userInfo);
+    
     let { data } = useGetByIdUserQuery(userInfo?.userId)
 
     let { data: avatarData } = useGetByIdAvatarQuery(data?.avatarId)
@@ -213,7 +215,7 @@ export default function UserNavbar() {
                                                 <span className='text-lg px-3'>Favoritlərim </span>
                                             </NavLink>
                                             {
-                                                userInfo?.role == 'Admin' ? (
+                                                userInfo?.role != 'Member' ? (
                                                     <NavLink
                                                         to="/manage"
                                                         className="no-underline font-['PT_Serif']"

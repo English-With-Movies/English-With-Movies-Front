@@ -28,6 +28,8 @@ import BlogReadAndComment from "../pages/Client/Blog page/Blog read and comment 
 import FrameStore from "../pages/Client/Frame store";
 import AddBlog from "../pages/Client/Blog page/Add Blog";
 import OtherUserPage from "../pages/Client/Other User Page";
+import FrameTable from "../pages/Admin/Admin Tables/Frame Table";
+import ProtectedAdminRoute from "./ProtectedAdminRoute";
 
 function ProtectedRoute({ children }) {
     let { quizDataArray } = useContext(quizDataContext);
@@ -65,11 +67,11 @@ const ROUTES = [
                 element: <UserProfile />,
             },
             {
-                path: '/my-profile/points-ranking',
+                path: '/points-ranking',
                 element: <PointsRanking />
             },
             {
-                path: '/my-profile/streak-ranking',
+                path: '/streak-ranking',
                 element: <StreakRanking />
             },
             {
@@ -90,7 +92,7 @@ const ROUTES = [
             },
             {
                 path: '/blog/create',
-                element: <AddBlog/>
+                element: <AddBlog />
             },
             {
                 path: '/login',
@@ -132,7 +134,7 @@ const ROUTES = [
     },
     {
         path: "/manage",
-        element: <AdminLayout />,
+        element: <ProtectedAdminRoute />,
         children: [
             {
                 path: "",
@@ -140,22 +142,31 @@ const ROUTES = [
             },
             {
                 path: "dashboard",
-                element: <AdminDashboard />,
-            },
-            {
-                path: "tables",
-                element: <Navigate to="user-table" replace />,
-            },
-            {
-                path: "tables/avatar-table",
-                element: <AvatarTable />
-            },
-            {
-                path: "tables/user-table",
-                element: <UserTable />,
+                element: <AdminLayout />,
+                children: [
+                    {
+                        path: "",
+                        element: <AdminDashboard />,
+                    },
+                    {
+                        path: "tables",
+                        element: <Navigate to="user-table" replace />,
+                    },
+                    {
+                        path: "tables/avatar-table",
+                        element: <AvatarTable />
+                    },
+                    {
+                        path: "tables/user-table",
+                        element: <UserTable />,
+                    },
+                    {
+                        path: "tables/frame-table",
+                        element: <FrameTable />
+                    }
+                ]
             }
         ]
-
     },
 
 ]

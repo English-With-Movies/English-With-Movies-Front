@@ -81,13 +81,31 @@ export const userApi = createApi({
             }),
         }),
         userUpdateAvatar: builder.mutation({
-            query: (updateAvatar) => ({
-                url: `user/updateavatar`,
+            query: ({ userId, formData }) => ({
+                url: `user/updateavatar?userId=${userId}`,
                 method: 'PUT',
-                body: updateAvatar
+                body: formData,
+            }),
+        }),
+        userUpdateAvatarById: builder.mutation({
+            query: ({ userId, avatarId }) => ({
+                url: `user/updateavatar?userId=${userId}&avatarId=${avatarId}`,
+                method: 'PUT',
+            }),
+        }),
+        deleteUser: builder.mutation({
+            query: (userId) => ({
+                url: `user/deleteuser?userId=${userId}`,
+                method: 'DELETE'
+            })
+        }),
+        changeUserRole: builder.mutation({
+            query: ({ userId, role }) => ({
+                url: `user/changeuserrole?userId=${userId}&role=${role}`,
+                method: 'PUT'
             }),
         }),
     }),
 })
 
-export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useAddPointToUserMutation, useGetAllUserQuery, useGetResetCodeCheckQuery, useUserBuyFrameMutation, useUserUpdateCurrentFrameMutation, useAddToFavoriteBlogUserMutation, useDeleteFromFavoriteBlogUserMutation, useGetFavoriteBlogsUserQuery, useUserUpdateProfileMutation, useUserUpdateAvatarMutation } = userApi
+export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useAddPointToUserMutation, useGetAllUserQuery, useGetResetCodeCheckQuery, useUserBuyFrameMutation, useUserUpdateCurrentFrameMutation, useAddToFavoriteBlogUserMutation, useDeleteFromFavoriteBlogUserMutation, useGetFavoriteBlogsUserQuery, useUserUpdateProfileMutation, useUserUpdateAvatarMutation, useUserUpdateAvatarByIdMutation, useDeleteUserMutation, useChangeUserRoleMutation } = userApi

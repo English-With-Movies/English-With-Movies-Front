@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaBars, FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
-
     const [isScrolled, setIsScrolled] = useState(false);
     const adminNavRef = useRef(null);
 

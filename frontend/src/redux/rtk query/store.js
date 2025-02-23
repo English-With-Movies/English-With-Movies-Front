@@ -17,6 +17,7 @@ import { userApi } from './Slices/userSlice'
 import { settingsApi } from './Slices/settingsSlice'
 import { blogApi } from './Slices/blogSlice'
 import { commentApi } from './Slices/commentSlice'
+import { aiApi } from './Slices/aiSlice'
 
 export const store = configureStore({
   reducer: {
@@ -37,6 +38,7 @@ export const store = configureStore({
     [settingsApi.reducerPath]: settingsApi.reducer,
     [blogApi.reducerPath]: blogApi.reducer,
     [commentApi.reducerPath]: commentApi.reducer,
+    [aiApi.reducerPath]: aiApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -57,6 +59,7 @@ export const store = configureStore({
       settingsApi.middleware,
       blogApi.middleware,
       commentApi.middleware,
+      aiApi.middleware,
     )
 
 })

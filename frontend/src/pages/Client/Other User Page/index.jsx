@@ -1,4 +1,4 @@
-import { useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 import { useGetByNameUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 import { Helmet } from "react-helmet";
 import LoaderIcon from "../../../components/Loaders/Loader";
@@ -11,11 +11,18 @@ import { FaRegHeart } from 'react-icons/fa6';
 import Container from "react-bootstrap/esm/Container";
 
 export default function OtherUserPage() {
+    let navigate = useNavigate()
     let { userName } = useParams()
-    let { data: userData, isLoading } = useGetByNameUserQuery(userName)
+    let { data: userData, isLoading, isError, error } = useGetByNameUserQuery(userName)
     let { data: avatarUser } = useGetByIdAvatarQuery(userData?.avatarId)
     let { data: allFrame } = useGetAllFrameQuery()
-    console.log(userData);
+    // console.log(userData);
+    // console.log(isError);
+    // console.log(error);
+    // console.log(userData);
+    if (error) {
+        navigate('/*')
+    }
 
     return (
         <>
@@ -67,9 +74,9 @@ export default function OtherUserPage() {
                                                 </div>
                                             </div>
                                             <div className='cursor-pointer items-center justify-center p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)] hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)]' onClick={() => navigate('streak-ranking')}>
-                                                <div className='flex'>
+                                                <div className='grid grid-cols-2 items-center'>
                                                     <img src={Calcifer} className='w-[150px]' alt="Streak" />
-                                                    <h5 className='text-center text-sm'>STREAK {userData?.streak} GÜN</h5>
+                                                    <h5 className='text-center text-xl'><h3 className="font-['Kanit']">STREAK</h3> {userData?.streak} GÜN</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -84,7 +91,6 @@ export default function OtherUserPage() {
                                                     <div key={blog.id} onClick={() => { navigate(`/blog/${blog.id}`) }} className="cursor-pointer p-3 rounded-4 bg-[var(--movies-bg)] transition-all duration-250 ease-in hover:shadow-gray-500 hover:shadow-lg">
                                                         <div className="flex items-center justify-between">
                                                             <h3 className="font-['Kanit'] text-sm md:text-xl">{blog.title}</h3>
-                                                            <span onClick={() => addFavBlog(blog.id)} className="text-xl"><FaRegHeart /></span>
                                                         </div>
                                                         <div className="flex gap-2 justify-end">
                                                             <div className="flex flex-col items-end justify-center">

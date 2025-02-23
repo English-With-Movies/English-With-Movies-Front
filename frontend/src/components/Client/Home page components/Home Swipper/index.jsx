@@ -25,7 +25,7 @@ export default function HomeSwipper() {
         <SwiperSlide>
           <div className='h-full w-full py-3 flex bg-red-300 justify-center bg-top bg-cover' style={{ backgroundImage: `url(${sliderBg})` }}>
             <div className='font-["Kanit"] text-center font-semibold max-[450px]:text-lg max-[450px]:leading-6 text-2xl sm:text-xl md:text-2xl lg:text-4xl xl:text-5xl pt-[6%]'>
-              Film izləyərək <br /> ingiliscə öyrənmək <br /> istəyirsiz?
+              Film izləmək üçün <br /> ingiliscə öyrənmək <br /> istəyirsiz?
             </div>
           </div>
         </SwiperSlide>

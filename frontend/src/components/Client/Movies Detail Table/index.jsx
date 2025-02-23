@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
@@ -6,9 +6,29 @@ import { userInfoContext } from "../../../context/UserInfo";
 import { useDeleteWordFromKnownWordListMutation, useGetKnownWordListByIdQuery, usePostWordToKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
 import { useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 import { useNavigate } from "react-router";
+import { useGenerateSentencesMutation, useGenerateSpeechMutation } from "../../../redux/rtk query/Slices/aiSlice";
+import UserLoader from "../../Loaders/UserLoader";
+import { IoCloseSharp } from "react-icons/io5";
 
 export default function MovieTable({ checkboxStates, wordList, setWordList, setCheckboxStates, setSelectedLevels }) {
     let navigate = useNavigate()
+    let [generateSentences, { isLoading }] = useGenerateSentencesMutation()
+    let [generateSpeech, { isLoading: speechLoading }] = useGenerateSpeechMutation()
+    let [open, setOpen] = useState(false)
+    let [stateData, setStateData] = useState({})
+
+    // audio function
+    function playBase64Audio(base64String) {
+        const byteCharacters = atob(base64String);
+        const byteNumbers = new Uint8Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const blob = new Blob([byteNumbers], { type: 'audio/mp3' });
+        const audioUrl = URL.createObjectURL(blob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+    }
 
     // visible sort 
     let sortWords = useRef()
@@ -46,7 +66,8 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
     let { data: userData } = useGetByIdUserQuery(userInfo?.userId, { skip: !userInfo?.userId })
     let { data: userKnownList, refetch } = useGetKnownWordListByIdQuery(userData?.knownWordListId, { skip: !userData?.knownWordListId })
 
-    const addToKnownListFunction = async (word) => {
+    const addToKnownListFunction = async (e, word) => {
+        e.stopPropagation()
         if (userData) {
             let finded = userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == word.wordId)
             if (finded) {
@@ -59,6 +80,18 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
         } else {
             navigate('/login')
         }
+    }
+
+    const showSentence = async (word) => {
+        setOpen(true)
+        const response = await generateSentences(word)
+        setStateData(response.data)
+    }
+
+    const speakingText = async (e, text) => {
+        e.stopPropagation()
+        const response = await generateSpeech(text)
+        playBase64Audio(response.data.audioBase64)
     }
 
     return (
@@ -102,10 +135,10 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
                         {
                             checkboxStates.find((bool) => bool == true) && wordList?.length != 0 ? (
                                 wordList?.map((value) => (
-                                    <tr className="bg-[var(--movies-bg)] text-lg rounded-5 text-[var(--text-color)] border-y" key={value.id}>
+                                    <tr onClick={() => showSentence(value.word.wordText)} className="cursor-pointer bg-[var(--movies-bg)] text-lg rounded-5 text-[var(--text-color)] border-y" key={value.id}>
                                         <td className="p-3 text-3xl relative hover:text-blue-600 transition-all ease-in duration-200 hover-title flex">
                                             <div className="p-2 bg-blue-600 absolute top-[-35%] z-index-2 text-sm text-white rounded-4">Səsləndirin</div>
-                                            <span className="cursor-pointer p-1"><HiSpeakerWave /></span>
+                                            <span onClick={(e) => speakingText(e, value.word.wordText)} className="cursor-pointer p-1"><HiSpeakerWave /></span>
                                         </td>
                                         <td className="p-3" style={{ textDecoration: (userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? "line-through" : "none", textDecorationColor: "#3d3d3d", textDecorationThickness: "2px" }}>{value.word.wordText}</td>
                                         <td className="p-3" style={{ textDecoration: (userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? "line-through" : "none", textDecorationColor: "#3d3d3d", textDecorationThickness: "2px" }}>{value.word.meaning}</td>
@@ -128,7 +161,7 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
                                                     <span dangerouslySetInnerHTML={{ __html: 'Bilinənlər siyahısına <br /> əlavə edin' }} />
                                                 }
                                             </div>
-                                            <span onClick={() => addToKnownListFunction(value)} className="cursor-pointer p-1">
+                                            <span onClick={(e) => addToKnownListFunction(e, value)} className="cursor-pointer p-1">
                                                 {(userKnownList?.knownWordListWords?.find((wordObj) => wordObj.word.id == value.wordId)) ? <FaRegEyeSlash /> : <FaRegEye />}
                                             </span>
                                         </td>
@@ -140,6 +173,21 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
                                 <h3>Level seçərək başlayın</h3>
                             )
                         }
+
+                        <div className={`${open ? 'flex' : 'hidden'} items-center justify-center rounded bg-gray-600 fixed bottom-[8%] sm:bottom-[3%] left-1/2 lg:left-1/3 -translate-x-1/2 p-3 max-w-[500px] min-h-[150px] w-full mr-5`}>
+                            <span onClick={() => setOpen(false)} className="cursor-pointer  text-white absolute top-2 right-2 text-4xl hover:text-red-500"><IoCloseSharp /></span>
+                            {
+                                isLoading ? (
+                                    <UserLoader />
+                                ) : (
+                                    <div className="font-semibold font-['Kanit'] text-2xl w-full pt-[25px]">
+                                        <div className="break-words whitespace-pre-wrap">{stateData?.english}</div>
+                                        <div>{stateData?.azerbaijani}</div>
+                                        <span onClick={(e) => speakingText(e, stateData?.english)} className="hover:text-blue-600 text-white cursor-pointer absolute top-3 left-3 text-3xl"><HiSpeakerWave /></span>
+                                    </div>
+                                )
+                            }
+                        </div>
                     </tbody>
                 </table>
             </div>

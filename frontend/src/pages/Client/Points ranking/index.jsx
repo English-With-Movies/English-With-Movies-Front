@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { userInfoContext } from "../../../context/UserInfo";
 import { useNavigate } from "react-router";
 import LoaderIcon from "../../../components/Loaders/Loader";
+import { useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
 
 export default function PointsRanking() {
     let navigate = useNavigate()
@@ -13,6 +14,7 @@ export default function PointsRanking() {
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [])
+    let { data: userData } = useGetByIdUserQuery(userInfo.userId)
     let { data, isLoading } = useGetRanksForPointQuery(userInfo?.userId)
     let [pointsRanking, setPointsRanking] = useState()
     useEffect(() => {
@@ -39,24 +41,22 @@ export default function PointsRanking() {
                                         <p className="text-center text-3xl font-['Dancing_Script']">ÜMUMİ XAL SIRALAMASI</p>
                                         <div className="grid grid-cols-3 items-end">
                                             <div className="flex flex-col items-center justify-center">
-                                                <div>{pointsRanking?.[1].userName}</div>
-                                                <div>{pointsRanking?.[1].value}</div>
-                                                <div className="border-[8px] border-r-0 border-solid border-[var(--movies-bg)] w-full 
-                                    h-[100px] md:h-[150px] flex items-center justify-center text-4xl md:text-7xl text-[gray]">
+                                                <div onClick={() => navigate(`/user/${pointsRanking?.[1]?.userName}`)} className="cursor-pointer">{pointsRanking?.[1]?.userName}</div>
+                                                <div>{pointsRanking?.[1]?.value}</div>
+                                                <div className="border-[8px] border-r-0 border-solid border-[var(--movies-bg)] w-full h-[100px] md:h-[150px] flex items-center justify-center text-4xl md:text-7xl text-[gray]">
                                                     <FaMedal />
                                                 </div>
                                             </div>
                                             <div className="flex flex-col items-center justify-center">
-                                                <div>{pointsRanking?.[0].userName}</div>
-                                                <div>{pointsRanking?.[0].value}</div>
-                                                <div className="border-[8px] border-solid border-[var(--movies-bg)] w-full 
-                                    h-[130px] md:h-[200px] flex items-center justify-center text-4xl md:text-7xl text-[yellow]">
+                                                <div onClick={() => navigate(`/user/${pointsRanking?.[0]?.userName}`)} className="cursor-pointer">{pointsRanking?.[0]?.userName}</div>
+                                                <div>{pointsRanking?.[0]?.value}</div>
+                                                <div className="border-[8px] border-solid border-[var(--movies-bg)] w-full h-[130px] md:h-[200px] flex items-center justify-center text-4xl md:text-7xl text-[yellow]">
                                                     <FaMedal />
                                                 </div>
                                             </div>
                                             <div className="flex flex-col items-center justify-center">
-                                                <div>{pointsRanking?.[2].userName}</div>
-                                                <div>{pointsRanking?.[2].value}</div>
+                                                <div onClick={() => navigate(`/user/${pointsRanking?.[2]?.userName}`)} className="cursor-pointer">{pointsRanking?.[2]?.userName}</div>
+                                                <div>{pointsRanking?.[2]?.value}</div>
                                                 <div className="border-[8px] border-l-0 border-solid border-[var(--movies-bg)] w-full h-[70px] md:h-[100px] flex items-center justify-center text-4xl md:text-7xl text-[#CD7F32]">
                                                     <FaMedal />
                                                 </div>
@@ -75,23 +75,12 @@ export default function PointsRanking() {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    pointsRanking?.length > 20 ? (
-                                                        pointsRanking?.slice(3, 20)?.map((user, index) => (
-                                                            <tr key={user.id}
-                                                                className="bg-[var(--movies-bg)] text-xl text-[var(--text-color)] border-y">
-                                                                <td className="p-3">{index + 4}</td>
-                                                                <td>{user.userName}</td>
-                                                                <td>{user.value}</td>
-                                                            </tr>
-                                                        ))
-                                                    ) : (<></>)
-                                                }
-                                                {
                                                     pointsRanking?.slice(3)?.map((user, index) => (
                                                         <tr key={user.id}
-                                                            className="bg-[var(--movies-bg)] text-xl text-[var(--text-color)] border-y">
+                                                            className={`bg-[var(--movies-bg)] text-xl text-[var(--text-color)] border-y ${userData?.userName == user.userName ? "border-3 border-[#06b6d4]" : ""}`}>
                                                             <td className="p-3">{index + 4}</td>
-                                                            <td>{user.userName}</td>
+                                                            <td><span onClick={() => navigate(`/user/${user.userName}`)} className="cursor-pointer">
+                                                                {user.userName}</span></td>
                                                             <td>{user.value}</td>
                                                         </tr>
                                                     ))
