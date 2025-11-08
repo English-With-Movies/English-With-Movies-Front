@@ -190,8 +190,8 @@ export default function EnglishQuestionsPage() {
                     <h1 className='font-["Kanit"] bg-[#5693db] px-4 py-2 rounded-5'>{point}</h1>
                     <div className='bg-[#18406e] w-full flex justify-center items-center flex-col relative p-2 py-5 rounded-4'>
                         <h2>{question.word.wordText}</h2>
-                        <div className='absolute top-2 left-2 text-3xl cursor-pointer'><FaPlus /></div>
-                        <div onClick={() => speakingText(question.word.wordText)} className='absolute top-2 right-2 text-3xl cursor-pointer'><HiSpeakerWave /></div>
+                        <div className='hover:text-gray-400 absolute top-2 left-2 text-3xl cursor-pointer'><FaPlus /></div>
+                        <div onClick={() => speakingText(question.word.wordText)} className='absolute top-2 right-2 text-3xl cursor- hover:text-blue-400'><HiSpeakerWave /></div>
                         <div className='absolute bottom-2 left-2 hidden' ref={sentenceRef}>
                             <div className='-mb-1'>{createdSentenceWithWordText?.english}</div>
                             <div>{createdSentenceWithWordText?.azerbaijani}</div>

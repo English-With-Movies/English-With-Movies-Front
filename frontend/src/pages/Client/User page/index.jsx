@@ -5,9 +5,10 @@ import { useNavigate } from 'react-router';
 import { Helmet } from 'react-helmet';
 import { userInfoContext } from '../../../context/UserInfo';
 import { useContext, useEffect, useState } from 'react';
-import { useGetByIdUserQuery, useUserUpdateAvatarByIdMutation, useUserUpdateAvatarMutation, useUserUpdateProfileMutation } from '../../../redux/rtk query/Slices/userSlice';
+import { useGetByIdUserQuery, useUserUpdateAvatarByIdMutation, useUserUpdateAvatarMutation, useUserUpdatePasswordMutation, useUserUpdateProfileMutation } from '../../../redux/rtk query/Slices/userSlice';
 import LoaderIcon from '../../../components/Loaders/Loader';
 import { GrUserSettings } from "react-icons/gr";
+import { RiLockPasswordLine } from "react-icons/ri";
 import { useGetAllAvatarQuery, useGetByIdAvatarQuery } from '../../../redux/rtk query/Slices/avatarSlice';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as yup from 'yup';
@@ -15,7 +16,7 @@ import moment from 'moment';
 import Modal from 'react-bootstrap/Modal';
 import * as React from 'react';
 import { useGetAllFrameQuery } from '../../../redux/rtk query/Slices/frameSlice';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaRegEye, FaRegEyeSlash } from 'react-icons/fa';
 
 const style = {
     position: 'absolute',
@@ -47,10 +48,27 @@ let validationSchema = yup.object().shape({
     email: yup.string().email().required("Email is required."),
 });
 
+let validationSchemaPassword = yup.object().shape({
+    oldPassword: yup.string().required("Enter your old password."),
+    newPassword: yup.string().required("Enter your new password.")
+        .trim()
+        .matches(/^\S*$/, "Boşluqlar olmamalıdır")
+        .matches(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])/,
+            "One Uppercase, One Lowercase, One Number and One Special Case Character"
+        )
+        .min(8, "Password is too short - should be 8 chars minimum."),
+    confirmPassword: yup.string().required("Enter your new password again.")
+});
+
 export default function UserProfile() {
     const [open, setOpen] = React.useState(false);
+    const [openPassword, setOpenPassword] = React.useState(false);
     const { userInfo } = useContext(userInfoContext);
     const navigate = useNavigate();
+    let oldPasswordRef = React.useRef()
+    let newPasswordRef = React.useRef()
+    let confirmPasswordRef = React.useRef()
     const userId = userInfo?.userId ?? "";
     const userQuery = useGetByIdUserQuery(userId, { skip: !userId });
     const avatarQuery = useGetByIdAvatarQuery(userQuery.data?.avatarId, { skip: !userQuery.data?.avatarId });
@@ -60,6 +78,7 @@ export default function UserProfile() {
     const userRefetch = userQuery.refetch
     const avatarData = avatarQuery.data;
     let [userUpdateProfile] = useUserUpdateProfileMutation()
+    let [userUpdatePassword] = useUserUpdatePasswordMutation()
     let [userUpdateAvatar] = useUserUpdateAvatarMutation()
     let [userUpdateAvatarById] = useUserUpdateAvatarByIdMutation()
     // avatar modal
@@ -100,9 +119,32 @@ export default function UserProfile() {
         setShowAvatar(false)
         userRefetch()
     }
+
+    const typeChange = (password) => {
+        if (password === 'old') {
+            if (oldPasswordRef.current.type !== "text") {
+                oldPasswordRef.current.type = "text"
+            } else {
+                oldPasswordRef.current.type = "password"
+            }
+        } else if (password === 'new') {
+            if (newPasswordRef.current.type !== "text") {
+                newPasswordRef.current.type = "text"
+            } else {
+                newPasswordRef.current.type = "password"
+            }
+        } else if (password === 'confirm') {
+            if (confirmPasswordRef.current.type !== "text") {
+                confirmPasswordRef.current.type = "text"
+            } else {
+                confirmPasswordRef.current.type = "password"
+            }
+        }
+    }
+
     // error
     if (userQuery.isError) {
-        return <div>Error: {userQuery.error?.message}</div>;
+        navigate('/login')
     }
     // refetch userpage
     useEffect(() => {
@@ -151,6 +193,7 @@ export default function UserProfile() {
                                         <p className='mb-0'>Ümumi xal: <span className='text-orange-500 font-bold text-lg'>{userData?.point}</span></p>
                                         <p>Bugünün xalı: <span className='text-orange-500 font-bold text-lg'>{userData?.todaysPoint}</span></p>
                                         <div onClick={() => setOpen(true)} className='flex items-center gap-2 text-gray-400 cursor-pointer'><GrUserSettings /> Parametrlər</div>
+                                        <div onClick={() => setOpenPassword(true)} className='mt-1 flex items-center gap-2 text-gray-400 cursor-pointer'><RiLockPasswordLine /> Şifrəni yenilə</div>
                                     </div>
 
                                     <div>
@@ -213,6 +256,100 @@ export default function UserProfile() {
                             </Container>
                         </div>
 
+                        {/* change password */}
+                        <div>
+                            <Modal
+                                aria-labelledby="contained-modal-title-vcenter"
+                                centered
+                                size="lg"
+                                className='flex items-center justify-center'
+                                show={openPassword}
+                                onHide={() => setOpenPassword(false)}
+                                backdrop="static"
+                                keyboard={false}
+                            >
+                                <Modal.Header closeButton className='bg-[var(--movies-bg)] text-[var(--text-color)] rounded'>
+                                    <Modal.Title>Change Password</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body className='bg-[var(--movies-bg)] text-[var(--text-color)] rounded'>
+                                    <Formik
+                                        initialValues={{ id: userData?.id, oldPassword: '', newPassword: '', confirmPassword: '' }}
+                                        validationSchema={validationSchemaPassword}
+                                        onSubmit={async (values) => {
+                                            try {
+                                                const response = await userUpdatePassword({ userId: values.id, oldPassword: values.oldPassword, newPassword: values.newPassword, confirmPassword: values.confirmPassword });
+                                                userRefetch()
+                                                if (response.data == null) {
+                                                    alert('Şifrəniz redaktə olundu');
+                                                    setOpenPassword(false)
+                                                }
+                                                if (response.error) {
+                                                    alert("❌ " + response.error.data.Message)
+                                                }
+                                            } catch (error) {
+                                                if (error.response) {
+                                                    const { status, data, statusText } = error.response;
+                                                    console.error("Error Status Code:", status);
+                                                    console.error("Error Message:", data);
+                                                    console.error("Error Status Text:", statusText);
+
+                                                    if (status === 400) {
+                                                        alert("❌ Bad request, check your input.");
+                                                    } else if (status === 404) {
+                                                        alert("❌ Endpoint not found.");
+                                                    } else if (status === 500) {
+                                                        alert("❌ Server error, please try again later.");
+                                                    }
+                                                } else {
+                                                    console.error("Unknown error:", error);
+                                                }
+                                            }
+                                        }}
+                                    >
+                                        {({ isSubmitting }) => (
+                                            <Form className="flex flex-col">
+                                                <label htmlFor="oldPassword" className='mt-1'>Old Password:</label>
+                                                <div className="relative flex">
+                                                    <Field type="password" name="oldPassword" id='oldPassword'
+                                                        className='w-full border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Enter your old password' innerRef={oldPasswordRef} />
+                                                    <span
+                                                        onClick={() => typeChange("old")}
+                                                        className='absolute right-[20px] top-[20%] text-xl cursor-pointer'><FaRegEye />
+                                                    </span>
+                                                </div>
+                                                <ErrorMessage name="oldPassword" component="div" />
+
+                                                <label htmlFor="newPassword" className='mt-1'>New Password:</label>
+                                                <div className="relative flex">
+                                                    <Field type="password" name="newPassword" id='newPassword' className='w-full border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' placeholder='Enter your new password' innerRef={newPasswordRef} />
+                                                    <span
+                                                        onClick={() => typeChange("new")}
+                                                        className='absolute right-[20px] top-[20%] text-xl cursor-pointer'><FaRegEye />
+                                                    </span>
+                                                </div>
+                                                <ErrorMessage name="newPassword" component="div" />
+
+                                                <label htmlFor="confirmPassword" className='mt-1'>Confirm Password:</label>
+                                                <div className="relative flex">
+                                                    <Field type="password" name="confirmPassword" id='confirmPassword' className='w-full border-2 border-blue-400 rounded py-1 px-2 focus:outline-none mb-1' innerRef={confirmPasswordRef} placeholder='Enter confirm password' />
+                                                    <span
+                                                        onClick={() => typeChange("confirm")}
+                                                        className='absolute right-[20px] top-[20%] text-xl cursor-pointer'><FaRegEye />
+                                                    </span>
+                                                </div>
+                                                <ErrorMessage name="confirmPassword" component="div" />
+
+                                                <button type="submit" disabled={isSubmitting} className="mt-3 text-white rounded max-w-[150px] bg-gradient-to-r from-blue-800 to-blue-300 mx-auto px-3 py-1">
+                                                    Submit
+                                                </button>
+                                            </Form>
+                                        )}
+                                    </Formik>
+                                </Modal.Body>
+                            </Modal>
+
+                        </div>
+
                         {/* edit profile modal */}
                         <div>
                             <Modal
@@ -245,7 +382,7 @@ export default function UserProfile() {
                                                 const response = await userUpdateProfile(editPostFormData);
                                                 userRefetch()
                                                 if (response.data) {
-                                                    alert('Profil məlumatlarınız edit olundu');
+                                                    alert('Profil məlumatlarınız redaktə olundu');
                                                     setOpen(false)
                                                 }
                                                 if (response.error) {

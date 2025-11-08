@@ -26,7 +26,7 @@ export const subscriptionApi = createApi({
         updatePostSubscription: builder.mutation({
             query: (updateSubscription) => ({
                 url: `subscription/update`,
-                method: 'POST',
+                method: 'PUT',
                 body: updateSubscription
             })
         }),

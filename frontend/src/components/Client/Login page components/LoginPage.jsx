@@ -53,7 +53,7 @@ export default function LoginFirstPart({ setPage }) {
                                         navigate('/')
                                     }
                                     if (response.error) {
-                                        setLoginError("❌ " + response.error.data)
+                                        setLoginError("❌ " + response.error.data.Message)
                                     }
                                 } catch (error) {
                                     console.error("Login xətası:", error);

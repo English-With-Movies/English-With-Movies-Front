@@ -19,6 +19,9 @@ export const blogApi = createApi({
         getByIdBlog: builder.query({
             query: (id) => `blog/getbyid/${id}`,
         }),
+        getByCommentsOfBlog: builder.query({
+            query: (id) => `blog/getcomments/${id}`,
+        }),
         deleteBlog: builder.mutation({
             query: (id) => ({
                 url: `blog/delete/${id}`,
@@ -39,7 +42,19 @@ export const blogApi = createApi({
                 body: updateBlog
             }),
         }),
+        approveBlog: builder.mutation({
+            query: (id) => ({
+                url: `blog/approve/${id}`,
+                method: 'PUT',
+            }),
+        }),
+        unApproveBlog: builder.mutation({
+            query: (id) => ({
+                url: `blog/unapprove/${id}`,
+                method: 'PUT',
+            }),
+        }),
     }),
 })
 
-export const { useGetAllBlogsQuery, useGetByIdBlogQuery, useDeleteBlogMutation, usePostBlogMutation, useUpdateBlogMutation } = blogApi
+export const { useGetAllBlogsQuery, useGetByIdBlogQuery, useDeleteBlogMutation, usePostBlogMutation, useUpdateBlogMutation, useApproveBlogMutation, useUnApproveBlogMutation } = blogApi

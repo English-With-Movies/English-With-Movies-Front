@@ -28,7 +28,13 @@ export const knownWordListApi = createApi({
                 method: 'POST'
             })
         }),
+        resetKnownWordList: builder.mutation({
+            query: (knownWordListId) => ({
+                url: `knownwordlist/resetlist?knownWordListId=${knownWordListId}`,
+                method: 'DELETE'
+            })
+        }),
     }),
 })
 
-export const { useDeleteWordFromKnownWordListMutation, usePostWordToKnownWordListMutation, useGetKnownWordListByIdQuery } = knownWordListApi
+export const { useDeleteWordFromKnownWordListMutation, usePostWordToKnownWordListMutation, useGetKnownWordListByIdQuery, useResetKnownWordListMutation } = knownWordListApi

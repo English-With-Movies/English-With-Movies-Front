@@ -35,7 +35,7 @@ export const frameApi = createApi({
         updatePostFrame: builder.mutation({
             query: (updateFrame) => ({
                 url: `frame/update`,
-                method: 'POST',
+                method: 'PUT',
                 body: updateFrame
             }),
         }),

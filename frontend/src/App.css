@@ -199,6 +199,7 @@ input[type="number"] {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -209,6 +210,7 @@ input[type="number"] {
   position: relative;
   width: 100%;
   aspect-ratio: 24 / 9;
+
   @media (max-width: 640px) {
     aspect-ratio: 16 / 9;
   }
@@ -400,6 +402,7 @@ input[type="number"] {
     left: 50%;
     transform: rotate(25deg) translateX(-50%);
   }
+
   &::after {
     content: '';
     position: absolute;
@@ -408,6 +411,6 @@ input[type="number"] {
     background-color: rgba(255, 0, 0, 0.7);
     top: 10%;
     left: 50%;
-    transform: rotate(-25deg) translateX(-50%) ;
+    transform: rotate(-25deg) translateX(-50%);
   }
 }

@@ -1,19 +1,23 @@
 import Container from 'react-bootstrap/Container';
 import { NavLink, useNavigate } from "react-router-dom";
-import { FaCircleUser } from "react-icons/fa6";
+import { FaCheck, FaCircleUser } from "react-icons/fa6";
 import ThemeButton from '../Theme Button';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { FaBars } from "react-icons/fa6";
 import { userInfoContext } from '../../../context/UserInfo';
 import { useGetByIdUserQuery } from '../../../redux/rtk query/Slices/userSlice';
 import { useGetByIdAvatarQuery } from '../../../redux/rtk query/Slices/avatarSlice';
 import { useGetSettingsByKeyQuery } from '../../../redux/rtk query/Slices/settingsSlice';
 import { useGetByIdFrameQuery } from '../../../redux/rtk query/Slices/frameSlice';
+import { IoClose, IoNotifications } from "react-icons/io5";
+import { useDeleteNotificationMutation, useGetByIdUserNotificationsQuery, useUpdateReadNotificationMutation } from '../../../redux/rtk query/Slices/userNotificationSlice';
+import moment from 'moment';
 
 export default function UserNavbar() {
     let { data: mainLogo } = useGetSettingsByKeyQuery('MainLogo')
     let hiddenRef = useRef()
     let barsRef = useRef()
+    let notificationRef = useRef()
     let navigate = useNavigate()
     const handleDisplay = (e) => {
         e.stopPropagation()
@@ -23,7 +27,15 @@ export default function UserNavbar() {
         e.stopPropagation()
         barsRef.current.classList.toggle("handleBars")
     }
-    let { userInfo, setUserInfo } = useContext(userInfoContext)    
+    const handleNotification = (e) => {
+        e.stopPropagation()
+        notificationRef.current.classList.toggle("handleBars")
+    }
+    let { userInfo, setUserInfo } = useContext(userInfoContext)
+    let { data: userNotificationsData, refetch: userNotificationsRefetch } = useGetByIdUserNotificationsQuery(userInfo?.userId)
+    let [updateReadNotification] = useUpdateReadNotificationMutation()
+    let [deleteNotification] = useDeleteNotificationMutation()
+    let [unRead, setUnRead] = useState()
     let { data } = useGetByIdUserQuery(userInfo?.userId)
     let { data: avatarData } = useGetByIdAvatarQuery(data?.avatarId)
     let frameId = null;
@@ -33,6 +45,29 @@ export default function UserNavbar() {
     }
     let { data: frame } = useGetByIdFrameQuery(frameId);
 
+    const handleReadNotification = async (e, notification) => {
+        e.stopPropagation()
+        const response = await updateReadNotification(notification.id)
+        if (response.error) {
+            alert('❌ Xəta baş verdi')
+        }
+        userNotificationsRefetch()
+    }
+    const handleDeleteNotification = async (e, notification) => {
+        e.stopPropagation()
+        const response = await deleteNotification(notification.id)
+        if (response.error) {
+            alert('❌ Xəta baş verdi')
+        }
+        userNotificationsRefetch()
+    }
+    useEffect(() => {
+        if (userNotificationsData) {
+            let unReadData = userNotificationsData?.filter((notification) => !notification?.isRead)
+            setUnRead(unReadData)
+        }
+    }, [userNotificationsData])
+
     const logOut = () => {
         localStorage.removeItem("accessToken")
         localStorage.removeItem("refreshToken")
@@ -41,12 +76,16 @@ export default function UserNavbar() {
     }
 
     useEffect(() => {
+        userNotificationsRefetch()
         const handleClick = () => {
-            if (!hiddenRef.current.classList.contains("handleBars")) {
-                hiddenRef.current.classList.add("handleBars");
+            if (!hiddenRef.current?.classList?.contains("handleBars")) {
+                hiddenRef.current?.classList?.add("handleBars");
             }
-            if (!barsRef.current.classList.contains("handleBars")) {
-                barsRef.current.classList.add("handleBars");
+            if (!barsRef.current?.classList?.contains("handleBars")) {
+                barsRef.current?.classList?.add("handleBars");
+            }
+            if (!notificationRef.current?.classList?.contains("handleBars")) {
+                notificationRef.current?.classList?.add("handleBars");
             }
         };
         document.addEventListener("click", handleClick);
@@ -75,7 +114,7 @@ export default function UserNavbar() {
                         </NavLink>
                         <NavLink
                             to="/series"
-                            className="no-underline mx-3 font-['PT_Serif'] font-semibold hidden md:block"
+                            className="no-underline mx-2 font-['PT_Serif'] font-semibold hidden md:block"
                             style={({ isActive }) => {
                                 return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
                             }}
@@ -84,7 +123,7 @@ export default function UserNavbar() {
                         </NavLink>
                         <NavLink
                             to="/movies"
-                            className="no-underline mr-3 font-['PT_Serif'] font-semibold hidden md:block"
+                            className="no-underline mr-2 font-['PT_Serif'] font-semibold hidden md:block"
                             style={({ isActive }) => {
                                 return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
                             }}
@@ -94,7 +133,7 @@ export default function UserNavbar() {
                         </NavLink>
                         <NavLink
                             to="/blog"
-                            className="no-underline mr-3 font-['PT_Serif'] font-semibold hidden md:block"
+                            className="no-underline mr-2 font-['PT_Serif'] font-semibold hidden md:block"
                             style={({ isActive }) => {
                                 return isActive ? { color: "#06b6d4" } : { color: "var(--text-color)" };
                             }}
@@ -170,17 +209,51 @@ export default function UserNavbar() {
                         </div>
 
                     </div>
-                    <div className="user-side flex items-center justify-center gap-3">
+                    <div className="user-side flex items-center justify-center gap-1">
                         <div className="user-logo text-cyan-500 text-3xl relative">
                             {
                                 Object.keys(userInfo).length ? (
-                                    <div onClick={(e) => handleDisplay(e)} className='user-logo text-cyan-500 text-3xl cursor-pointer relative flex items-center justify-center w-[50px] h-[50px]'>
-                                        <img className='w-[75%] h-[75%] rounded-full object-cover z-0' src={`https://englishwithmovies.blob.core.windows.net/avatar/${avatarData?.imgName}`} alt="profile" />
-                                        <div
-                                            key={frame?.id}
-                                            className="absolute w-full h-full bg-cover bg-center z-10"
-                                            style={{ backgroundImage: `url('https://englishwithmovies.blob.core.windows.net/frame/${frame?.imgName}')` }}
-                                        ></div>
+                                    <div className='flex items-center gap-1'>
+                                        <div className='relative'>
+                                            <div className='text-sm text-white font-bold bg-red-500 px-1 rounded-full absolute -top-[40%] -left-2'>
+                                                {
+                                                    unRead?.length == 0 ? (null) : unRead?.length > 20 ? (`20+`) : (unRead?.length)
+                                                }
+                                            </div>
+                                            <div onClick={(e) => handleNotification(e)} className='cursor-pointer'><IoNotifications /></div>
+                                            <div ref={notificationRef}
+                                                style={{ maxHeight: '500px', overflowY: "scroll", width: '100%' }}
+                                                className='font-["PT_Serif"] absolute top-[140%] left-1/2 transform -translate-x-1/2 shadow-[0_8px_24px_rgba(149,157,165,0.1)] bg-[var(--bg-color)] text-[var(--text-color)] z-10 sm:min-w-[450px] min-w-[300px] rounded transition-all ease-in duration-200 handleBars'>
+                                                {
+                                                    userNotificationsData?.toSorted((a,b) => a.isRead - b.isRead)?.map((notification) => (
+                                                        <div key={notification.id} className={`border-2 border-gray-400 rounded p-1 w-full 
+                                                        ${notification.isRead ? 'opacity-60' : ''}`}>
+                                                            <div className='font-semibold text-xs sm:text-sm opacity-70'>
+                                                                <span className='mr-1'>{notification?.type}</span>
+                                                            </div>
+                                                            <div className='text-base sm:text-lg'>{notification?.message}</div>
+                                                            <div className='flex gap-2 items-center text-sm sm:text-base mt-1'>
+                                                                {
+                                                                    !notification.isRead ? (
+                                                                        <div onClick={(e) => handleReadNotification(e, notification)} className='cursor-pointer text-green-500 px-3 border-[1px] border-green-500 border-solid'><FaCheck /></div>
+                                                                    ) : (<></>)
+                                                                }
+                                                                <div onClick={(e) => handleDeleteNotification(e, notification)} className='cursor-pointer text-red-500 px-3 border-[1px] border-red-500 border-solid'><IoClose /></div>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <div onClick={(e) => handleDisplay(e)} className='user-logo text-cyan-500 text-3xl cursor-pointer relative flex items-center justify-center w-[50px] h-[50px]'>
+                                            <img className='w-[75%] h-[75%] rounded-full object-cover z-0' src={`https://englishwithmovies.blob.core.windows.net/avatar/${avatarData?.imgName}`} alt="profile" />
+                                            <div
+                                                key={frame?.id}
+                                                className="absolute w-full h-full bg-cover bg-center z-10"
+                                                style={{ backgroundImage: `url('https://englishwithmovies.blob.core.windows.net/frame/${frame?.imgName}')` }}
+                                            ></div>
+                                        </div>
                                     </div>
                                 ) : (
                                     <div

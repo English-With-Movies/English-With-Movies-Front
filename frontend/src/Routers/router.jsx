@@ -30,6 +30,17 @@ import AddBlog from "../pages/Client/Blog page/Add Blog";
 import OtherUserPage from "../pages/Client/Other User Page";
 import FrameTable from "../pages/Admin/Admin Tables/Frame Table";
 import ProtectedAdminRoute from "./ProtectedAdminRoute";
+import BlogTable from "../pages/Admin/Admin Tables/Blog Table";
+import FeedbackTable from "../pages/Admin/Admin Tables/Feedback Table";
+import GenreTable from "../pages/Admin/Admin Tables/Genre Table";
+import SubscriptionTable from "../pages/Admin/Admin Tables/Subscription Table";
+import SettingsTable from "../pages/Admin/Admin Tables/Settings Table";
+import LevelTable from "../pages/Admin/Admin Tables/Level Table";
+import MovieTable from "../pages/Admin/Admin Tables/Movie Table";
+import TodaysPointsRanking from "../pages/Client/Today's points ranking";
+import FeedbackPage from "../pages/Client/Feedback page";
+import UserReportTable from "../pages/Admin/Admin Tables/User Report Table";
+import WordTable from "../pages/Admin/Admin Tables/Word Table";
 
 function ProtectedRoute({ children }) {
     let { quizDataArray } = useContext(quizDataContext);
@@ -68,6 +79,10 @@ const ROUTES = [
             {
                 path: '/points-ranking',
                 element: <PointsRanking />
+            },
+            {
+                path: '/todays-points-ranking',
+                element: <TodaysPointsRanking />
             },
             {
                 path: '/streak-ranking',
@@ -126,6 +141,10 @@ const ROUTES = [
                 element: <OtherUserPage />
             },
             {
+                path: '/feedback',
+                element: <FeedbackPage />
+            },
+            {
                 path: '/*',
                 element: <NotFound />
             }
@@ -160,8 +179,44 @@ const ROUTES = [
                         element: <UserTable />,
                     },
                     {
+                        path: 'tables/user-report-table',
+                        element: <UserReportTable />
+                    },
+                    {
                         path: "tables/frame-table",
                         element: <FrameTable />
+                    },
+                    {
+                        path: "tables/blog-table",
+                        element: <BlogTable />
+                    },
+                    {
+                        path: "tables/feedback-table",
+                        element: <FeedbackTable />,
+                    },
+                    {
+                        path: "tables/genre-table",
+                        element: <GenreTable />
+                    },
+                    {
+                        path: "tables/level-table",
+                        element: <LevelTable />
+                    },
+                    {
+                        path: "tables/settings-table",
+                        element: <SettingsTable />,
+                    },
+                    {
+                        path: "tables/subscription-table",
+                        element: <SubscriptionTable />
+                    },
+                    {
+                        path: "tables/movie-table",
+                        element: <MovieTable />
+                    },
+                    {
+                        path: "tables/word-table",
+                        element: <WordTable />
                     }
                 ]
             }

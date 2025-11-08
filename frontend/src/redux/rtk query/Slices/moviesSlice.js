@@ -41,7 +41,7 @@ export const moviesApi = createApi({
         updatePostMovie: builder.mutation({
             query: (updateMovie) => ({
                 url: `movie/update`,
-                method: 'POST',
+                method: 'PUT',
                 body: updateMovie
             })
         }),

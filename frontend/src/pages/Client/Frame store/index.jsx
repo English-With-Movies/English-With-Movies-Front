@@ -68,15 +68,26 @@ export default function FrameStore() {
                                                                     : "Seçin"}
                                                             </button>
                                                         ) : (
-                                                            <>
-                                                                <button
-                                                                    onClick={() => buyFrame(frame)}
-                                                                    className="bg-[var(--movies-bg)] px-2 py-1 rounded font-bold text-lg transition-all duration-250 hover:bg-[var(--bg-color)]"
-                                                                >
-                                                                    {frame.pointsRequired}
-                                                                </button>
-                                                                <span className="text-xl font-bold">Point</span>
-                                                            </>
+                                                            frame.isPremium ? (
+                                                                <>
+                                                                    <button
+                                                                        onClick={() => buyFrame(frame)}
+                                                                        className="bg-[var(--movies-bg)] px-2 py-1 rounded font-bold text-lg transition-all duration-250 hover:bg-[var(--bg-color)]"
+                                                                    >
+                                                                        Premium
+                                                                    </button>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <button
+                                                                        onClick={() => buyFrame(frame)}
+                                                                        className="bg-[var(--movies-bg)] px-2 py-1 rounded font-bold text-lg transition-all duration-250 hover:bg-[var(--bg-color)]"
+                                                                    >
+                                                                        {frame.pointsRequired}
+                                                                    </button>
+                                                                    <span className="text-xl font-bold">Point</span>
+                                                                </>
+                                                            )
                                                         )
                                                     }
                                                 </div>

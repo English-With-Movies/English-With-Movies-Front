@@ -117,6 +117,8 @@ export default function AboutUser({ }) {
                                     }
                                     validationSchema={validationSchema}
                                     onSubmit={async (values, { setSubmitting }) => {
+                                        console.log('salam');
+                                        
                                         let formData = new FormData()
                                         formData.append("UserName", values.userName);
                                         formData.append("FirstName", values.firstName);
@@ -135,6 +137,8 @@ export default function AboutUser({ }) {
                                         if (values.checkbox) {
                                             try {
                                                 const response = await postRegister(formData);
+                                                console.log(response);
+                                                
                                                 if (response.data) {
                                                     if (values.loginAfterRegister) {
                                                         localStorage.setItem("accessToken", response.data.accessToken);
@@ -144,10 +148,8 @@ export default function AboutUser({ }) {
                                                         navigate("/login")
                                                     }
                                                 }
-                                                if (response.error.data.title) {
-                                                    alert("❌ " + response.error.data.title)
-                                                } else if (response.error.data) {
-                                                    alert("❌ " + response.error.data)
+                                                if (response.error?.data?.Message) {
+                                                    alert("❌ " + response.error?.data?.Message)
                                                 }
                                             } catch (error) {
                                                 if (error.response) {

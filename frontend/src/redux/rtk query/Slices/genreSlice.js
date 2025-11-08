@@ -26,16 +26,16 @@ export const genreApi = createApi({
             })
         }),
         postGenre: builder.mutation({
-            query: (newAvatar) => ({
+            query: (newGenre) => ({
                 url: `genre/create`,
                 method: 'POST',
-                body: newAvatar
+                body: newGenre
             }),
         }),
         updatePostGenre: builder.mutation({
             query: (updateGenre) => ({
                 url: `genre/update`,
-                method: 'POST',
+                method: 'PUT',
                 body: updateGenre
             }),
         }),

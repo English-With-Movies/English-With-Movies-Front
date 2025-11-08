@@ -1,14 +1,17 @@
-import { Navigate, Outlet } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useGetByIdUserQuery } from "../redux/rtk query/Slices/userSlice";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { userInfoContext } from "../context/UserInfo";
 
 const ProtectedAdminRoute = () => {
-    let { userInfo } = useContext(userInfoContext)
-    let { data: user } = useGetByIdUserQuery(userInfo?.userId)
+    let { userInfo, isRefreshing } = useContext(userInfoContext)
+    let navigate = useNavigate()
 
-    return !user || user?.role == 'Member' ? <Navigate to="/" replace /> : <Outlet />;
+    if (!userInfo || Object.keys(userInfo).length === 0 || isRefreshing) {
+        navigate('/')
+        return null;
+    }
+
+    return Object.keys(userInfo).length === 0 || userInfo?.role == 'Member' ? <Navigate to="/" replace /> : <Outlet />;
 };
 
 export default ProtectedAdminRoute;

@@ -32,8 +32,8 @@ export default function PremiumFirstPage() {
                       className="py-3 w-full text-center text-xl font-bold bg-[var(--movies-bg)] rounded cursor-pointer border-2 border-[var(--movies-bg)] hover:bg-transparent transition-all duration-200 ease-in"
                     >
                       <span>{priceOption.name}</span>
-                      <span className="mx-2">{priceOption.currentPrice}$</span>
-                      <span className="old-price">{priceOption.oldPrice}$</span>
+                      <span className="mx-2">{priceOption.currentPrice}₼</span>
+                      <span className="old-price">{priceOption.oldPrice}₼</span>
                     </div>
                   ))}
                 </div>

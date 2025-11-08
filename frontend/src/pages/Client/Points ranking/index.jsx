@@ -36,7 +36,7 @@ export default function PointsRanking() {
                         <div className="bg-[var(--bg-color)] text-[var(--text-color)] py-2">
                             <Container>
                                 <div className="max-w-[1000px] mx-auto my-0">
-                                    <div className="my-5">
+                                    <div className="mt-5 mb-4">
                                         <p className="text-center text-3xl font-['Dancing_Script']">ÜMUMİ XAL SIRALAMASI</p>
                                         <div className="grid grid-cols-3 items-end">
                                             <div className="flex flex-col items-center justify-center">
@@ -61,8 +61,8 @@ export default function PointsRanking() {
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
+                                    <div onClick={() => navigate('/todays-points-ranking')} className="px-3 py-2 font-bold text-lg text-center cursor-pointer rounded-5 max-w-[250px] bg-[var(--movies-bg)] mb-2">Bugünün xal sıralaması</div>
                                     <div className="bg-[var(--movies-bg)] max-[576px]:overflow-x-scroll">
                                         <table className="w-full">
                                             <thead>

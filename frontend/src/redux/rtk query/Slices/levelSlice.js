@@ -26,7 +26,7 @@ export const levelApi = createApi({
         updatePostLevel: builder.mutation({
             query: (updateLevel) => ({
                 url: `level/update`,
-                method: 'POST',
+                method: 'PUT',
                 body: updateLevel
             })
         }),

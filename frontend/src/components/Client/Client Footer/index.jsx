@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { FaFacebook, FaXTwitter } from "react-icons/fa6";
 import { FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import { BsArrowUp } from "react-icons/bs";
@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react';
 import { useGetSettingsByKeyQuery } from '../../../redux/rtk query/Slices/settingsSlice';
 
 export default function UserFooter() {
+    let navigate = useNavigate()
     let { data: footer } = useGetSettingsByKeyQuery('aboutUs')
     let { data: facebook } = useGetSettingsByKeyQuery('facebook')
     let { data: instagram } = useGetSettingsByKeyQuery('instagram')
@@ -58,7 +59,7 @@ export default function UserFooter() {
                         </NavLink>
                     </div>
                     <div>
-                        <h4>ƏLAQƏ:</h4>
+                        <h4 onClick={() => navigate('/feedback')} className="cursor-pointer">ƏLAQƏ:</h4>
                         <h5>SOSİAL HESABLAR</h5>
                         <div className='text-2xl flex gap-3'>
                             <span className='cursor-pointer hover:text-[#06b6d4]' onClick={() => window.open(`${facebook?.value}`, '_blank')}>
@@ -79,7 +80,7 @@ export default function UserFooter() {
             </div>
             {/* fixed arrow */}
             <div ref={upArrowRef}
-                className='z-index-10 border-2 border-solid border-blue-500 p-[25px] sm:p-[40px] fixed right-[5%] bottom-[3%] w-12 h-12 rounded-full items-center justify-center flex flex-col text-white cursor-pointer transition-all duration-250 ease-in hover:bg-blue-500/[.3] fixed-arrow hidden'
+                className='z-index-10 border-2 border-solid border-blue-500 p-[25px] fixed right-[5%] bottom-[3%] w-12 h-12 rounded-full items-center justify-center flex flex-col text-white cursor-pointer transition-all duration-250 ease-in hover:bg-blue-500/[.3] fixed-arrow hidden'
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
                 <span className='text-3xl text-[var(--text-color)]'><BsArrowUp /></span>
             </div>

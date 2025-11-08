@@ -168,22 +168,22 @@ export default function MovieTable({ checkboxStates, wordList, setWordList, setC
                                     </tr>
                                 ))
                             ) : checkboxStates.find((bool) => bool == true) && wordList?.length == 0 ? (
-                                <h3>Filmdə bu leveldə söz yoxdur</h3>
+                                <h3>Söz yoxdur</h3>
                             ) : (
                                 <h3>Level seçərək başlayın</h3>
                             )
                         }
 
                         <div className={`${open ? 'flex' : 'hidden'} items-center justify-center rounded bg-gray-600 fixed bottom-[8%] sm:bottom-[3%] left-1/2 lg:left-1/3 -translate-x-1/2 p-3 max-w-[500px] min-h-[150px] w-full mr-5`}>
-                            <span onClick={() => setOpen(false)} className="cursor-pointer  text-white absolute top-2 right-2 text-4xl hover:text-red-500"><IoCloseSharp /></span>
+                            <span onClick={() => setOpen(false)} className="cursor-pointer transition-all duration-250 absolute top-2 right-2 text-4xl hover:text-red-500"><IoCloseSharp /></span>
                             {
                                 isLoading ? (
                                     <UserLoader />
                                 ) : (
                                     <div className="font-semibold font-['Kanit'] text-2xl w-full pt-[25px]">
                                         <div className="break-words whitespace-pre-wrap">{stateData?.english}</div>
-                                        <div>{stateData?.azerbaijani}</div>
-                                        <span onClick={(e) => speakingText(e, stateData?.english)} className="hover:text-blue-600 text-white cursor-pointer absolute top-3 left-3 text-3xl"><HiSpeakerWave /></span>
+                                        <div className="break-words whitespace-pre-wrap">{stateData?.azerbaijani}</div>
+                                        <span onClick={(e) => speakingText(e, stateData?.english)} className="hover:text-blue-600 transition-all duration-250 cursor-pointer absolute top-3 left-3 text-3xl"><HiSpeakerWave /></span>
                                     </div>
                                 )
                             }

@@ -5,7 +5,7 @@ import { FaBarsStaggered, FaRegCircleCheck } from "react-icons/fa6";
 import { HiSpeakerWave } from "react-icons/hi2";
 import { ImBin } from "react-icons/im";
 import { IoCloseSharp, IoRocketSharp } from "react-icons/io5";
-import { useDeleteWordFromKnownWordListMutation, useGetKnownWordListByIdQuery } from "../../../redux/rtk query/Slices/knownWordListSlice";
+import { useDeleteWordFromKnownWordListMutation, useGetKnownWordListByIdQuery, useResetKnownWordListMutation } from "../../../redux/rtk query/Slices/knownWordListSlice";
 import UserInfo, { userInfoContext } from "../../../context/UserInfo";
 import { useNavigate } from "react-router";
 import { useGetByIdUserQuery } from "../../../redux/rtk query/Slices/userSlice";
@@ -39,6 +39,7 @@ export default function KnownWords() {
 
     // known list table and delete
     let [deleteWordFromKnownWordList] = useDeleteWordFromKnownWordListMutation()
+    let [resetKnownWordList] = useResetKnownWordListMutation()
     let { userInfo } = useContext(userInfoContext)
     let { data: userData } = useGetByIdUserQuery(userInfo?.userId, { skip: !userInfo?.userId })
     let { data: userKnownList, isLoading, refetch } = useGetKnownWordListByIdQuery(userData?.knownWordListId, { skip: !userData?.knownWordListId })
@@ -113,6 +114,13 @@ export default function KnownWords() {
         playBase64Audio(response.data.audioBase64)
     }
 
+    const resetListFunction = async () => {
+        console.log(userKnownList?.id);
+        const response = await resetKnownWordList(userKnownList?.id)
+        console.log(response);
+        refetch()
+    }
+
     return (
         <>
             <Helmet>
@@ -141,7 +149,10 @@ export default function KnownWords() {
                         </div>
                     </div>
                     <div className="flex items-center justify-between mt-3">
-                        <div className="text-xl">{wordList?.length} söz</div>
+                        <div className="flex items-center gap-2">
+                            <div className="text-xl font-semibold">{wordList?.length} söz</div>
+                            <button onClick={() => resetListFunction()} className="bg-red-700 px-3 py-1 text-xl rounded-5 font-semibold text-white">Sıfırla</button>
+                        </div>
                         <div className="text-3xl font-['Kanit']">Sözlər</div>
                         <div className="my-3 relative flex justify-end">
                             <span className="text-3xl cursor-pointer" onClick={() => sortedWordsFunction()}><FaBarsStaggered /></span>
@@ -189,15 +200,15 @@ export default function KnownWords() {
                                 }
                             </tbody>
                             <div className={`${open ? 'flex' : 'hidden'} items-center justify-center rounded bg-gray-600 fixed bottom-[8%] sm:bottom-[3%] left-1/2 lg:left-1/3 -translate-x-1/2 p-3 max-w-[500px] min-h-[150px] w-full mr-5`}>
-                                <span onClick={() => setOpen(false)} className="cursor-pointer  text-white absolute top-2 right-2 text-4xl hover:text-red-500"><IoCloseSharp /></span>
+                                <span onClick={() => setOpen(false)} className="cursor-pointer transition-all duration-250 absolute top-2 right-2 text-4xl hover:text-red-500"><IoCloseSharp /></span>
                                 {
                                     sentenceLoading ? (
                                         <UserLoader />
                                     ) : (
                                         <div className="font-semibold font-['Kanit'] text-2xl w-full pt-[25px]">
                                             <div className="break-words whitespace-pre-wrap">{stateData?.english}</div>
-                                            <div>{stateData?.azerbaijani}</div>
-                                            <span onClick={(e) => speakingText(e, stateData?.english)} className="hover:text-blue-600 text-white cursor-pointer absolute top-3 left-3 text-3xl"><HiSpeakerWave /></span>
+                                            <div className="break-words whitespace-pre-wrap">{stateData?.azerbaijani}</div>
+                                            <span onClick={(e) => speakingText(e, stateData?.english)} className="hover:text-blue-600 transition-all duration-250 cursor-pointer absolute top-3 left-3 text-3xl"><HiSpeakerWave /></span>
                                         </div>
                                     )
                                 }

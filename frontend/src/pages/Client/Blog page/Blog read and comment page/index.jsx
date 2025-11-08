@@ -16,12 +16,15 @@ import { useDeleteCommentMutation, usePostCommentMutation, useUpdateCommentMutat
 // tiny mce editor
 import { Editor } from "@tinymce/tinymce-react";
 import { HiDotsVertical } from "react-icons/hi";
+import { Flag } from 'lucide-react';
 // material ui
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { FaRegHeart } from "react-icons/fa6";
+import BlogDetailComment from "../../../../components/Client/Blog detail comment";
+import BlogReport from "../../../../components/Client/Blog report modal";
 
 const style = {
     position: 'absolute',
@@ -79,6 +82,13 @@ export default function BlogReadAndComment() {
     if (error) {
         navigate('/*')
     }
+    useEffect(() => {
+        if (!isLoading && data) {
+            if (!data?.isApproved) {
+                navigate('/*')
+            }
+        }
+    })
 
     let { data: userFavoritesArray, refetch: userFavRefech } = useGetFavoriteBlogsUserQuery(userInfo?.userId)
     let { data: blogUser } = useGetByIdUserQuery(data?.authorId)
@@ -155,6 +165,12 @@ export default function BlogReadAndComment() {
         }
     }
 
+    // report modal and select
+    const [reportedUser, setReportedUser] = useState()
+    const [openReportModal, setOpenReportModal] = React.useState(false);
+    const handleOpenReportModal = () => setOpenReportModal(true);
+    const handleCloseReportModal = () => setOpenReportModal(false);
+
     return (
         <>
             {
@@ -166,34 +182,38 @@ export default function BlogReadAndComment() {
                             <div className="p-3 rounded-4 bg-[var(--movies-bg)] transition-all duration-250 ease-in hover:shadow-gray-500 hover:shadow-lg">
                                 <div className="flex items-center justify-between">
                                     <h3 className="font-['Kanit'] text-center w-full text-xl md:text-5xl">{data?.title}</h3>
-                                    {
-                                        data?.authorId == userInfo?.userId ? (
-                                            <div className="relative">
-                                                <div onClick={() => blogUpdateRef.current.classList.toggle("handleBars")} className="cursor-pointer"><HiDotsVertical /></div>
-                                                <div ref={blogUpdateRef} className="text-white bg-[#537296] p-1 rounded absolute top-0 right-4 w-[100px] handleBars">
-                                                    <div onClick={() => deleteOwnBlog(data.id)} className="font-['Kanit'] cursor-pointer">Sil</div>
-                                                    <div className="w-full h-[1px] bg-gray-400"></div>
-                                                    <div onClick={() => { handleOpenEditModal(), setEditBlog(data) }} className="font-['Kanit'] cursor-pointer">Redaktə et</div>
-                                                </div>
-                                            </div>
-                                        ) : (<></>)
-                                    }
+                                    <div className="relative">
+                                        <div onClick={() => blogUpdateRef.current.classList.toggle("handleBars")} className="cursor-pointer"><HiDotsVertical /></div>
+                                        <div ref={blogUpdateRef} className="text-white bg-[#537296] p-1 rounded absolute top-0 right-4 w-[120px] handleBars">
+                                            {
+                                                data?.authorId == userInfo?.userId ? (
+                                                    <>
+                                                        <div onClick={() => deleteOwnBlog(data.id)} className="font-['Kanit'] cursor-pointer">Sil</div>
+                                                        <div className="w-full h-[1px] bg-gray-400"></div>
+                                                        <div onClick={() => { handleOpenEditModal(), setEditBlog(data) }} className="font-['Kanit'] cursor-pointer">Redaktə et</div>
+                                                    </>
+                                                ) : (
+                                                    <div onClick={() => { handleOpenReportModal(); setReportedUser(data?.authorId) }} className="font-['Kanit'] gap-2 flex items-center cursor-pointer"><Flag /> Şikayət et</div>
+                                                )
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="break-all" dangerouslySetInnerHTML={{ __html: data?.content }} />
                                 <div className="flex gap-2 items-center justify-end">
                                     <div onClick={() => addAndDeleteFavoriteBlog(id)} className="cursor-pointer text-2xl text-red-600">
                                         {
-                                            userFavoritesArray.find((userFav) => userFav.id == id) ? (
+                                            userFavoritesArray?.find((userFav) => userFav.id == id) ? (
                                                 <FaHeart />) : (<FaRegHeart />)
                                         }
 
                                     </div>
                                     <div className="flex flex-col items-end justify-center">
                                         <span className="font-['PT_Serif'] text-sm md:text-md">{blogUser?.userName}</span>
-                                        <span className="font-['PT_Serif'] text-sm md:text-md">{moment(data?.createdAt).fromNow()}</span>
+                                        <span className="font-['PT_Serif'] text-sm md:text-md">{moment.utc(data?.createdAt).local().format('DD/MMM/YYYY HH:mm')}</span>
                                     </div>
-                                    <div className='relative flex items-center justify-center w-[65px] h-[65px]'>
+                                    <div onClick={(e) => navigate(`/user/${blogUser?.userName}`, e.stopPropagation())} className='cursor-pointer relative flex items-center justify-center w-[65px] h-[65px]'>
                                         <img className='w-[75%] h-[75%] rounded-full object-cover z-0 object-center' src={`https://englishwithmovies.blob.core.windows.net/avatar/${avatar?.imgName}`} alt="profile" />
                                         {
                                             blogUser?.userFrames &&
@@ -214,6 +234,8 @@ export default function BlogReadAndComment() {
                                     </div>
                                 </div>
                                 <div className="w-full h-[1px] bg-gray-500 mt-3"></div>
+
+                                {/* comments */}
                                 <div className="mb-3">
                                     {
                                         comments.length ? (
@@ -221,53 +243,22 @@ export default function BlogReadAndComment() {
                                                 <>
                                                     {
                                                         comments.slice(0, sliceNumber).map((comment) => {
-                                                            let commentUser = users?.find((user) => user.id == comment?.authorId)
-                                                            let commentAvatar = avatars?.find((avatar) => avatar.id == commentUser?.avatarId)
-                                                            const formattedDate = comment?.createdAt.split('.')[0];
-                                                            return <div className="mt-4 flex gap-2">
-                                                                <div className='relative flex items-center justify-center w-[45px] h-[45px] flex-shrink-0'>
-                                                                    <img className='w-[75%] h-[75%] rounded-full object-cover z-0 object-center' src={`https://englishwithmovies.blob.core.windows.net/avatar/${commentAvatar?.imgName}`} alt="profile" />
-                                                                    {
-                                                                        commentUser?.userFrames &&
-                                                                        commentUser?.userFrames.map((frame) => {
-                                                                            if (frame.isCurrent) {
-                                                                                let userFrame = allFrame?.find((value) => value.id == frame.frameId);
-                                                                                return (
-                                                                                    <div
-                                                                                        key={frame.frameId}
-                                                                                        className="absolute w-full h-full bg-cover bg-center z-10"
-                                                                                        style={{ backgroundImage: `url('https://englishwithmovies.blob.core.windows.net/frame/${userFrame?.imgName}')` }}
-                                                                                    ></div>
-                                                                                );
-                                                                            }
-                                                                            return null;
-                                                                        })
-                                                                    }
-                                                                </div>
-                                                                <div className="w-full">
-                                                                    <div className="flex justify-between items-center">
-                                                                        <div className="text-sm opacity-85">{commentUser?.userName} {moment.utc(formattedDate).local().fromNow()}</div>
-                                                                        {
-                                                                            comment.authorId == userInfo?.userId ? (
-                                                                                <div className="relative">
-                                                                                    <div onClick={() => toggleMenu(comment.id)} className="cursor-pointer"><HiDotsVertical /></div>
-                                                                                    {openCommentId === comment.id && (
-                                                                                        <div className="text-white bg-[#537296] p-1 rounded absolute top-0 right-4 w-[100px]">
-                                                                                            <div onClick={() => deleteOwnComment(comment.id)} className="font-['Kanit'] cursor-pointer">Sil</div>
-                                                                                            <div className="w-full h-[1px] bg-gray-400"></div>
-                                                                                            <div onClick={() => { handleOpen(), setEditComment(comment) }} className="font-['Kanit'] cursor-pointer">Redaktə et</div>
-                                                                                        </div>
-                                                                                    )}
-                                                                                </div>
-                                                                            ) : (<></>)
-                                                                        }
-                                                                    </div>
-                                                                    <div className="break-all text-sm sm:text-md">{comment.content}</div>
-                                                                </div>
-                                                            </div>
+                                                            return <BlogDetailComment
+                                                                setReportedUser={setReportedUser}
+                                                                handleOpenReportModal={handleOpenReportModal}
+                                                                comment={comment}
+                                                                users={users}
+                                                                avatars={avatars}
+                                                                allFrame={allFrame}
+                                                                userInfo={userInfo}
+                                                                toggleMenu={toggleMenu}
+                                                                openCommentId={openCommentId}
+                                                                deleteOwnComment={deleteOwnComment}
+                                                                handleOpen={handleOpen}
+                                                                setEditComment={setEditComment}
+                                                                navigate={navigate} />
                                                         })
                                                     }
-
                                                     <div className="text-white cursor-pointer flex justify-end">
                                                         <button onClick={() => showMoreLess()} className="my-3 py-1 px-3 bg-[#537296] rounded">
                                                             {comments.length == sliceNumber ? ('Read Less') : ('Read More')}
@@ -276,56 +267,27 @@ export default function BlogReadAndComment() {
                                                 </>
                                             ) : (
                                                 comments.map((comment) => {
-                                                    let commentUser = users?.find((user) => user.id == comment?.authorId)
-                                                    const formattedDate = comment?.createdAt.split('.')[0];
-                                                    let commentAvatar = avatars?.find((avatar) => avatar.id == commentUser?.avatarId)
-                                                    return <div className="mt-4 flex gap-2">
-                                                        <div className='relative flex items-center justify-center w-[45px] h-[45px] flex-shrink-0'>
-                                                            <img className='w-[75%] h-[75%] rounded-full object-cover z-0 object-center' src={`https://englishwithmovies.blob.core.windows.net/avatar/${commentAvatar?.imgName}`} alt="profile" />
-                                                            {
-                                                                commentUser?.userFrames &&
-                                                                commentUser?.userFrames.map((frame) => {
-                                                                    if (frame.isCurrent) {
-                                                                        let userFrame = allFrame?.find((value) => value.id == frame.frameId);
-                                                                        return (
-                                                                            <div
-                                                                                key={frame.frameId}
-                                                                                className="absolute w-full h-full bg-cover bg-center z-10"
-                                                                                style={{ backgroundImage: `url('https://englishwithmovies.blob.core.windows.net/frame/${userFrame?.imgName}')` }}
-                                                                            ></div>
-                                                                        );
-                                                                    }
-                                                                    return null;
-                                                                })
-                                                            }
-                                                        </div>
-                                                        <div className="w-full">
-                                                            <div className="flex justify-between items-center">
-                                                                <div className="text-sm opacity-85">{commentUser?.userName} {moment.utc(formattedDate).local().fromNow()}</div>
-                                                                {
-                                                                    comment.authorId == userInfo?.userId ? (
-                                                                        <div className="relative">
-                                                                            <div onClick={() => toggleMenu(comment.id)} className="cursor-pointer"><HiDotsVertical /></div>
-                                                                            {openCommentId === comment.id && (
-                                                                                <div className="text-white bg-[#537296] p-1 rounded absolute top-0 right-4 w-[100px]">
-                                                                                    <div onClick={() => deleteOwnComment(comment.id)} className="font-['Kanit'] cursor-pointer">Sil</div>
-                                                                                    <div className="w-full h-[1px] bg-gray-400"></div>
-                                                                                    <div onClick={() => { handleOpen(), setEditComment(comment) }} className="font-['Kanit'] cursor-pointer">Redaktə et</div>
-                                                                                </div>
-                                                                            )}
-                                                                        </div>
-                                                                    ) : (<></>)
-                                                                }
-                                                            </div>
-                                                            <div className="break-all text-sm sm:text-md">{comment.content}</div>
-                                                        </div>
-                                                    </div>
+                                                    return <BlogDetailComment
+                                                        setReportedUser={setReportedUser}
+                                                        handleOpenReportModal={handleOpenReportModal}
+                                                        comment={comment}
+                                                        users={users}
+                                                        avatars={avatars}
+                                                        allFrame={allFrame}
+                                                        userInfo={userInfo}
+                                                        toggleMenu={toggleMenu}
+                                                        openCommentId={openCommentId}
+                                                        deleteOwnComment={deleteOwnComment}
+                                                        handleOpen={handleOpen}
+                                                        setEditComment={setEditComment}
+                                                        navigate={navigate} />
                                                 })
                                             )
                                         ) : (<></>)
                                     }
                                 </div>
 
+                                {/* user add comment */}
                                 <div className="flex gap-2 justify-center">
                                     <div className='relative flex items-center justify-center w-[45px] h-[45px]'>
                                         <img className='w-[75%] h-[75%] rounded-full object-cover z-0 object-center' src={`https://englishwithmovies.blob.core.windows.net/avatar/${userAvatar?.imgName}`} alt="profile" />
@@ -393,7 +355,7 @@ export default function BlogReadAndComment() {
                             </div>
                         </Container >
 
-                        {/* modal */}
+                        {/* modal edit comment */}
                         <div>
                             <Modal
                                 open={open}
@@ -453,6 +415,7 @@ export default function BlogReadAndComment() {
                                 </Box>
                             </Modal>
                         </div>
+
                         {/* blog edit modal */}
                         <div>
                             <Modal
@@ -547,6 +510,11 @@ export default function BlogReadAndComment() {
                                     </Typography>
                                 </Box>
                             </Modal>
+                        </div>
+
+                        {/* report modal */}
+                        <div>
+                            <BlogReport blogUpdateRef={blogUpdateRef} openReportModal={openReportModal} handleCloseReportModal={handleCloseReportModal} style={style} reportedUser={reportedUser} reporterUser={userInfo?.userId} />
                         </div>
                     </div >
                 )

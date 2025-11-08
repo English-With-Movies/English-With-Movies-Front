@@ -8,7 +8,7 @@ export default function AdminLayout() {
     return (
         <div className='bg-[var(--admin-page-bg-color)]'>
             <AdminNavbar setSidebarOpen={setSidebarOpen} sidebarOpen={sidebarOpen}/>
-            <AdminSidebar sidebarOpen={sidebarOpen} />
+            <AdminSidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
             <div className='p-[1rem] shadow-custom'>
                 <Outlet />
             </div>

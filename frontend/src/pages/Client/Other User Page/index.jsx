@@ -59,7 +59,7 @@ export default function OtherUserPage() {
 
                                     <div>
                                         <div className='flex flex-col gap-4 mb-4'>
-                                            <div className='hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)] cursor-pointer p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)]' onClick={() => navigate('points-ranking')}>
+                                            <div className='hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)] cursor-pointer p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)]'>
                                                 <div className="grid grid-cols-2 items-center">
                                                     <img src={Cup} className='w-[190px] rounded' alt="Points Ranking" />
                                                     <div>
@@ -68,7 +68,7 @@ export default function OtherUserPage() {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className='cursor-pointer items-center justify-center p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)] hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)]' onClick={() => navigate('streak-ranking')}>
+                                            <div className='cursor-pointer items-center justify-center p-2 rounded transition hover:shadow-yellow-400 bg-[var(--movies-bg)] hover:shadow-[0_0px_20px_0px_yellow] hover:bg-[var(--movies-bg)]'>
                                                 <div className='grid grid-cols-2 items-center'>
                                                     <img src={Calcifer} className='w-[150px]' alt="Streak" />
                                                     <h5 className='text-center text-xl'><h3 className="font-['Kanit']">STREAK</h3> {userData?.streak} GÜN</h5>

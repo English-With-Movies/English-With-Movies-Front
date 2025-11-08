@@ -91,7 +91,8 @@ export default function EmailAndPassword({ setPage }) {
                                             focus:shadow-[0_0px_200px_0px_#06b6d4] w-full p-2 border-2 border-[#06b6d4] rounded mt-1" innerRef={confirmRef} />
                                         <span
                                             onClick={() => typeChangeConfirm()}
-                                            className='absolute right-[20px] top-[37%] text-xl cursor-pointer'><FaRegEye /></span>
+                                            className='absolute right-[20px] top-[37%] text-xl cursor-pointer'><FaRegEye />
+                                        </span>
                                     </div>
                                     <ErrorMessage name="confirmPassword" component="div" />
 

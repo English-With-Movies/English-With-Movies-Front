@@ -18,7 +18,7 @@ export default function AddBlog() {
 
     const editorRef = useRef(null);
     const validationSchema = yup.object({
-        title: yup.string().required("Bloq başlığı boş ola bilməz"),
+        title: yup.string().required("Bloq başlığı boş ola bilməz").max(64, 'Maksimum uzunluğu 64 olar bilər.'),
         content: yup.string().required("Məzmun boş ola bilməz"),
     });
     let [postBlog] = usePostBlogMutation()
@@ -27,7 +27,7 @@ export default function AddBlog() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 2500);
+        }, 3000);
 
         return () => clearTimeout(timer);
     }, []);

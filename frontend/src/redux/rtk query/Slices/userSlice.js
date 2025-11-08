@@ -80,6 +80,12 @@ export const userApi = createApi({
                 body: updateUser
             }),
         }),
+        userUpdatePassword: builder.mutation({
+            query: ({ userId, oldPassword, newPassword, confirmPassword }) => ({
+                url: `user/updatepassword?userId=${userId}&oldPassword=${oldPassword}&newPassword=${newPassword}&confirmPassword=${confirmPassword}`,
+                method: 'PUT'
+            }),
+        }),
         userUpdateAvatar: builder.mutation({
             query: ({ userId, formData }) => ({
                 url: `user/updateavatar?userId=${userId}`,
@@ -105,7 +111,40 @@ export const userApi = createApi({
                 method: 'PUT'
             }),
         }),
+        lockOutUser: builder.mutation({
+            query: ({ userId, durationInMinutes }) => ({
+                url: `user/lockoutuser?userId=${userId}&durationInMinutes=${durationInMinutes}`,
+                method: 'PUT'
+            }),
+        }),
+        unLockUser: builder.mutation({
+            query: (userId) => ({
+                url: `user/unlockuser?userId=${userId}`,
+                method: 'PUT'
+            }),
+        }),
     }),
 })
 
-export const { useGetByIdUserQuery, useGetByNameUserQuery, useGetFavoriteMoviesUserQuery, useAddToFavoritesUserMutation, useDeleteFromFavoritesUserMutation, useAddPointToUserMutation, useGetAllUserQuery, useGetResetCodeCheckQuery, useUserBuyFrameMutation, useUserUpdateCurrentFrameMutation, useAddToFavoriteBlogUserMutation, useDeleteFromFavoriteBlogUserMutation, useGetFavoriteBlogsUserQuery, useUserUpdateProfileMutation, useUserUpdateAvatarMutation, useUserUpdateAvatarByIdMutation, useDeleteUserMutation, useChangeUserRoleMutation } = userApi
+export const {
+    useGetByIdUserQuery,
+    useGetByNameUserQuery,
+    useGetFavoriteMoviesUserQuery,
+    useAddToFavoritesUserMutation,
+    useDeleteFromFavoritesUserMutation,
+    useAddPointToUserMutation,
+    useGetAllUserQuery,
+    useGetResetCodeCheckQuery,
+    useUserBuyFrameMutation,
+    useUserUpdateCurrentFrameMutation,
+    useAddToFavoriteBlogUserMutation,
+    useDeleteFromFavoriteBlogUserMutation,
+    useGetFavoriteBlogsUserQuery,
+    useUserUpdateProfileMutation,
+    useUserUpdateAvatarMutation,
+    useUserUpdateAvatarByIdMutation,
+    useDeleteUserMutation,
+    useChangeUserRoleMutation,
+    useUserUpdatePasswordMutation,
+    useLockOutUserMutation,
+    useUnLockUserMutation } = userApi
